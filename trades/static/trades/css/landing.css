@@ -284,7 +284,9 @@
         }
 
         .hero {
-            background: var(--navy);
+            background:
+                linear-gradient(180deg, rgba(26, 31, 60, 0.88), rgba(26, 31, 60, 0.92)),
+                url('../images/hero-plumber.jpg') center / cover;
             color: #fff;
             padding: 48px 16px 56px;
             position: relative;
@@ -461,6 +463,29 @@
             gap: 12px;
         }
 
+        .section-image {
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            margin: -12px auto 28px;
+            max-width: 860px;
+            background: var(--navy);
+        }
+
+        .section-image img,
+        .booking-image img,
+        .about-photo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .section-image {
+            aspect-ratio: 16 / 8;
+        }
+
         .service-card {
             background: #fff;
             border-radius: var(--radius);
@@ -527,6 +552,17 @@
             align-items: center;
             text-align: center;
             border: 1px solid var(--border-light);
+        }
+
+        .about-photo {
+            width: 132px;
+            height: 132px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 4px solid var(--gold-pale);
+            box-shadow: var(--shadow);
+            background: var(--navy);
         }
 
         .about-avatar {
@@ -634,6 +670,26 @@
             z-index: 1;
             max-width: 760px;
             margin: 0 auto;
+        }
+
+        .booking-image {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            max-width: 760px;
+            margin: 0 auto 18px;
+            aspect-ratio: 16 / 7;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .booking-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(26, 31, 60, 0.04), rgba(26, 31, 60, 0.22));
+            pointer-events: none;
         }
 
         .booking-card-top {
@@ -1193,12 +1249,21 @@
                 gap: 32px;
             }
 
+            .about-photo {
+                width: 168px;
+                height: 168px;
+            }
+
             .about-stats {
                 justify-content: flex-start;
             }
 
             .booking-card {
                 padding: 36px 32px;
+            }
+
+            .section-image {
+                aspect-ratio: 16 / 6;
             }
         }
 
@@ -1251,6 +1316,16 @@
             .booking-card {
                 padding: 20px 14px;
                 border-radius: var(--radius-lg);
+            }
+
+            .section-image {
+                margin-bottom: 22px;
+                aspect-ratio: 4 / 3;
+            }
+
+            .booking-image {
+                aspect-ratio: 4 / 3;
+                margin-bottom: 14px;
             }
 
             .service-select-grid {

@@ -1,7 +1,10 @@
+{% load static %}
 <section class="section about-section" id="about">
     <div class="section-inner">
         <div class="about-wrapper">
-            <div class="about-avatar" aria-hidden="true"><svg><use href="#icon-user"></use></svg></div>
+            <div class="about-photo" aria-hidden="true">
+                <img src="{% static 'trades/images/about-tradesman.jpg' %}" alt="" loading="lazy">
+            </div>
             <div class="about-content">
                 <span class="section-label">Meet Your Plumber</span>
                 <h3>Mark Henderson</h3>
