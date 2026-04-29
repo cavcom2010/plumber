@@ -11,7 +11,23 @@ from .forms import BookingEnquiryForm
 logger = logging.getLogger(__name__)
 
 
-def trades_landing(request):
+def trades_home(request):
+    return render(request, "trades/home.html")
+
+
+def trades_services(request):
+    return render(request, "trades/services.html")
+
+
+def trades_about(request):
+    return render(request, "trades/about.html")
+
+
+def trades_reviews(request):
+    return render(request, "trades/reviews.html")
+
+
+def trades_booking(request):
     if request.method == "POST":
         form = BookingEnquiryForm(request.POST)
         if form.is_valid():
@@ -21,11 +37,11 @@ def trades_landing(request):
                 request,
                 "Booking enquiry received. We will call back to confirm availability.",
             )
-            return redirect("trades_landing")
+            return redirect("trades_booking")
     else:
         form = BookingEnquiryForm()
 
-    return render(request, "trades/landing.html", {"form": form})
+    return render(request, "trades/booking.html", {"form": form})
 
 
 def _send_booking_notification(request, booking):

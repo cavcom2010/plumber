@@ -26,12 +26,35 @@ def valid_booking_data(**overrides):
 
 
 class TradesLandingTests(TestCase):
-    def test_landing_page_loads(self):
-        response = self.client.get(reverse("trades_landing"))
+    def test_home_page_loads(self):
+        response = self.client.get(reverse("trades_home"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Premium Plumbing")
+
+    def test_services_page_loads(self):
+        response = self.client.get(reverse("trades_services"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Complete Plumbing Solutions")
+
+    def test_about_page_loads(self):
+        response = self.client.get(reverse("trades_about"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Meet Your Plumber")
+
+    def test_booking_page_loads(self):
+        response = self.client.get(reverse("trades_booking"))
+
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Service Booking Form")
+
+    def test_reviews_page_loads(self):
+        response = self.client.get(reverse("trades_reviews"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "What Local Customers Say")
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
@@ -39,9 +62,9 @@ class TradesLandingTests(TestCase):
         DEFAULT_FROM_EMAIL="website@example.com",
     )
     def test_valid_booking_creates_enquiry_redirects_and_sends_email(self):
-        response = self.client.post(reverse("trades_landing"), valid_booking_data())
+        response = self.client.post(reverse("trades_booking"), valid_booking_data())
 
-        self.assertRedirects(response, reverse("trades_landing"))
+        self.assertRedirects(response, reverse("trades_booking"))
         self.assertEqual(BookingEnquiry.objects.count(), 1)
         booking = BookingEnquiry.objects.get()
         self.assertEqual(booking.postcode, "M20 1AB")
@@ -49,10 +72,10 @@ class TradesLandingTests(TestCase):
         self.assertIn("New plumbing booking enquiry", mail.outbox[0].subject)
 
     def test_success_redirect_uses_post_redirect_get(self):
-        response = self.client.post(reverse("trades_landing"), valid_booking_data())
+        response = self.client.post(reverse("trades_booking"), valid_booking_data())
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], reverse("trades_landing"))
+        self.assertEqual(response["Location"], reverse("trades_booking"))
 
 
 class BookingEnquiryFormTests(TestCase):

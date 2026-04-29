@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Premium local plumbing services with fast response, online booking, emergency call-outs, leak repairs, bathroom fitting, and drain unblocking.{% endblock %}">
+    <title>{% block title %}FlowPro Plumbing | Premium Local Plumbing Services{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'trades/css/landing.css' %}">
+</head>
+<body{% if messages %} data-booking-success="true"{% endif %}>
+    {% include "trades/partials/icons.html" %}
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="{% url 'trades_home' %}" class="logo-group" aria-label="FlowPro Plumbing home">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span>Pro</span></span>
+            </a>
+
+            <nav aria-label="Primary navigation">
+                <ul class="nav-links">
+                    <li><a href="{% url 'trades_services' %}">Services</a></li>
+                    <li><a href="{% url 'trades_about' %}">About</a></li>
+                    <li><a href="{% url 'trades_booking' %}">Book</a></li>
+                    <li><a href="{% url 'trades_reviews' %}">Reviews</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-cta">
+                <a href="tel:+441615550123" class="phone-link" aria-label="Call FlowPro Plumbing on 0161 555 0123">
+                    <span class="phone-dot" aria-hidden="true"></span>
+                    <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
+                    <span>0161 555 0123</span>
+                </a>
+                <a href="{% url 'trades_booking' %}" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="logo-group">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span style="color:#e0b44d;">Pro</span></span>
+            </div>
+            <p>Premium local plumbing services — fast, clear, and reliable.</p>
+            <p><a href="tel:+441615550123" class="footer-phone">0161 555 0123</a></p>
+            <p>hello@flowpro-plumbing.co.uk</p>
+            <p style="margin-top:8px;">Serving Manchester & surrounding areas</p>
+            <div class="footer-bottom">
+                &copy; 2026 FlowPro Plumbing. All rights reserved. Replace claims, reviews, insurance details, and qualifications with verified client information.
+            </div>
+        </div>
+    </footer>
+
+    <div class="success-overlay" id="successOverlay" role="dialog" aria-modal="true" aria-labelledby="success-title" aria-describedby="success-description">
+        <div class="success-modal">
+            <div class="check-circle" aria-hidden="true"><svg><use href="#icon-check"></use></svg></div>
+            <h3 id="success-title">Booking Enquiry Received</h3>
+            <p id="success-description">{% for message in messages %}{{ message }}{% empty %}Thank you for choosing FlowPro. Your enquiry has been received and the team will confirm availability.{% endfor %}</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">For emergencies, call <strong>0161 555 0123</strong> directly.</p>
+            <button class="btn-close-modal" type="button" id="closeSuccessBtn">Got It, Thanks</button>
+        </div>
+    </div>
+
+    <div class="mobile-bar" id="mobileBar">
+        <a href="tel:+441615550123" class="btn btn-emergency"><svg class="icon-sm"><use href="#icon-phone"></use></svg> Call Now</a>
+        <a href="{% url 'trades_booking' %}" class="btn btn-primary"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
+    </div>
+    <div class="mobile-bar-spacer" id="mobileBarSpacer"></div>
+
+    <script src="{% static 'trades/js/booking.js' %}" defer></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<section class="booking-section" id="booking">
+    <div class="section-inner">
+        <div class="section-header">
+            <span class="section-label">Book a Visit</span>
+            <h2 class="section-title">Schedule Your Service</h2>
+            <p class="section-subtitle">Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.</p>
+        </div>
+
+        <div class="booking-card">
+            <div class="booking-card-top">
+                <div class="icon-circle"><svg><use href="#icon-clipboard"></use></svg></div>
+                <div>
+                    <h3>Service Booking Form</h3>
+                    <span>Fields marked with * are required</span>
+                </div>
+            </div>
+
+            <form id="bookingForm" method="post" action="{% url 'trades_booking' %}" novalidate>
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" name="full_name" placeholder="John Smith" required autocomplete="name" aria-describedby="name-error" value="{{ form.full_name.value|default_if_none:'' }}"{% if form.full_name.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="name-error">{{ form.full_name.errors.0|default:"Please enter your full name." }}</span>
+                    </div>
+
+                    <div class="form-group{% if form.phone.errors %} error{% endif %}" id="group-phone">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="07123 456789" required autocomplete="tel" aria-describedby="phone-error" value="{{ form.phone.value|default_if_none:'' }}"{% if form.phone.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="phone-error">{{ form.phone.errors.0|default:"Please enter a valid UK phone number." }}</span>
+                    </div>
+
+                    <div class="form-group{% if form.email.errors %} error{% endif %}" id="group-email">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="email-error">{{ form.email.errors.0|default:"Please enter a valid email address." }}</span>
+                    </div>
+
+                    <div class="form-group{% if form.preferred_date.errors %} error{% endif %}" id="group-date">
+                        <label for="date">Preferred Date <span class="required">*</span></label>
+                        <input type="date" id="date" name="preferred_date" required aria-describedby="date-error" value="{{ form.preferred_date.value|default_if_none:'' }}"{% if form.preferred_date.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="date-error">{{ form.preferred_date.errors.0|default:"Please select a date that is not in the past." }}</span>
+                    </div>
+
+                    <div class="form-group full-width{% if form.address.errors %} error{% endif %}" id="group-address">
+                        <label for="address">Full Address <span class="required">*</span></label>
+                        <input type="text" id="address" name="address" placeholder="House number and street name" required autocomplete="street-address" aria-describedby="address-error" value="{{ form.address.value|default_if_none:'' }}"{% if form.address.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="address-error">{{ form.address.errors.0|default:"Please enter your address." }}</span>
+                    </div>
+
+                    <div class="form-group{% if form.postcode.errors %} error{% endif %}" id="group-postcode">
+                        <label for="postcode">Postcode <span class="required">*</span></label>
+                        <input type="text" id="postcode" name="postcode" placeholder="e.g. M20 1AB" required autocomplete="postal-code" aria-describedby="postcode-error" value="{{ form.postcode.value|default_if_none:'' }}"{% if form.postcode.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <span class="error-msg" id="postcode-error">{{ form.postcode.errors.0|default:"Please enter a valid UK postcode." }}</span>
+                    </div>
+
+                    <fieldset class="form-group full-width{% if form.service.errors %} error{% endif %}" id="group-service">
+                        <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
+                        <div class="service-select-grid">
+                            <label class="service-select-card"><input type="radio" name="service" value="leaking_pipe" required{% if form.service.value == "leaking_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">💧</span> Leaking Pipe</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="blocked_drain"{% if form.service.value == "blocked_drain" %} checked{% endif %}><span class="card-label"><span class="card-emoji">◉</span> Blocked Drain</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="water_heater"{% if form.service.value == "water_heater" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔥</span> Water Heater</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="toilet_repair"{% if form.service.value == "toilet_repair" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🚽</span> Toilet Repair</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="burst_pipe"{% if form.service.value == "burst_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">!</span> Burst Pipe</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="bathroom_kitchen"{% if form.service.value == "bathroom_kitchen" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⌂</span> Bathroom/Kitchen</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="gas_plumbing"{% if form.service.value == "gas_plumbing" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⛽</span> Gas Plumbing</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="general"{% if form.service.value == "general" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔧</span> General</span></label>
+                            <label class="service-select-card"><input type="radio" name="service" value="other"{% if form.service.value == "other" %} checked{% endif %}><span class="card-label"><span class="card-emoji">+</span> Other</span></label>
+                        </div>
+                        <span class="error-msg" id="service-error">{{ form.service.errors.0|default:"Please select a service." }}</span>
+                    </fieldset>
+
+                    <fieldset class="form-group full-width{% if form.timeslot.errors %} error{% endif %}" id="group-time">
+                        <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
+                        <div class="time-slot-grid">
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7–9am</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9–11am</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11–1pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1–3pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3–5pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5–7pm</span></label>
+                        </div>
+                        <span class="error-msg" id="time-error">{{ form.timeslot.errors.0|default:"Please select a preferred time slot." }}</span>
+                    </fieldset>
+
+                    <div class="form-group full-width{% if form.description.errors %} error{% endif %}" id="group-description">
+                        <label for="description">Describe the Issue <span class="required">*</span></label>
+                        <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening — the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
+                        <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue." }}</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="emergency-toggle" id="emergencyToggle">
+                            <input type="checkbox" name="is_emergency" id="emergencyCheck" value="1"{% if form.is_emergency.value %} checked{% endif %}>
+                            <span class="toggle-indicator" aria-hidden="true"></span>
+                            <span>
+                                <span class="toggle-text">This is an emergency</span>
+                                <span class="toggle-subtext">Use this for burst pipes, active leaks, or no water.</span>
+                            </span>
+                        </label>
+                        <div class="emergency-note" id="emergencyNote" role="status">
+                            <span aria-hidden="true">⚡</span>
+                            <span>Emergency enquiries are prioritised where available. For immediate danger, call the number above directly.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-submit-area">
+                    <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking Enquiry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
