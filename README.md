@@ -103,6 +103,18 @@ Keep only one profile active for a single-client deployment. To prepare a new cl
 
 Uploaded client images are stored under `MEDIA_ROOT` and served from `MEDIA_URL`. Bundled placeholder images stay in `trades/static/trades/images/` and are collected by `collectstatic`.
 
+## Testimonial Links for Invoice Emails
+
+Each booking enquiry in Django Admin has a readonly `testimonial link for invoice email` field. Copy that path into the invoice email once the job is complete.
+
+The customer-facing endpoint is:
+
+```text
+/put/testimonial/<signed-token>/
+```
+
+The token is signed and tied to the booking enquiry, so customers do not need an account and cannot choose another booking ID. Submitted testimonials are saved as inactive by default and must be reviewed/approved in Admin before they appear on the public reviews page.
+
 ## Checks
 
 ```bash

@@ -4,7 +4,7 @@ from django import forms
 from django.core.validators import validate_email
 from django.utils import timezone
 
-from .models import BookingEnquiry
+from .models import BookingEnquiry, Testimonial
 
 
 UK_POSTCODE_RE = re.compile(
@@ -139,4 +139,50 @@ class BookingEnquiryForm(forms.ModelForm):
         value = self.cleaned_data["description"].strip()
         if len(value) < 10:
             raise forms.ValidationError("Please describe the issue in at least 10 characters.")
+        return value
+
+
+class TestimonialSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Testimonial
+        fields = ["author_name", "quote", "rating"]
+        widgets = {
+            "author_name": forms.TextInput(
+                attrs={
+                    "id": "testimonial-name",
+                    "placeholder": "Your name",
+                    "autocomplete": "name",
+                }
+            ),
+            "quote": forms.Textarea(
+                attrs={
+                    "id": "testimonial-quote",
+                    "rows": 4,
+                    "placeholder": "Tell us how the visit went.",
+                }
+            ),
+            "rating": forms.Select(
+                choices=[(5, "5 stars"), (4, "4 stars"), (3, "3 stars"), (2, "2 stars"), (1, "1 star")],
+                attrs={"id": "testimonial-rating"},
+            ),
+        }
+
+    def clean_author_name(self):
+        value = self.cleaned_data["author_name"].strip()
+        if len(value) < 2:
+            raise forms.ValidationError("Please enter your name.")
+        return " ".join(value.split())
+
+    def clean_quote(self):
+        value = self.cleaned_data["quote"].strip()
+        if len(value) < 20:
+            raise forms.ValidationError("Please write at least 20 characters.")
+        if len(value) > 800:
+            raise forms.ValidationError("Please keep your testimonial under 800 characters.")
+        return value
+
+    def clean_rating(self):
+        value = self.cleaned_data["rating"]
+        if value < 1 or value > 5:
+            raise forms.ValidationError("Please choose a rating between 1 and 5 stars.")
         return value

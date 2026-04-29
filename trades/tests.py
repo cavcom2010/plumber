@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from .forms import BookingEnquiryForm
 from .models import BookingEnquiry, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
+from .views import testimonial_token_for_booking
 
 
 def valid_booking_data(**overrides):
@@ -147,5 +148,76 @@ class BookingEnquiryFormTests(TestCase):
         form = BookingEnquiryForm(data=valid_booking_data(email=""))
 
         self.assertTrue(form.is_valid(), form.errors)
+
+
+class TestimonialPutTests(TestCase):
+    def setUp(self):
+        BusinessProfile.objects.update(is_active=False)
+        self.business = BusinessProfile.objects.create(
+            business_name="FlowPro Plumbing",
+            is_active=True,
+        )
+        self.booking = BookingEnquiry.objects.create(
+            full_name="Jane Customer",
+            phone="07123 456789",
+            email="jane@example.com",
+            preferred_date=timezone.localdate(),
+            address="10 King Street",
+            postcode="M20 1AB",
+            service=BookingEnquiry.ServiceChoices.LEAKING_PIPE,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Kitchen sink repair completed.",
+            status=BookingEnquiry.StatusChoices.COMPLETED,
+        )
+        self.token = testimonial_token_for_booking(self.booking)
+
+    def test_customer_can_open_testimonial_put_endpoint_from_signed_link(self):
+        response = self.client.get(reverse("testimonial_put", kwargs={"token": self.token}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Leave a Testimonial")
+        self.assertContains(response, "Jane Customer")
+
+    def test_customer_can_submit_testimonial_pending_review(self):
+        response = self.client.post(
+            reverse("testimonial_put", kwargs={"token": self.token}),
+            {
+                "author_name": "Jane Customer",
+                "rating": "5",
+                "quote": "Excellent service, very tidy and clear from start to finish.",
+            },
+        )
+
+        self.assertRedirects(response, reverse("testimonial_put", kwargs={"token": self.token}))
+        testimonial = Testimonial.objects.get(source_booking=self.booking)
+        self.assertEqual(testimonial.business, self.business)
+        self.assertEqual(testimonial.author_label, "Verified Customer")
+        self.assertFalse(testimonial.is_active)
+
+    def test_duplicate_submission_does_not_create_second_testimonial(self):
+        Testimonial.objects.create(
+            business=self.business,
+            source_booking=self.booking,
+            author_name="Jane Customer",
+            quote="Already submitted testimonial.",
+            is_active=False,
+        )
+
+        response = self.client.post(
+            reverse("testimonial_put", kwargs={"token": self.token}),
+            {
+                "author_name": "Jane Customer",
+                "rating": "5",
+                "quote": "Trying to submit this a second time.",
+            },
+        )
+
+        self.assertRedirects(response, reverse("testimonial_put", kwargs={"token": self.token}))
+        self.assertEqual(Testimonial.objects.filter(source_booking=self.booking).count(), 1)
+
+    def test_invalid_testimonial_token_returns_404(self):
+        response = self.client.get(reverse("testimonial_put", kwargs={"token": "invalid-token"}))
+
+        self.assertEqual(response.status_code, 404)
 
 # Create your tests here.

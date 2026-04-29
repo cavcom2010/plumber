@@ -1084,6 +1084,27 @@
             line-height: 1.5;
         }
 
+        .testimonial-card-form {
+            max-width: 680px;
+        }
+
+        .testimonial-received {
+            text-align: center;
+            padding: 14px 0 4px;
+        }
+
+        .testimonial-received h3 {
+            color: var(--navy);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-received p {
+            color: var(--text-light);
+            font-size: 0.92rem;
+        }
+
         .btn-close-modal {
             background: var(--navy);
             color: #fff;

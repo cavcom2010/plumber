@@ -8,4 +8,5 @@ urlpatterns = [
     path("about/", views.trades_about, name="trades_about"),
     path("book/", views.trades_booking, name="trades_booking"),
     path("reviews/", views.trades_reviews, name="trades_reviews"),
+    path("put/testimonial/<path:token>/", views.testimonial_put, name="testimonial_put"),
 ]

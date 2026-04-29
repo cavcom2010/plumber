@@ -150,12 +150,21 @@ class Testimonial(models.Model):
         on_delete=models.CASCADE,
         related_name="testimonials",
     )
+    source_booking = models.OneToOneField(
+        "BookingEnquiry",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="submitted_testimonial",
+    )
     quote = models.TextField()
     author_name = models.CharField(max_length=80)
     author_label = models.CharField(max_length=80, default="Local Customer")
     rating = models.PositiveSmallIntegerField(default=5)
     sort_order = models.PositiveSmallIntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["sort_order", "author_name"]
