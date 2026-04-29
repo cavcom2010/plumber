@@ -166,6 +166,7 @@ class TestimonialPutTests(TestCase):
             service=BookingEnquiry.ServiceChoices.LEAKING_PIPE,
             timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
             description="Kitchen sink repair completed.",
+            testimonial_job_label="Kitchen sink repair",
             status=BookingEnquiry.StatusChoices.COMPLETED,
         )
         self.token = testimonial_token_for_booking(self.booking)
@@ -176,6 +177,7 @@ class TestimonialPutTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Leave a Testimonial")
         self.assertContains(response, "Jane Customer")
+        self.assertContains(response, "Kitchen sink repair")
 
     def test_customer_can_submit_testimonial_pending_review(self):
         response = self.client.post(
@@ -190,8 +192,40 @@ class TestimonialPutTests(TestCase):
         self.assertRedirects(response, reverse("testimonial_put", kwargs={"token": self.token}))
         testimonial = Testimonial.objects.get(source_booking=self.booking)
         self.assertEqual(testimonial.business, self.business)
+        self.assertEqual(testimonial.job_label, "Kitchen sink repair")
         self.assertEqual(testimonial.author_label, "Verified Customer")
         self.assertFalse(testimonial.is_active)
+
+    def test_testimonial_job_label_falls_back_to_booking_service(self):
+        self.booking.testimonial_job_label = ""
+        self.booking.save(update_fields=["testimonial_job_label"])
+
+        self.client.post(
+            reverse("testimonial_put", kwargs={"token": self.token}),
+            {
+                "author_name": "Jane Customer",
+                "rating": "5",
+                "quote": "Excellent service, very tidy and clear from start to finish.",
+            },
+        )
+
+        testimonial = Testimonial.objects.get(source_booking=self.booking)
+        self.assertEqual(testimonial.job_label, "Leaking Pipe")
+
+    def test_reviews_page_shows_testimonial_job_label(self):
+        Testimonial.objects.create(
+            business=self.business,
+            source_booking=self.booking,
+            author_name="Jane Customer",
+            author_label="Verified Customer",
+            job_label="Kitchen sink repair",
+            quote="Excellent service, very tidy and clear from start to finish.",
+            is_active=True,
+        )
+
+        response = self.client.get(reverse("trades_reviews"))
+
+        self.assertContains(response, "Kitchen sink repair")
 
     def test_duplicate_submission_does_not_create_second_testimonial(self):
         Testimonial.objects.create(

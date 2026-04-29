@@ -1190,6 +1190,20 @@
             letter-spacing: 1px;
         }
 
+        .testimonial-job {
+            display: inline-flex;
+            align-items: center;
+            max-width: 100%;
+            margin-bottom: 10px;
+            padding: 6px 10px;
+            border-radius: 50px;
+            background: var(--gold-pale);
+            color: var(--navy);
+            font-size: 0.74rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
         .testimonial-card p {
             font-size: 0.9rem;
             color: var(--text-light);

@@ -95,6 +95,7 @@ def testimonial_put(request, token):
             if testimonial.business is None:
                 testimonial.business = BusinessProfile.objects.create()
             testimonial.source_booking = booking
+            testimonial.job_label = booking.testimonial_job_display
             testimonial.author_label = "Verified Customer"
             testimonial.is_active = False
             testimonial.save()

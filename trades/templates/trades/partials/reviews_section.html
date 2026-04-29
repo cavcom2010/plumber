@@ -10,12 +10,16 @@
             {% for testimonial in testimonials %}
                 <article class="testimonial-card">
                     <div class="testimonial-stars" aria-label="{{ testimonial.rating }} star review">★★★★★</div>
+                    {% if testimonial.job_label %}
+                        <div class="testimonial-job">{{ testimonial.job_label }}</div>
+                    {% endif %}
                     <p>“{{ testimonial.quote }}”</p>
                     <div class="testimonial-author">{{ testimonial.author_name }}<span> — {{ testimonial.author_label }}</span></div>
                 </article>
             {% empty %}
                 <article class="testimonial-card">
                     <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                    <div class="testimonial-job">Leak repair</div>
                     <p>“Arrived quickly, explained the problem clearly, and left the place spotless. Very professional from start to finish.”</p>
                     <div class="testimonial-author">Sarah J.<span> — Local Customer</span></div>
                 </article>

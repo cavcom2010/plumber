@@ -36,13 +36,14 @@ class TestimonialAdmin(admin.ModelAdmin):
         "author_name",
         "business",
         "rating",
+        "job_label",
         "author_label",
         "source_booking",
         "is_active",
         "created_at",
     )
     list_filter = ("business", "rating", "is_active", "author_label")
-    search_fields = ("author_name", "quote", "source_booking__full_name")
+    search_fields = ("author_name", "quote", "job_label", "source_booking__full_name")
     readonly_fields = ("created_at", "updated_at")
     ordering = ("-created_at",)
 
@@ -143,6 +144,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         "postcode",
         "is_emergency",
         "status",
+        "testimonial_job_label",
         "testimonial_request_link",
         "created_at",
     )
@@ -172,6 +174,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
                     "timeslot",
                     "service",
                     "description",
+                    "testimonial_job_label",
                     "is_emergency",
                 )
             },

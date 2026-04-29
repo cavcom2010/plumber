@@ -157,6 +157,7 @@ class Testimonial(models.Model):
         null=True,
         related_name="submitted_testimonial",
     )
+    job_label = models.CharField(max_length=140, blank=True)
     quote = models.TextField()
     author_name = models.CharField(max_length=80)
     author_label = models.CharField(max_length=80, default="Local Customer")
@@ -215,6 +216,12 @@ class BookingEnquiry(models.Model):
         verbose_name="preferred time slot",
     )
     description = models.TextField()
+    testimonial_job_label = models.CharField(
+        max_length=140,
+        blank=True,
+        verbose_name="testimonial job label",
+        help_text="Customer-facing completed job label shown on review cards, e.g. Bathroom tap repair.",
+    )
     is_emergency = models.BooleanField(default=False, verbose_name="emergency")
     status = models.CharField(
         max_length=16,
@@ -239,5 +246,9 @@ class BookingEnquiry(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.get_service_display()} - {self.postcode}"
+
+    @property
+    def testimonial_job_display(self):
+        return self.testimonial_job_label.strip() or self.get_service_display()
 
 # Create your models here.
