@@ -67,6 +67,42 @@ EMAIL_HOST_PASSWORD=
 
 Booking submissions are saved even if notification email delivery fails.
 
+## Cloning for a New Client
+
+This project is wired so a cloned copy can be reused for another trades client without editing templates for normal content changes.
+
+After cloning and running migrations:
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+Open Django Admin and edit `Trades > Business profiles`.
+
+The active business profile controls:
+
+- Business name and split logo text
+- Meta description
+- Hero badge, headline, and body copy
+- Phone number, telephone link, email, and service area
+- Footer tagline and disclaimer
+- Services section title/subtitle
+- Booking section title/subtitle
+- Reviews section title/subtitle
+- Owner/about section copy
+- Optional hero, services, about, and booking images
+
+Inside the same Business Profile edit screen, use the inline tables to manage:
+
+- Trust indicators
+- Service cards
+- Testimonials
+
+Keep only one profile active for a single-client deployment. To prepare a new client, clone the repository, configure a new `.env`, run migrations against that client database, and edit or replace the seeded `FlowPro Plumbing` profile from Admin.
+
+Uploaded client images are stored under `MEDIA_ROOT` and served from `MEDIA_URL`. Bundled placeholder images stay in `trades/static/trades/images/` and are collected by `collectstatic`.
+
 ## Checks
 
 ```bash

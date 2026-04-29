@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .forms import BookingEnquiryForm
-from .models import BookingEnquiry
+from .models import BookingEnquiry, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
 
 
 def valid_booking_data(**overrides):
@@ -58,6 +58,45 @@ class TradesLandingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "What Local Customers Say")
+
+    def test_pages_use_active_business_profile_content(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Heating",
+            brand_first="Acme",
+            brand_second="Heat",
+            tagline="Quiet, tidy heating and plumbing.",
+            hero_heading_line_one="Trusted Heating",
+            hero_heading_line_two="For Local Homes",
+            phone_display="020 0000 1111",
+            phone_href="+442000001111",
+            email="hello@acme.example",
+            service_area="Serving Bristol",
+            owner_name="Alex Morgan",
+            services_title="Heating & Plumbing Services",
+            reviews_title="Client Feedback",
+            is_active=True,
+        )
+        TrustIndicator.objects.create(business=business, label="Gas Safe Registered")
+        ServiceOffering.objects.create(
+            business=business,
+            title="Boiler Servicing",
+            description="Annual servicing and safety checks.",
+            icon=ServiceOffering.IconChoices.FLAME,
+        )
+        Testimonial.objects.create(
+            business=business,
+            quote="Clear, tidy, and on time.",
+            author_name="Pat C.",
+        )
+
+        response = self.client.get(reverse("trades_home"))
+
+        self.assertContains(response, "Acme")
+        self.assertContains(response, "Trusted Heating")
+        self.assertContains(response, "Gas Safe Registered")
+        self.assertContains(response, "Boiler Servicing")
+        self.assertContains(response, "Clear, tidy, and on time.")
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",

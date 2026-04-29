@@ -2,46 +2,29 @@
 <section class="section" id="services">
     <div class="section-inner">
         <div class="section-header">
-            <span class="section-label">Our Services</span>
-            <h2 class="section-title">Complete Plumbing Solutions</h2>
-            <p class="section-subtitle">A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.</p>
+            <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
+            <h2 class="section-title">{% if business %}{{ business.services_title }}{% else %}Complete Plumbing Solutions{% endif %}</h2>
+            <p class="section-subtitle">{% if business %}{{ business.services_subtitle }}{% else %}A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.{% endif %}</p>
         </div>
 
         <div class="section-image section-image-services">
-            <img src="{% static 'trades/images/services-pipes.jpg' %}" alt="Plumbing tools and pipework laid out for repair work" loading="lazy">
+            <img src="{% if business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="Plumbing tools and pipework laid out for repair work" loading="lazy">
         </div>
 
         <div class="services-grid">
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
-                <h3>Leak Repairs</h3>
-                <p>Fast fault-finding and repair work.</p>
-            </article>
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-shower"></use></svg></div>
-                <h3>Shower & Bath</h3>
-                <p>Installation, servicing, and upgrades.</p>
-            </article>
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
-                <h3>Toilet Repair</h3>
-                <p>Cisterns, leaks, flushes, and fittings.</p>
-            </article>
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-droplet"></use></svg></div>
-                <h3>Drain Unblocking</h3>
-                <p>Blocked sinks, baths, and external drains.</p>
-            </article>
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-flame"></use></svg></div>
-                <h3>Water Heaters</h3>
-                <p>Repairs, replacements, and checks.</p>
-            </article>
-            <article class="service-card">
-                <div class="service-icon"><svg><use href="#icon-home"></use></svg></div>
-                <h3>Bathroom Fitting</h3>
-                <p>Planned upgrades and full refits.</p>
-            </article>
+            {% for service in service_offerings %}
+                <article class="service-card">
+                    <div class="service-icon"><svg><use href="#{{ service.icon }}"></use></svg></div>
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                </article>
+            {% empty %}
+                <article class="service-card">
+                    <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                    <h3>Leak Repairs</h3>
+                    <p>Fast fault-finding and repair work.</p>
+                </article>
+            {% endfor %}
         </div>
     </div>
 </section>

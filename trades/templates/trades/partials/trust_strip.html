@@ -1,9 +1,13 @@
 <section class="trust-strip" aria-label="Trust indicators">
     <div class="trust-strip-inner">
-        <div class="trust-item"><span class="trust-icon">✓</span> Local & Reliable</div>
-        <div class="trust-item"><span class="trust-icon">✓</span> Emergency Call-outs</div>
-        <div class="trust-item"><span class="trust-icon">✓</span> Clear Upfront Advice</div>
-        <div class="trust-item"><span class="trust-icon">✓</span> Tidy Workmanship</div>
-        <div class="trust-item"><span class="trust-icon">✓</span> Fully Insured*</div>
+        {% for item in trust_indicators %}
+            <div class="trust-item"><span class="trust-icon">✓</span> {{ item.label }}</div>
+        {% empty %}
+            <div class="trust-item"><span class="trust-icon">✓</span> Local & Reliable</div>
+            <div class="trust-item"><span class="trust-icon">✓</span> Emergency Call-outs</div>
+            <div class="trust-item"><span class="trust-icon">✓</span> Clear Upfront Advice</div>
+            <div class="trust-item"><span class="trust-icon">✓</span> Tidy Workmanship</div>
+            <div class="trust-item"><span class="trust-icon">✓</span> Fully Insured*</div>
+        {% endfor %}
     </div>
 </section>

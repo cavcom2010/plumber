@@ -3,17 +3,21 @@
     <div class="section-inner">
         <div class="about-wrapper">
             <div class="about-photo" aria-hidden="true">
-                <img src="{% static 'trades/images/about-tradesman.jpg' %}" alt="" loading="lazy">
+                <img src="{% if business and business.about_image %}{{ business.about_image.url }}{% else %}{% static 'trades/images/about-tradesman.jpg' %}{% endif %}" alt="" loading="lazy">
             </div>
             <div class="about-content">
-                <span class="section-label">Meet Your Plumber</span>
-                <h3>Mark Henderson</h3>
-                <p class="role">Local Plumbing Specialist</p>
-                <p>FlowPro is built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.</p>
+                <span class="section-label">{% if business %}{{ business.about_label }}{% else %}Meet Your Plumber{% endif %}</span>
+                <h3>{% if business %}{{ business.owner_name }}{% else %}Mark Henderson{% endif %}</h3>
+                <p class="role">{% if business %}{{ business.owner_role }}{% else %}Local Plumbing Specialist{% endif %}</p>
+                <p>{% if business %}{{ business.about_text|linebreaksbr }}{% else %}FlowPro is built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.{% endif %}</p>
                 <div class="about-stats" aria-label="Business highlights">
-                    <div class="about-stat"><div class="num">Local</div><div class="lbl">Service Area</div></div>
-                    <div class="about-stat"><div class="num">Fast</div><div class="lbl">Call-backs</div></div>
-                    <div class="about-stat"><div class="num">Tidy</div><div class="lbl">Workmanship</div></div>
+                    {% for item in trust_indicators|slice:":3" %}
+                        <div class="about-stat"><div class="num">{{ item.label|truncatewords:1 }}</div><div class="lbl">Business Highlight</div></div>
+                    {% empty %}
+                        <div class="about-stat"><div class="num">Local</div><div class="lbl">Service Area</div></div>
+                        <div class="about-stat"><div class="num">Fast</div><div class="lbl">Call-backs</div></div>
+                        <div class="about-stat"><div class="num">Tidy</div><div class="lbl">Workmanship</div></div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

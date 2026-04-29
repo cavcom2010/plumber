@@ -2,13 +2,13 @@
 <section class="booking-section" id="booking">
     <div class="section-inner">
         <div class="section-header">
-            <span class="section-label">Book a Visit</span>
-            <h2 class="section-title">Schedule Your Service</h2>
-            <p class="section-subtitle">Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.</p>
+            <span class="section-label">{% if business %}{{ business.booking_label }}{% else %}Book a Visit{% endif %}</span>
+            <h2 class="section-title">{% if business %}{{ business.booking_title }}{% else %}Schedule Your Service{% endif %}</h2>
+            <p class="section-subtitle">{% if business %}{{ business.booking_subtitle }}{% else %}Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.{% endif %}</p>
         </div>
 
         <div class="booking-image">
-            <img src="{% static 'trades/images/booking-bathroom.jpg' %}" alt="Clean modern bathroom plumbing fixtures" loading="lazy">
+            <img src="{% if business and business.booking_image %}{{ business.booking_image.url }}{% else %}{% static 'trades/images/booking-bathroom.jpg' %}{% endif %}" alt="Clean modern bathroom plumbing fixtures" loading="lazy">
         </div>
 
         <div class="booking-card">
@@ -105,7 +105,7 @@
                         </label>
                         <div class="emergency-note" id="emergencyNote" role="status">
                             <span aria-hidden="true">⚡</span>
-                            <span>Emergency enquiries are prioritised where available. For immediate danger, call the number above directly.</span>
+                                    <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
                         </div>
                     </div>
                 </div>

@@ -284,9 +284,9 @@
         }
 
         .hero {
-            background:
-                linear-gradient(180deg, rgba(26, 31, 60, 0.88), rgba(26, 31, 60, 0.92)),
-                url('../images/hero-plumber.jpg') center / cover;
+            background-color: var(--navy);
+            background-position: center;
+            background-size: cover;
             color: #fff;
             padding: 48px 16px 56px;
             position: relative;

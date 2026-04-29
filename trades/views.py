@@ -7,24 +7,50 @@ from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 
 from .forms import BookingEnquiryForm
+from .models import BusinessProfile
 
 logger = logging.getLogger(__name__)
 
 
+def _site_context(extra=None):
+    business = (
+        BusinessProfile.objects.filter(is_active=True)
+        .prefetch_related("trust_indicators", "service_offerings", "testimonials")
+        .first()
+    )
+    context = {
+        "business": business,
+        "trust_indicators": [],
+        "service_offerings": [],
+        "testimonials": [],
+    }
+    if business:
+        context.update(
+            {
+                "trust_indicators": business.trust_indicators.filter(is_active=True),
+                "service_offerings": business.service_offerings.filter(is_active=True),
+                "testimonials": business.testimonials.filter(is_active=True),
+            }
+        )
+    if extra:
+        context.update(extra)
+    return context
+
+
 def trades_home(request):
-    return render(request, "trades/home.html")
+    return render(request, "trades/home.html", _site_context())
 
 
 def trades_services(request):
-    return render(request, "trades/services.html")
+    return render(request, "trades/services.html", _site_context())
 
 
 def trades_about(request):
-    return render(request, "trades/about.html")
+    return render(request, "trades/about.html", _site_context())
 
 
 def trades_reviews(request):
-    return render(request, "trades/reviews.html")
+    return render(request, "trades/reviews.html", _site_context())
 
 
 def trades_booking(request):
@@ -41,7 +67,7 @@ def trades_booking(request):
     else:
         form = BookingEnquiryForm()
 
-    return render(request, "trades/booking.html", {"form": form})
+    return render(request, "trades/booking.html", _site_context({"form": form}))
 
 
 def _send_booking_notification(request, booking):
@@ -50,7 +76,7 @@ def _send_booking_notification(request, booking):
         logger.warning("ADMIN_NOTIFICATION_EMAIL is not configured; booking email skipped.")
         return
 
-    context = {"booking": booking, "request": request}
+    context = _site_context({"booking": booking, "request": request})
     subject = (
         f"New plumbing booking enquiry: "
         f"{booking.get_service_display()} - {booking.postcode}"

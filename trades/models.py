@@ -1,6 +1,171 @@
 from django.db import models
 
 
+class BusinessProfile(models.Model):
+    business_name = models.CharField(max_length=120, default="FlowPro Plumbing")
+    brand_first = models.CharField(max_length=40, default="Flow")
+    brand_second = models.CharField(max_length=40, default="Pro")
+    tagline = models.CharField(
+        max_length=180,
+        default="Premium local plumbing services - fast, clear, and reliable.",
+    )
+    meta_description = models.TextField(
+        default=(
+            "Premium local plumbing services with fast response, online booking, "
+            "emergency call-outs, leak repairs, bathroom fitting, and drain unblocking."
+        )
+    )
+    hero_badge = models.CharField(
+        max_length=120,
+        default="Trusted local plumbing specialists",
+    )
+    hero_heading_line_one = models.CharField(max_length=80, default="Premium Plumbing")
+    hero_heading_line_two = models.CharField(max_length=80, default="Without the Stress")
+    hero_body = models.TextField(
+        default=(
+            "Reliable local plumbers for urgent repairs, leaks, drains, bathrooms, "
+            "and general maintenance. Clear communication, tidy workmanship, and "
+            "fast call-backs."
+        )
+    )
+    phone_display = models.CharField(max_length=40, default="0161 555 0123")
+    phone_href = models.CharField(max_length=40, default="+441615550123")
+    email = models.EmailField(default="hello@flowpro-plumbing.co.uk")
+    service_area = models.CharField(
+        max_length=160,
+        default="Serving Manchester & surrounding areas",
+    )
+    owner_name = models.CharField(max_length=120, default="Mark Henderson")
+    owner_role = models.CharField(max_length=120, default="Local Plumbing Specialist")
+    about_label = models.CharField(max_length=80, default="Meet Your Plumber")
+    about_text = models.TextField(
+        default=(
+            "FlowPro is built around a simple promise: clear communication, fair "
+            "pricing, and respect for your home. This section can be replaced with "
+            "the real business owner's story, qualifications, guarantees, and "
+            "service area."
+        )
+    )
+    services_label = models.CharField(max_length=80, default="Our Services")
+    services_title = models.CharField(
+        max_length=120,
+        default="Complete Plumbing Solutions",
+    )
+    services_subtitle = models.TextField(
+        default=(
+            "A flexible service template for local trades: quick repairs, planned "
+            "installs, maintenance visits, and emergency call-outs."
+        )
+    )
+    booking_label = models.CharField(max_length=80, default="Book a Visit")
+    booking_title = models.CharField(max_length=120, default="Schedule Your Service")
+    booking_subtitle = models.TextField(
+        default=(
+            "Send a booking enquiry and the team will confirm availability. For "
+            "urgent issues, call directly for the fastest response."
+        )
+    )
+    reviews_label = models.CharField(max_length=80, default="Testimonials")
+    reviews_title = models.CharField(max_length=120, default="What Local Customers Say")
+    reviews_subtitle = models.TextField(
+        default="Use this area for real verified customer reviews once the business has approved them."
+    )
+    footer_disclaimer = models.TextField(
+        default=(
+            "Replace claims, reviews, insurance details, and qualifications with "
+            "verified client information."
+        )
+    )
+    hero_image = models.ImageField(upload_to="business/hero/", blank=True)
+    services_image = models.ImageField(upload_to="business/services/", blank=True)
+    about_image = models.ImageField(upload_to="business/about/", blank=True)
+    booking_image = models.ImageField(upload_to="business/booking/", blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-is_active", "business_name"]
+        verbose_name = "business profile"
+        verbose_name_plural = "business profiles"
+
+    def __str__(self):
+        return self.business_name
+
+
+class TrustIndicator(models.Model):
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name="trust_indicators",
+    )
+    label = models.CharField(max_length=80)
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["sort_order", "label"]
+        verbose_name = "trust indicator"
+        verbose_name_plural = "trust indicators"
+
+    def __str__(self):
+        return self.label
+
+
+class ServiceOffering(models.Model):
+    class IconChoices(models.TextChoices):
+        WRENCH = "icon-wrench", "Wrench"
+        SHOWER = "icon-shower", "Shower"
+        DROPLET = "icon-droplet", "Droplet"
+        FLAME = "icon-flame", "Flame"
+        HOME = "icon-home", "Home"
+
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name="service_offerings",
+    )
+    title = models.CharField(max_length=80)
+    description = models.CharField(max_length=160)
+    icon = models.CharField(
+        max_length=40,
+        choices=IconChoices.choices,
+        default=IconChoices.WRENCH,
+    )
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["sort_order", "title"]
+        verbose_name = "service offering"
+        verbose_name_plural = "service offerings"
+
+    def __str__(self):
+        return self.title
+
+
+class Testimonial(models.Model):
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name="testimonials",
+    )
+    quote = models.TextField()
+    author_name = models.CharField(max_length=80)
+    author_label = models.CharField(max_length=80, default="Local Customer")
+    rating = models.PositiveSmallIntegerField(default=5)
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["sort_order", "author_name"]
+        verbose_name = "testimonial"
+        verbose_name_plural = "testimonials"
+
+    def __str__(self):
+        return f"{self.author_name} - {self.rating} stars"
+
+
 class BookingEnquiry(models.Model):
     class ServiceChoices(models.TextChoices):
         LEAKING_PIPE = "leaking_pipe", "Leaking Pipe"
