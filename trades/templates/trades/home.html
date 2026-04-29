@@ -3,7 +3,40 @@
 {% block content %}
     {% include "trades/partials/hero.html" %}
     {% include "trades/partials/trust_strip.html" %}
-    {% include "trades/partials/services_section.html" %}
-    {% include "trades/partials/about_section.html" %}
-    {% include "trades/partials/reviews_section.html" %}
+
+    <section class="section home-overview" aria-label="Site overview">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-label">Start Here</span>
+                <h2 class="section-title">What Do You Need Today?</h2>
+                <p class="section-subtitle">Choose the next step: view services, learn about the business, book a visit, or read customer feedback.</p>
+            </div>
+
+            <div class="home-overview-grid">
+                <a href="{% url 'trades_services' %}" class="home-overview-card">
+                    <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                    <h3>Services</h3>
+                    <p>See repairs, installs, maintenance visits, and emergency plumbing support.</p>
+                </a>
+
+                <a href="{% url 'trades_booking' %}" class="home-overview-card home-overview-card-primary">
+                    <div class="service-icon"><svg><use href="#icon-calendar"></use></svg></div>
+                    <h3>Book a Visit</h3>
+                    <p>Send a booking enquiry and get a call-back to confirm availability.</p>
+                </a>
+
+                <a href="{% url 'trades_about' %}" class="home-overview-card">
+                    <div class="service-icon"><svg><use href="#icon-user"></use></svg></div>
+                    <h3>About</h3>
+                    <p>Meet the business owner and understand the local service promise.</p>
+                </a>
+
+                <a href="{% url 'trades_reviews' %}" class="home-overview-card">
+                    <div class="service-icon"><svg><use href="#icon-check"></use></svg></div>
+                    <h3>Reviews</h3>
+                    <p>Read what local customers say after completed visits.</p>
+                </a>
+            </div>
+        </div>
+    </section>
 {% endblock %}

@@ -537,6 +537,53 @@
             line-height: 1.4;
         }
 
+        .home-overview {
+            background: var(--cream);
+        }
+
+        .home-overview-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .home-overview-card {
+            display: block;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 24px 18px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-slow);
+        }
+
+        .home-overview-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            border-color: var(--gold-pale);
+        }
+
+        .home-overview-card h3 {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .home-overview-card p {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .home-overview-card-primary {
+            border-color: rgba(199, 150, 46, 0.28);
+            box-shadow: 0 8px 28px rgba(199, 150, 46, 0.12);
+        }
+
         .about-section {
             background: #fff;
         }
@@ -1267,6 +1314,11 @@
                 gap: 16px;
             }
 
+            .home-overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
             .service-select-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
@@ -1488,5 +1540,9 @@
 
             .section-title {
                 font-size: 2.25rem;
+            }
+
+            .home-overview-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }

@@ -32,8 +32,8 @@ class TradesLandingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Premium Plumbing")
-        self.assertContains(response, "Complete Plumbing Solutions")
-        self.assertContains(response, "What Local Customers Say")
+        self.assertContains(response, "What Do You Need Today?")
+        self.assertContains(response, "Book a Visit")
         self.assertContains(response, 'aria-label="Mobile navigation"')
 
     def test_services_page_loads(self):
@@ -96,8 +96,7 @@ class TradesLandingTests(TestCase):
         self.assertContains(response, "Acme")
         self.assertContains(response, "Trusted Heating")
         self.assertContains(response, "Gas Safe Registered")
-        self.assertContains(response, "Boiler Servicing")
-        self.assertContains(response, "Clear, tidy, and on time.")
+        self.assertContains(response, "What Do You Need Today?")
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
