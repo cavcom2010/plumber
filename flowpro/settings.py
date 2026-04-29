@@ -130,17 +130,64 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
+EMAIL_PROVIDER = config("EMAIL_PROVIDER", default="console").lower()
+EMAIL_PROVIDER_DEFAULTS = {
+    "console": {
+        "backend": "django.core.mail.backends.console.EmailBackend",
+        "host": "",
+        "port": 587,
+        "use_tls": True,
+        "use_ssl": False,
+    },
+    "sender_net": {
+        "backend": "django.core.mail.backends.smtp.EmailBackend",
+        "host": "smtp.sender.net",
+        "port": 587,
+        "use_tls": True,
+        "use_ssl": False,
+    },
+    "google_workspace": {
+        "backend": "django.core.mail.backends.smtp.EmailBackend",
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "use_tls": True,
+        "use_ssl": False,
+    },
+    "google_workspace_relay": {
+        "backend": "django.core.mail.backends.smtp.EmailBackend",
+        "host": "smtp-relay.gmail.com",
+        "port": 587,
+        "use_tls": True,
+        "use_ssl": False,
+    },
+    "custom_smtp": {
+        "backend": "django.core.mail.backends.smtp.EmailBackend",
+        "host": "",
+        "port": 587,
+        "use_tls": True,
+        "use_ssl": False,
+    },
+}
+EMAIL_DEFAULTS = EMAIL_PROVIDER_DEFAULTS.get(
+    EMAIL_PROVIDER, EMAIL_PROVIDER_DEFAULTS["console"]
+)
+
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="website@example.com")
+SERVER_EMAIL = config("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 ADMIN_NOTIFICATION_EMAIL = config("ADMIN_NOTIFICATION_EMAIL", default="")
 
-EMAIL_BACKEND = config(
-    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
-)
-EMAIL_HOST = config("EMAIL_HOST", default="")
-EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+if EMAIL_PROVIDER == "custom_smtp":
+    EMAIL_BACKEND = config("EMAIL_BACKEND", default=EMAIL_DEFAULTS["backend"])
+    EMAIL_HOST = config("EMAIL_HOST", default=EMAIL_DEFAULTS["host"])
+else:
+    EMAIL_BACKEND = EMAIL_DEFAULTS["backend"]
+    EMAIL_HOST = EMAIL_DEFAULTS["host"]
+EMAIL_PORT = config("EMAIL_PORT", default=EMAIL_DEFAULTS["port"], cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=EMAIL_DEFAULTS["use_tls"], cast=bool)
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", default=EMAIL_DEFAULTS["use_ssl"], cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_TIMEOUT = config("EMAIL_TIMEOUT", default=20, cast=int)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

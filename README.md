@@ -54,13 +54,53 @@ Visit `http://127.0.0.1:8000/` for the landing page and `http://127.0.0.1:8000/a
 
 ## Email
 
-Development defaults to the console email backend when configured in `.env`. For production SMTP, set:
+Development defaults to the console email backend. For production, choose an SMTP provider in `.env` and fill in the credentials.
+
+Sender.net SMTP:
 
 ```env
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_PROVIDER=sender_net
+DEFAULT_FROM_EMAIL=bookings@yourdomain.com
+SERVER_EMAIL=bookings@yourdomain.com
+ADMIN_NOTIFICATION_EMAIL=owner@yourdomain.com
+EMAIL_HOST_USER=your_sender_smtp_username
+EMAIL_HOST_PASSWORD=your_sender_smtp_password_or_key
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+```
+
+Google Workspace SMTP using an app password:
+
+```env
+EMAIL_PROVIDER=google_workspace
+DEFAULT_FROM_EMAIL=bookings@yourdomain.com
+SERVER_EMAIL=bookings@yourdomain.com
+ADMIN_NOTIFICATION_EMAIL=owner@yourdomain.com
+EMAIL_HOST_USER=bookings@yourdomain.com
+EMAIL_HOST_PASSWORD=your_google_workspace_app_password
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+```
+
+Google Workspace SMTP relay:
+
+```env
+EMAIL_PROVIDER=google_workspace_relay
+DEFAULT_FROM_EMAIL=bookings@yourdomain.com
+SERVER_EMAIL=bookings@yourdomain.com
+ADMIN_NOTIFICATION_EMAIL=owner@yourdomain.com
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+```
+
+Custom SMTP is also supported:
+
+```env
+EMAIL_PROVIDER=custom_smtp
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 ```
