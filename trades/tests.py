@@ -31,6 +31,9 @@ class TradesLandingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Premium Plumbing")
+        self.assertContains(response, "Complete Plumbing Solutions")
+        self.assertContains(response, "What Local Customers Say")
+        self.assertContains(response, 'aria-label="Mobile navigation"')
 
     def test_services_page_loads(self):
         response = self.client.get(reverse("trades_services"))

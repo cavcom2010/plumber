@@ -72,11 +72,29 @@
         </div>
     </div>
 
-    <div class="mobile-bar" id="mobileBar">
-        <a href="tel:+441615550123" class="btn btn-emergency"><svg class="icon-sm"><use href="#icon-phone"></use></svg> Call Now</a>
-        <a href="{% url 'trades_booking' %}" class="btn btn-primary"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
-    </div>
-    <div class="mobile-bar-spacer" id="mobileBarSpacer"></div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+        <a href="{% url 'trades_home' %}" class="mobile-nav-item">
+            <svg aria-hidden="true"><use href="#icon-home"></use></svg>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'trades_services' %}" class="mobile-nav-item">
+            <svg aria-hidden="true"><use href="#icon-wrench"></use></svg>
+            <span>Services</span>
+        </a>
+        <a href="{% url 'trades_booking' %}" class="mobile-nav-item mobile-nav-book">
+            <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+            <span>Book</span>
+        </a>
+        <a href="{% url 'trades_reviews' %}" class="mobile-nav-item">
+            <svg aria-hidden="true"><use href="#icon-check"></use></svg>
+            <span>Reviews</span>
+        </a>
+        <a href="tel:+441615550123" class="mobile-nav-item mobile-nav-call">
+            <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
+            <span>Call</span>
+        </a>
+    </nav>
+    <div class="mobile-nav-spacer" id="mobileNavSpacer"></div>
 
     <script src="{% static 'trades/js/booking.js' %}" defer></script>
 </body>
