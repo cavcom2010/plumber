@@ -351,6 +351,11 @@ else
     --log-level info \
     --daemon \
     --pid "$GUNICORN_PID"
+
+  if ! wait_for_port "$GUNICORN_PORT"; then
+    echo "Gunicorn did not start listening on 127.0.0.1:${GUNICORN_PORT}." >&2
+    exit 1
+  fi
 fi
 
 STATIC_ROOT="$ROOT/staticfiles"
@@ -435,7 +440,16 @@ if command -v curl >/dev/null 2>&1; then
     HEALTHCHECK_HOST="$HOME_BIND"
   fi
 
-  if ! curl -fsS --max-time 5 "http://${HEALTHCHECK_HOST}:${NGINX_PORT}/" >/dev/null; then
+  HEALTHCHECK_OK=0
+  for _ in {1..20}; do
+    if curl -fsS --max-time 5 "http://${HEALTHCHECK_HOST}:${NGINX_PORT}/" >/dev/null; then
+      HEALTHCHECK_OK=1
+      break
+    fi
+    sleep 0.3
+  done
+
+  if [[ "$HEALTHCHECK_OK" != "1" ]]; then
     echo "HTTP health check failed on ${HEALTHCHECK_HOST}:${NGINX_PORT}." >&2
     echo "Check .home_nginx/logs/error.log and .home_nginx/logs/gunicorn-error.log" >&2
     exit 1
