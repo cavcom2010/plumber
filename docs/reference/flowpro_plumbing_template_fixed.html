@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium local plumbing services with fast response, online booking, emergency call-outs, leak repairs, bathroom fitting, and drain unblocking.">
+    <title>FlowPro Plumbing | Premium Local Plumbing Services</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #1a1f3c;
+            --navy-light: #232b4e;
+            --gold: #c7962e;
+            --gold-light: #e0b44d;
+            --gold-pale: #fdf3e0;
+            --cream: #faf8f5;
+            --white: #ffffff;
+            --text: #1e2235;
+            --text-light: #5a5f7a;
+            --text-muted: #7a7f95;
+            --border: #e8e5df;
+            --border-light: #f0ede8;
+            --red: #c0392b;
+            --red-dark: #a8322a;
+            --red-light: #fef5f4;
+            --green: #2d7d46;
+            --green-light: #f2faf4;
+            --shadow-sm: 0 1px 3px rgba(26, 31, 60, 0.06);
+            --shadow: 0 4px 16px rgba(26, 31, 60, 0.08);
+            --shadow-lg: 0 12px 40px rgba(26, 31, 60, 0.12);
+            --shadow-xl: 0 20px 60px rgba(26, 31, 60, 0.16);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a,
+        button,
+        input,
+        textarea,
+        select {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible,
+        label:focus-within {
+            outline: 3px solid rgba(199, 150, 46, 0.35);
+            outline-offset: 3px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.93);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 16px;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            gap: 16px;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--navy);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .logo-icon svg {
+            width: 23px;
+            height: 23px;
+            fill: currentColor;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--navy);
+            letter-spacing: -0.4px;
+            white-space: nowrap;
+        }
+
+        .logo-text span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--navy);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .header-cta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .phone-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 50px;
+            background: var(--cream);
+        }
+
+        .phone-link:hover {
+            background: #f0ece5;
+        }
+
+        .phone-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(45, 125, 70, 0.5); }
+            50% { box-shadow: 0 0 0 10px rgba(45, 125, 70, 0); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: var(--font);
+            letter-spacing: -0.1px;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(199, 150, 46, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            box-shadow: 0 6px 20px rgba(199, 150, 46, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-emergency {
+            background: var(--red);
+            color: #fff;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3);
+        }
+
+        .btn-emergency:hover {
+            background: var(--red-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-lg {
+            padding: 15px 30px;
+            font-size: 1rem;
+        }
+
+        .icon-sm {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .hero {
+            background: var(--navy);
+            color: #fff;
+            padding: 48px 16px 56px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero::before,
+        .hero::after {
+            content: '';
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .hero::before {
+            top: -35%;
+            right: -30%;
+            width: 80%;
+            height: 120%;
+            background: radial-gradient(ellipse, rgba(199, 150, 46, 0.14) 0%, transparent 70%);
+        }
+
+        .hero::after {
+            bottom: -20%;
+            left: -20%;
+            width: 70%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(199, 150, 46, 0.08) 0%, transparent 70%);
+        }
+
+        .hero-inner {
+            max-width: 730px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.2px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--green);
+        }
+
+        .hero h1 {
+            font-size: 2.15rem;
+            font-weight: 900;
+            letter-spacing: -0.8px;
+            line-height: 1.12;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 span {
+            color: var(--gold-light);
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 auto 28px;
+            max-width: 540px;
+            line-height: 1.55;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .trust-strip {
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+            padding: 18px 16px;
+        }
+
+        .trust-strip-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px 26px;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .trust-icon {
+            width: 21px;
+            height: 21px;
+            border-radius: 999px;
+            background: var(--green-light);
+            color: var(--green);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .section {
+            padding: 56px 16px;
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: -0.6px;
+            color: var(--navy);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 36px;
+            max-width: 560px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header .section-subtitle {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .service-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-slow);
+            border: 1px solid transparent;
+        }
+
+        .service-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            border-color: var(--gold-pale);
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: var(--gold-pale);
+            color: var(--gold);
+        }
+
+        .service-icon svg {
+            width: 26px;
+            height: 26px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .service-card h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .service-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .about-section {
+            background: #fff;
+        }
+
+        .about-wrapper {
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            padding: 32px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+
+        .about-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-light);
+            flex-shrink: 0;
+            border: 4px solid var(--gold-pale);
+        }
+
+        .about-avatar svg {
+            width: 50px;
+            height: 50px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .about-content h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .about-content .role {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .about-content p {
+            color: var(--text-light);
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
+        .about-stat .num {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--navy);
+            line-height: 1;
+        }
+
+        .about-stat .lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .booking-section {
+            background: var(--navy);
+            padding: 56px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-section::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -20%;
+            width: 70%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(199, 150, 46, 0.09) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .booking-section .section-label,
+        .booking-section .section-title {
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .booking-section .section-subtitle {
+            color: rgba(255, 255, 255, 0.72);
+            position: relative;
+            z-index: 1;
+        }
+
+        .booking-card {
+            background: #fff;
+            border-radius: var(--radius-xl);
+            padding: 28px 20px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .booking-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .booking-card-top .icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gold-pale);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .booking-card-top svg {
+            width: 23px;
+            height: 23px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .booking-card-top h3 {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .booking-card-top span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label,
+        .fieldset-label {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .required {
+            color: var(--red);
+            font-weight: 900;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            font-family: var(--font);
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            color: var(--text);
+            background: #fdfcf9;
+            transition: var(--transition);
+            appearance: none;
+            resize: vertical;
+            min-height: 48px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(199, 150, 46, 0.08);
+            background: #fff;
+        }
+
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: var(--red);
+            box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.06);
+            background: #fff;
+        }
+
+        .form-group.error .error-msg {
+            display: block;
+        }
+
+        .error-msg {
+            font-size: 0.75rem;
+            color: var(--red);
+            font-weight: 600;
+            display: none;
+        }
+
+        fieldset {
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        .service-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .service-select-card,
+        .time-slot-pill {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .service-select-card input,
+        .time-slot-pill input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .card-label,
+        .pill-label {
+            border: 2px solid var(--border);
+            background: #fdfcf9;
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+            color: var(--text);
+        }
+
+        .card-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            min-height: 48px;
+        }
+
+        .card-label:hover,
+        .pill-label:hover {
+            border-color: #d5cfc2;
+            background: #fff;
+        }
+
+        .service-select-card input:checked + .card-label,
+        .time-slot-pill input:checked + .pill-label {
+            border-color: var(--gold);
+            background: var(--gold-pale);
+            color: var(--navy);
+            font-weight: 800;
+            box-shadow: 0 0 0 4px rgba(199, 150, 46, 0.06);
+        }
+
+        .card-emoji {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .pill-label {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 11px 8px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .emergency-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            transition: var(--transition);
+            background: #fdfcf9;
+        }
+
+        .emergency-toggle:hover {
+            border-color: #d5cfc2;
+        }
+
+        .emergency-toggle input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toggle-indicator {
+            width: 48px;
+            height: 28px;
+            border-radius: 50px;
+            background: #d5d0c8;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .toggle-indicator::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .emergency-toggle input:checked + .toggle-indicator {
+            background: var(--red);
+        }
+
+        .emergency-toggle input:checked + .toggle-indicator::after {
+            transform: translateX(20px);
+        }
+
+        .emergency-toggle.is-active {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+
+        .toggle-text {
+            font-weight: 800;
+            font-size: 0.86rem;
+            color: var(--text);
+        }
+
+        .toggle-subtext {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        .emergency-note {
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: var(--red-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--red);
+            line-height: 1.45;
+        }
+
+        .emergency-note.visible {
+            display: flex;
+        }
+
+        .form-submit-area {
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .btn-submit {
+            background: var(--gold);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 16px 28px;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font);
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(199, 150, 46, 0.3);
+            letter-spacing: -0.1px;
+        }
+
+        .btn-submit:hover {
+            background: var(--gold-light);
+            box-shadow: 0 6px 24px rgba(199, 150, 46, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(26, 31, 60, 0.72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-overlay.active {
+            display: flex;
+        }
+
+        .success-modal {
+            background: #fff;
+            border-radius: var(--radius-xl);
+            padding: 36px 24px;
+            text-align: center;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+            animation: modal-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modal-pop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .check-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--green-light);
+            color: var(--green);
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .check-circle svg {
+            width: 38px;
+            height: 38px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .success-modal h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .success-modal p {
+            color: var(--text-light);
+            font-size: 0.92rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .btn-close-modal {
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-close-modal:hover {
+            background: var(--navy-light);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 22px 18px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .testimonial-stars {
+            color: var(--gold);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .testimonial-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.55;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-author {
+            font-weight: 800;
+            font-size: 0.84rem;
+            color: var(--navy);
+        }
+
+        .testimonial-author span {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-style: normal;
+        }
+
+        .footer {
+            background: var(--navy);
+            color: rgba(255, 255, 255, 0.72);
+            padding: 40px 16px 28px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .footer .logo-group {
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .footer .logo-text {
+            color: #fff;
+        }
+
+        .footer p {
+            font-size: 0.84rem;
+            margin-bottom: 6px;
+        }
+
+        .footer-phone {
+            color: var(--gold-light);
+            font-weight: 800;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .mobile-bar {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
+            background: #fff;
+            border-top: 1px solid var(--border-light);
+            padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+            gap: 10px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .mobile-bar .btn {
+            flex: 1;
+            font-size: 0.82rem;
+            padding: 12px 10px;
+        }
+
+        .mobile-bar-spacer {
+            height: 74px;
+        }
+
+        @media (min-width: 600px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+
+            .service-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .time-slot-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .testimonials-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .about-wrapper {
+                flex-direction: row;
+                text-align: left;
+                padding: 36px 32px;
+                gap: 32px;
+            }
+
+            .about-stats {
+                justify-content: flex-start;
+            }
+
+            .booking-card {
+                padding: 36px 32px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+
+            .mobile-bar,
+            .mobile-bar-spacer {
+                display: none;
+            }
+
+            .hero {
+                padding: 72px 16px 80px;
+            }
+
+            .section,
+            .booking-section {
+                padding: 72px 16px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .header-cta .btn-primary {
+                display: none;
+            }
+
+            .header-cta .phone-link span:last-child {
+                display: none;
+            }
+
+            .phone-link {
+                padding: 9px 11px;
+                font-size: 0.85rem;
+            }
+
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .hero p {
+                font-size: 0.92rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .booking-card {
+                padding: 20px 14px;
+                border-radius: var(--radius-lg);
+            }
+
+            .service-select-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+
+            .time-slot-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+
+            .pill-label {
+                font-size: 0.72rem;
+                padding: 10px 6px;
+            }
+
+            .card-label {
+                font-size: 0.76rem;
+                padding: 10px 10px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero h1 {
+                font-size: 3.25rem;
+            }
+
+            .section-title {
+                font-size: 2.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+        <symbol id="icon-droplet" viewBox="0 0 24 24"><path d="M12 2.5s7 7.1 7 12.2A7 7 0 0 1 5 14.7C5 9.6 12 2.5 12 2.5Z"></path></symbol>
+        <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 5.15 12 19.79 19.79 0 0 1 2.08 3.36 2 2 0 0 1 4.06 1.18h3a2 2 0 0 1 2 1.72c.13.96.35 1.89.66 2.78a2 2 0 0 1-.45 2.11L8 9.06a16 16 0 0 0 6.94 6.94l1.27-1.27a2 2 0 0 1 2.11-.45c.89.31 1.82.53 2.78.66A2 2 0 0 1 22 16.92Z"></path></symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path></symbol>
+        <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4M12 17h.01"></path></symbol>
+        <symbol id="icon-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5 5L3 18v3h3l6.7-6.7a4 4 0 0 0 5-5l-2.4 2.4-3-3 2.4-2.4Z"></path></symbol>
+        <symbol id="icon-shower" viewBox="0 0 24 24"><path d="M4 6a8 8 0 0 1 16 0v2H4V6Z"></path><path d="M6 12v.01M10 12v.01M14 12v.01M18 12v.01M8 16v.01M12 16v.01M16 16v.01M10 20v.01M14 20v.01"></path></symbol>
+        <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1H7V4a2 2 0 0 1 2-2Z"></path><path d="M7 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"></path><path d="M8 12h8M8 16h5"></path></symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle><path d="M18 8l3-3M21 8l-3-3"></path></symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></symbol>
+        <symbol id="icon-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A4.5 4.5 0 0 0 17 12c0-3-2-5-4-7 0 3-2 4-4 6-1.5 1.5-2 2.5-2 4a5 5 0 0 0 10 0"></path></symbol>
+    </svg>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo-group" aria-label="FlowPro Plumbing home">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span>Pro</span></span>
+            </a>
+
+            <nav aria-label="Primary navigation">
+                <ul class="nav-links">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#booking">Book</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-cta">
+                <a href="tel:+441615550123" class="phone-link" aria-label="Call FlowPro Plumbing on 0161 555 0123">
+                    <span class="phone-dot" aria-hidden="true"></span>
+                    <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
+                    <span>0161 555 0123</span>
+                </a>
+                <a href="#booking" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="hero-badge"><span class="badge-dot" aria-hidden="true"></span> Trusted local plumbing specialists</div>
+                <h1>Premium Plumbing<br><span>Without the Stress</span></h1>
+                <p>Reliable local plumbers for urgent repairs, leaks, drains, bathrooms, and general maintenance. Clear communication, tidy workmanship, and fast call-backs.</p>
+                <div class="hero-buttons">
+                    <a href="#booking" class="btn btn-primary btn-lg"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
+                    <a href="tel:+441615550123" class="btn btn-emergency btn-lg"><svg class="icon-sm"><use href="#icon-alert"></use></svg> Emergency Call</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-strip" aria-label="Trust indicators">
+            <div class="trust-strip-inner">
+                <div class="trust-item"><span class="trust-icon">✓</span> Local & Reliable</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Emergency Call-outs</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Clear Upfront Advice</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Tidy Workmanship</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Fully Insured*</div>
+            </div>
+        </section>
+
+        <section class="section" id="services">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Our Services</span>
+                    <h2 class="section-title">Complete Plumbing Solutions</h2>
+                    <p class="section-subtitle">A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.</p>
+                </div>
+
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                        <h3>Leak Repairs</h3>
+                        <p>Fast fault-finding and repair work.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-shower"></use></svg></div>
+                        <h3>Shower & Bath</h3>
+                        <p>Installation, servicing, and upgrades.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                        <h3>Toilet Repair</h3>
+                        <p>Cisterns, leaks, flushes, and fittings.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                        <h3>Drain Unblocking</h3>
+                        <p>Blocked sinks, baths, and external drains.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-flame"></use></svg></div>
+                        <h3>Water Heaters</h3>
+                        <p>Repairs, replacements, and checks.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-home"></use></svg></div>
+                        <h3>Bathroom Fitting</h3>
+                        <p>Planned upgrades and full refits.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section about-section" id="about">
+            <div class="section-inner">
+                <div class="about-wrapper">
+                    <div class="about-avatar" aria-hidden="true"><svg><use href="#icon-user"></use></svg></div>
+                    <div class="about-content">
+                        <span class="section-label">Meet Your Plumber</span>
+                        <h3>Mark Henderson</h3>
+                        <p class="role">Local Plumbing Specialist</p>
+                        <p>FlowPro is built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.</p>
+                        <div class="about-stats" aria-label="Business highlights">
+                            <div class="about-stat"><div class="num">Local</div><div class="lbl">Service Area</div></div>
+                            <div class="about-stat"><div class="num">Fast</div><div class="lbl">Call-backs</div></div>
+                            <div class="about-stat"><div class="num">Tidy</div><div class="lbl">Workmanship</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-section" id="booking">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Book a Visit</span>
+                    <h2 class="section-title">Schedule Your Service</h2>
+                    <p class="section-subtitle">Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.</p>
+                </div>
+
+                <div class="booking-card">
+                    <div class="booking-card-top">
+                        <div class="icon-circle"><svg><use href="#icon-clipboard"></use></svg></div>
+                        <div>
+                            <h3>Service Booking Form</h3>
+                            <span>Fields marked with * are required</span>
+                        </div>
+                    </div>
+
+                    <!-- Django-ready form structure:
+                         method="post" action="{% url 'plumbing_booking_create' %}"
+                         Add {% csrf_token %} inside the form when converting to Django. -->
+                    <form id="bookingForm" method="post" action="#" novalidate>
+                        <div class="form-grid">
+                            <div class="form-group" id="group-name">
+                                <label for="name">Full Name <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" placeholder="John Smith" required autocomplete="name" aria-describedby="name-error">
+                                <span class="error-msg" id="name-error">Please enter your full name.</span>
+                            </div>
+
+                            <div class="form-group" id="group-phone">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="07123 456789" required autocomplete="tel" aria-describedby="phone-error">
+                                <span class="error-msg" id="phone-error">Please enter a valid UK phone number.</span>
+                            </div>
+
+                            <div class="form-group" id="group-email">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error">
+                                <span class="error-msg" id="email-error">Please enter a valid email address.</span>
+                            </div>
+
+                            <div class="form-group" id="group-date">
+                                <label for="date">Preferred Date <span class="required">*</span></label>
+                                <input type="date" id="date" name="preferred_date" required aria-describedby="date-error">
+                                <span class="error-msg" id="date-error">Please select a date that is not in the past.</span>
+                            </div>
+
+                            <div class="form-group full-width" id="group-address">
+                                <label for="address">Full Address <span class="required">*</span></label>
+                                <input type="text" id="address" name="address" placeholder="House number and street name" required autocomplete="street-address" aria-describedby="address-error">
+                                <span class="error-msg" id="address-error">Please enter your address.</span>
+                            </div>
+
+                            <div class="form-group" id="group-postcode">
+                                <label for="postcode">Postcode <span class="required">*</span></label>
+                                <input type="text" id="postcode" name="postcode" placeholder="e.g. M20 1AB" required autocomplete="postal-code" aria-describedby="postcode-error">
+                                <span class="error-msg" id="postcode-error">Please enter a valid UK postcode.</span>
+                            </div>
+
+                            <fieldset class="form-group full-width" id="group-service">
+                                <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
+                                <div class="service-select-grid">
+                                    <label class="service-select-card"><input type="radio" name="service" value="leaking_pipe" required><span class="card-label"><span class="card-emoji">💧</span> Leaking Pipe</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="blocked_drain"><span class="card-label"><span class="card-emoji">◉</span> Blocked Drain</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="water_heater"><span class="card-label"><span class="card-emoji">🔥</span> Water Heater</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="toilet_repair"><span class="card-label"><span class="card-emoji">🚽</span> Toilet Repair</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="burst_pipe"><span class="card-label"><span class="card-emoji">!</span> Burst Pipe</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="bathroom_kitchen"><span class="card-label"><span class="card-emoji">⌂</span> Bathroom/Kitchen</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="gas_plumbing"><span class="card-label"><span class="card-emoji">⛽</span> Gas Plumbing</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="general"><span class="card-label"><span class="card-emoji">🔧</span> General</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="other"><span class="card-label"><span class="card-emoji">+</span> Other</span></label>
+                                </div>
+                                <span class="error-msg" id="service-error">Please select a service.</span>
+                            </fieldset>
+
+                            <fieldset class="form-group full-width" id="group-time">
+                                <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
+                                <div class="time-slot-grid">
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required><span class="pill-label">7–9am</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"><span class="pill-label">9–11am</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"><span class="pill-label">11–1pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"><span class="pill-label">1–3pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"><span class="pill-label">3–5pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"><span class="pill-label">5–7pm</span></label>
+                                </div>
+                                <span class="error-msg" id="time-error">Please select a preferred time slot.</span>
+                            </fieldset>
+
+                            <div class="form-group full-width" id="group-description">
+                                <label for="description">Describe the Issue <span class="required">*</span></label>
+                                <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening — the more detail, the better we can prepare." required aria-describedby="description-error"></textarea>
+                                <span class="error-msg" id="description-error">Please describe the issue.</span>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="emergency-toggle" id="emergencyToggle">
+                                    <input type="checkbox" name="is_emergency" id="emergencyCheck" value="1">
+                                    <span class="toggle-indicator" aria-hidden="true"></span>
+                                    <span>
+                                        <span class="toggle-text">This is an emergency</span>
+                                        <span class="toggle-subtext">Use this for burst pipes, active leaks, or no water.</span>
+                                    </span>
+                                </label>
+                                <div class="emergency-note" id="emergencyNote" role="status">
+                                    <span aria-hidden="true">⚡</span>
+                                    <span>Emergency enquiries are prioritised where available. For immediate danger, call the number above directly.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-submit-area">
+                            <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking Enquiry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="reviews">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Testimonials</span>
+                    <h2 class="section-title">What Local Customers Say</h2>
+                    <p class="section-subtitle">Use this area for real verified customer reviews once the business has approved them.</p>
+                </div>
+
+                <div class="testimonials-grid">
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Arrived quickly, explained the problem clearly, and left the place spotless. Very professional from start to finish.”</p>
+                        <div class="testimonial-author">Sarah J.<span> — Local Customer</span></div>
+                    </article>
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Great communication and fair pricing. The booking process was simple and the repair was completed the same day.”</p>
+                        <div class="testimonial-author">James C.<span> — Homeowner</span></div>
+                    </article>
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Reliable, tidy, and honest. Exactly what you want from a local plumber.”</p>
+                        <div class="testimonial-author">David O.<span> — Local Customer</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="logo-group">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span style="color:#e0b44d;">Pro</span></span>
+            </div>
+            <p>Premium local plumbing services — fast, clear, and reliable.</p>
+            <p><a href="tel:+441615550123" class="footer-phone">0161 555 0123</a></p>
+            <p>hello@flowpro-plumbing.co.uk</p>
+            <p style="margin-top:8px;">Serving Manchester & surrounding areas</p>
+            <div class="footer-bottom">
+                &copy; 2026 FlowPro Plumbing. All rights reserved. Replace claims, reviews, insurance details, and qualifications with verified client information.
+            </div>
+        </div>
+    </footer>
+
+    <div class="success-overlay" id="successOverlay" role="dialog" aria-modal="true" aria-labelledby="success-title" aria-describedby="success-description">
+        <div class="success-modal">
+            <div class="check-circle" aria-hidden="true"><svg><use href="#icon-check"></use></svg></div>
+            <h3 id="success-title">Booking Enquiry Received</h3>
+            <p id="success-description">Thank you for choosing FlowPro. This demo shows the success state. In Django, this should save the enquiry and send a notification email.</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">For emergencies, call <strong>0161 555 0123</strong> directly.</p>
+            <button class="btn-close-modal" type="button" id="closeSuccessBtn">Got It, Thanks</button>
+        </div>
+    </div>
+
+    <div class="mobile-bar" id="mobileBar">
+        <a href="tel:+441615550123" class="btn btn-emergency"><svg class="icon-sm"><use href="#icon-phone"></use></svg> Call Now</a>
+        <a href="#booking" class="btn btn-primary"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
+    </div>
+    <div class="mobile-bar-spacer" id="mobileBarSpacer"></div>
+
+    <script>
+        (function () {
+            const dateInput = document.getElementById('date');
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayString = `${yyyy}-${mm}-${dd}`;
+            dateInput.setAttribute('min', todayString);
+
+            const emergencyCheck = document.getElementById('emergencyCheck');
+            const emergencyNote = document.getElementById('emergencyNote');
+            const emergencyToggle = document.getElementById('emergencyToggle');
+
+            emergencyCheck.addEventListener('change', function () {
+                emergencyNote.classList.toggle('visible', this.checked);
+                emergencyToggle.classList.toggle('is-active', this.checked);
+            });
+
+            const form = document.getElementById('bookingForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successOverlay = document.getElementById('successOverlay');
+            const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+
+            function clearErrors() {
+                document.querySelectorAll('.form-group.error').forEach(group => group.classList.remove('error'));
+                document.querySelectorAll('input.error, textarea.error').forEach(field => {
+                    field.classList.remove('error');
+                    field.removeAttribute('aria-invalid');
+                });
+            }
+
+            function showError(fieldId, groupId) {
+                const group = document.getElementById(groupId);
+                const field = document.getElementById(fieldId);
+                if (group) group.classList.add('error');
+                if (field) {
+                    field.classList.add('error');
+                    field.setAttribute('aria-invalid', 'true');
+                }
+            }
+
+            function showGroupError(groupId) {
+                const group = document.getElementById(groupId);
+                if (group) group.classList.add('error');
+            }
+
+            function normalisePhone(phone) {
+                return phone.replace(/[\s()-]/g, '');
+            }
+
+            function validateForm() {
+                clearErrors();
+                let isValid = true;
+
+                const name = document.getElementById('name').value.trim();
+                if (name.length < 2) {
+                    showError('name', 'group-name');
+                    isValid = false;
+                }
+
+                const phone = normalisePhone(document.getElementById('phone').value.trim());
+                const phoneRegex = /^(?:(?:\+44)|0)\d{9,10}$/;
+                if (!phoneRegex.test(phone)) {
+                    showError('phone', 'group-phone');
+                    isValid = false;
+                }
+
+                const email = document.getElementById('email').value.trim();
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showError('email', 'group-email');
+                    isValid = false;
+                }
+
+                const dateVal = dateInput.value;
+                if (!dateVal) {
+                    showError('date', 'group-date');
+                    isValid = false;
+                } else {
+                    const selectedDate = new Date(dateVal + 'T00:00:00');
+                    const todayStart = new Date();
+                    todayStart.setHours(0, 0, 0, 0);
+                    if (selectedDate < todayStart) {
+                        showError('date', 'group-date');
+                        isValid = false;
+                    }
+                }
+
+                const address = document.getElementById('address').value.trim();
+                if (address.length < 5) {
+                    showError('address', 'group-address');
+                    isValid = false;
+                }
+
+                const postcode = document.getElementById('postcode').value.trim().toUpperCase();
+                const postcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
+                if (!postcodeRegex.test(postcode)) {
+                    showError('postcode', 'group-postcode');
+                    isValid = false;
+                }
+
+                if (!document.querySelector('input[name="service"]:checked')) {
+                    showGroupError('group-service');
+                    isValid = false;
+                }
+
+                if (!document.querySelector('input[name="timeslot"]:checked')) {
+                    showGroupError('group-time');
+                    isValid = false;
+                }
+
+                const description = document.getElementById('description').value.trim();
+                if (description.length < 5) {
+                    showError('description', 'group-description');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    const firstError = document.querySelector('.form-group.error');
+                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                return isValid;
+            }
+
+            document.querySelectorAll('#bookingForm input, #bookingForm textarea').forEach(field => {
+                field.addEventListener('input', function () {
+                    this.classList.remove('error');
+                    this.removeAttribute('aria-invalid');
+                    const group = this.closest('.form-group');
+                    if (group) group.classList.remove('error');
+                });
+
+                field.addEventListener('change', function () {
+                    this.classList.remove('error');
+                    this.removeAttribute('aria-invalid');
+                    const group = this.closest('.form-group');
+                    if (group) group.classList.remove('error');
+                });
+            });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                if (!validateForm()) return;
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                // Static demo behaviour. Replace this block with real Django submission.
+                window.setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirm Booking Enquiry';
+                    successOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    form.reset();
+                    emergencyNote.classList.remove('visible');
+                    emergencyToggle.classList.remove('is-active');
+                    clearErrors();
+                }, 800);
+            });
+
+            function closeSuccess() {
+                successOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            closeSuccessBtn.addEventListener('click', closeSuccess);
+
+            successOverlay.addEventListener('click', function (event) {
+                if (event.target === successOverlay) closeSuccess();
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && successOverlay.classList.contains('active')) {
+                    closeSuccess();
+                }
+            });
+
+            console.log('FlowPro Plumbing template loaded. Static demo mode active.');
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium local plumbing services with fast response, online booking, emergency call-outs, leak repairs, bathroom fitting, and drain unblocking.">
+    <title>FlowPro Plumbing | Premium Local Plumbing Services</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'trades/css/landing.css' %}">
+</head>
+<body{% if messages %} data-booking-success="true"{% endif %}>
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+        <symbol id="icon-droplet" viewBox="0 0 24 24"><path d="M12 2.5s7 7.1 7 12.2A7 7 0 0 1 5 14.7C5 9.6 12 2.5 12 2.5Z"></path></symbol>
+        <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 5.15 12 19.79 19.79 0 0 1 2.08 3.36 2 2 0 0 1 4.06 1.18h3a2 2 0 0 1 2 1.72c.13.96.35 1.89.66 2.78a2 2 0 0 1-.45 2.11L8 9.06a16 16 0 0 0 6.94 6.94l1.27-1.27a2 2 0 0 1 2.11-.45c.89.31 1.82.53 2.78.66A2 2 0 0 1 22 16.92Z"></path></symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path></symbol>
+        <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4M12 17h.01"></path></symbol>
+        <symbol id="icon-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5 5L3 18v3h3l6.7-6.7a4 4 0 0 0 5-5l-2.4 2.4-3-3 2.4-2.4Z"></path></symbol>
+        <symbol id="icon-shower" viewBox="0 0 24 24"><path d="M4 6a8 8 0 0 1 16 0v2H4V6Z"></path><path d="M6 12v.01M10 12v.01M14 12v.01M18 12v.01M8 16v.01M12 16v.01M16 16v.01M10 20v.01M14 20v.01"></path></symbol>
+        <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1H7V4a2 2 0 0 1 2-2Z"></path><path d="M7 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"></path><path d="M8 12h8M8 16h5"></path></symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle><path d="M18 8l3-3M21 8l-3-3"></path></symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></symbol>
+        <symbol id="icon-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A4.5 4.5 0 0 0 17 12c0-3-2-5-4-7 0 3-2 4-4 6-1.5 1.5-2 2.5-2 4a5 5 0 0 0 10 0"></path></symbol>
+    </svg>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo-group" aria-label="FlowPro Plumbing home">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span>Pro</span></span>
+            </a>
+
+            <nav aria-label="Primary navigation">
+                <ul class="nav-links">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#booking">Book</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-cta">
+                <a href="tel:+441615550123" class="phone-link" aria-label="Call FlowPro Plumbing on 0161 555 0123">
+                    <span class="phone-dot" aria-hidden="true"></span>
+                    <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
+                    <span>0161 555 0123</span>
+                </a>
+                <a href="#booking" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="hero-badge"><span class="badge-dot" aria-hidden="true"></span> Trusted local plumbing specialists</div>
+                <h1>Premium Plumbing<br><span>Without the Stress</span></h1>
+                <p>Reliable local plumbers for urgent repairs, leaks, drains, bathrooms, and general maintenance. Clear communication, tidy workmanship, and fast call-backs.</p>
+                <div class="hero-buttons">
+                    <a href="#booking" class="btn btn-primary btn-lg"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
+                    <a href="tel:+441615550123" class="btn btn-emergency btn-lg"><svg class="icon-sm"><use href="#icon-alert"></use></svg> Emergency Call</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-strip" aria-label="Trust indicators">
+            <div class="trust-strip-inner">
+                <div class="trust-item"><span class="trust-icon">✓</span> Local & Reliable</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Emergency Call-outs</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Clear Upfront Advice</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Tidy Workmanship</div>
+                <div class="trust-item"><span class="trust-icon">✓</span> Fully Insured*</div>
+            </div>
+        </section>
+
+        <section class="section" id="services">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Our Services</span>
+                    <h2 class="section-title">Complete Plumbing Solutions</h2>
+                    <p class="section-subtitle">A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.</p>
+                </div>
+
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                        <h3>Leak Repairs</h3>
+                        <p>Fast fault-finding and repair work.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-shower"></use></svg></div>
+                        <h3>Shower & Bath</h3>
+                        <p>Installation, servicing, and upgrades.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
+                        <h3>Toilet Repair</h3>
+                        <p>Cisterns, leaks, flushes, and fittings.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                        <h3>Drain Unblocking</h3>
+                        <p>Blocked sinks, baths, and external drains.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-flame"></use></svg></div>
+                        <h3>Water Heaters</h3>
+                        <p>Repairs, replacements, and checks.</p>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-icon"><svg><use href="#icon-home"></use></svg></div>
+                        <h3>Bathroom Fitting</h3>
+                        <p>Planned upgrades and full refits.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section about-section" id="about">
+            <div class="section-inner">
+                <div class="about-wrapper">
+                    <div class="about-avatar" aria-hidden="true"><svg><use href="#icon-user"></use></svg></div>
+                    <div class="about-content">
+                        <span class="section-label">Meet Your Plumber</span>
+                        <h3>Mark Henderson</h3>
+                        <p class="role">Local Plumbing Specialist</p>
+                        <p>FlowPro is built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.</p>
+                        <div class="about-stats" aria-label="Business highlights">
+                            <div class="about-stat"><div class="num">Local</div><div class="lbl">Service Area</div></div>
+                            <div class="about-stat"><div class="num">Fast</div><div class="lbl">Call-backs</div></div>
+                            <div class="about-stat"><div class="num">Tidy</div><div class="lbl">Workmanship</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-section" id="booking">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Book a Visit</span>
+                    <h2 class="section-title">Schedule Your Service</h2>
+                    <p class="section-subtitle">Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.</p>
+                </div>
+
+                <div class="booking-card">
+                    <div class="booking-card-top">
+                        <div class="icon-circle"><svg><use href="#icon-clipboard"></use></svg></div>
+                        <div>
+                            <h3>Service Booking Form</h3>
+                            <span>Fields marked with * are required</span>
+                        </div>
+                    </div>
+
+                    <form id="bookingForm" method="post" action="{% url 'trades_landing' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="form-grid">
+                            <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
+                                <label for="name">Full Name <span class="required">*</span></label>
+                                <input type="text" id="name" name="full_name" placeholder="John Smith" required autocomplete="name" aria-describedby="name-error" value="{{ form.full_name.value|default_if_none:'' }}"{% if form.full_name.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="name-error">{{ form.full_name.errors.0|default:"Please enter your full name." }}</span>
+                            </div>
+
+                            <div class="form-group{% if form.phone.errors %} error{% endif %}" id="group-phone">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="07123 456789" required autocomplete="tel" aria-describedby="phone-error" value="{{ form.phone.value|default_if_none:'' }}"{% if form.phone.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="phone-error">{{ form.phone.errors.0|default:"Please enter a valid UK phone number." }}</span>
+                            </div>
+
+                            <div class="form-group{% if form.email.errors %} error{% endif %}" id="group-email">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="email-error">{{ form.email.errors.0|default:"Please enter a valid email address." }}</span>
+                            </div>
+
+                            <div class="form-group{% if form.preferred_date.errors %} error{% endif %}" id="group-date">
+                                <label for="date">Preferred Date <span class="required">*</span></label>
+                                <input type="date" id="date" name="preferred_date" required aria-describedby="date-error" value="{{ form.preferred_date.value|default_if_none:'' }}"{% if form.preferred_date.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="date-error">{{ form.preferred_date.errors.0|default:"Please select a date that is not in the past." }}</span>
+                            </div>
+
+                            <div class="form-group full-width{% if form.address.errors %} error{% endif %}" id="group-address">
+                                <label for="address">Full Address <span class="required">*</span></label>
+                                <input type="text" id="address" name="address" placeholder="House number and street name" required autocomplete="street-address" aria-describedby="address-error" value="{{ form.address.value|default_if_none:'' }}"{% if form.address.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="address-error">{{ form.address.errors.0|default:"Please enter your address." }}</span>
+                            </div>
+
+                            <div class="form-group{% if form.postcode.errors %} error{% endif %}" id="group-postcode">
+                                <label for="postcode">Postcode <span class="required">*</span></label>
+                                <input type="text" id="postcode" name="postcode" placeholder="e.g. M20 1AB" required autocomplete="postal-code" aria-describedby="postcode-error" value="{{ form.postcode.value|default_if_none:'' }}"{% if form.postcode.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <span class="error-msg" id="postcode-error">{{ form.postcode.errors.0|default:"Please enter a valid UK postcode." }}</span>
+                            </div>
+
+                            <fieldset class="form-group full-width{% if form.service.errors %} error{% endif %}" id="group-service">
+                                <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
+                                <div class="service-select-grid">
+                                    <label class="service-select-card"><input type="radio" name="service" value="leaking_pipe" required{% if form.service.value == "leaking_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">💧</span> Leaking Pipe</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="blocked_drain"{% if form.service.value == "blocked_drain" %} checked{% endif %}><span class="card-label"><span class="card-emoji">◉</span> Blocked Drain</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="water_heater"{% if form.service.value == "water_heater" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔥</span> Water Heater</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="toilet_repair"{% if form.service.value == "toilet_repair" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🚽</span> Toilet Repair</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="burst_pipe"{% if form.service.value == "burst_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">!</span> Burst Pipe</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="bathroom_kitchen"{% if form.service.value == "bathroom_kitchen" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⌂</span> Bathroom/Kitchen</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="gas_plumbing"{% if form.service.value == "gas_plumbing" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⛽</span> Gas Plumbing</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="general"{% if form.service.value == "general" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔧</span> General</span></label>
+                                    <label class="service-select-card"><input type="radio" name="service" value="other"{% if form.service.value == "other" %} checked{% endif %}><span class="card-label"><span class="card-emoji">+</span> Other</span></label>
+                                </div>
+                                <span class="error-msg" id="service-error">{{ form.service.errors.0|default:"Please select a service." }}</span>
+                            </fieldset>
+
+                            <fieldset class="form-group full-width{% if form.timeslot.errors %} error{% endif %}" id="group-time">
+                                <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
+                                <div class="time-slot-grid">
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7–9am</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9–11am</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11–1pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1–3pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3–5pm</span></label>
+                                    <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5–7pm</span></label>
+                                </div>
+                                <span class="error-msg" id="time-error">{{ form.timeslot.errors.0|default:"Please select a preferred time slot." }}</span>
+                            </fieldset>
+
+                            <div class="form-group full-width{% if form.description.errors %} error{% endif %}" id="group-description">
+                                <label for="description">Describe the Issue <span class="required">*</span></label>
+                                <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening — the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
+                                <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue." }}</span>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="emergency-toggle" id="emergencyToggle">
+                                    <input type="checkbox" name="is_emergency" id="emergencyCheck" value="1"{% if form.is_emergency.value %} checked{% endif %}>
+                                    <span class="toggle-indicator" aria-hidden="true"></span>
+                                    <span>
+                                        <span class="toggle-text">This is an emergency</span>
+                                        <span class="toggle-subtext">Use this for burst pipes, active leaks, or no water.</span>
+                                    </span>
+                                </label>
+                                <div class="emergency-note" id="emergencyNote" role="status">
+                                    <span aria-hidden="true">⚡</span>
+                                    <span>Emergency enquiries are prioritised where available. For immediate danger, call the number above directly.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-submit-area">
+                            <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking Enquiry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="reviews">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">Testimonials</span>
+                    <h2 class="section-title">What Local Customers Say</h2>
+                    <p class="section-subtitle">Use this area for real verified customer reviews once the business has approved them.</p>
+                </div>
+
+                <div class="testimonials-grid">
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Arrived quickly, explained the problem clearly, and left the place spotless. Very professional from start to finish.”</p>
+                        <div class="testimonial-author">Sarah J.<span> — Local Customer</span></div>
+                    </article>
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Great communication and fair pricing. The booking process was simple and the repair was completed the same day.”</p>
+                        <div class="testimonial-author">James C.<span> — Homeowner</span></div>
+                    </article>
+                    <article class="testimonial-card">
+                        <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                        <p>“Reliable, tidy, and honest. Exactly what you want from a local plumber.”</p>
+                        <div class="testimonial-author">David O.<span> — Local Customer</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="logo-group">
+                <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
+                <span class="logo-text">Flow<span style="color:#e0b44d;">Pro</span></span>
+            </div>
+            <p>Premium local plumbing services — fast, clear, and reliable.</p>
+            <p><a href="tel:+441615550123" class="footer-phone">0161 555 0123</a></p>
+            <p>hello@flowpro-plumbing.co.uk</p>
+            <p style="margin-top:8px;">Serving Manchester & surrounding areas</p>
+            <div class="footer-bottom">
+                &copy; 2026 FlowPro Plumbing. All rights reserved. Replace claims, reviews, insurance details, and qualifications with verified client information.
+            </div>
+        </div>
+    </footer>
+
+    <div class="success-overlay" id="successOverlay" role="dialog" aria-modal="true" aria-labelledby="success-title" aria-describedby="success-description">
+        <div class="success-modal">
+            <div class="check-circle" aria-hidden="true"><svg><use href="#icon-check"></use></svg></div>
+            <h3 id="success-title">Booking Enquiry Received</h3>
+            <p id="success-description">{% for message in messages %}{{ message }}{% empty %}Thank you for choosing FlowPro. Your enquiry has been received and the team will confirm availability.{% endfor %}</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">For emergencies, call <strong>0161 555 0123</strong> directly.</p>
+            <button class="btn-close-modal" type="button" id="closeSuccessBtn">Got It, Thanks</button>
+        </div>
+    </div>
+
+    <div class="mobile-bar" id="mobileBar">
+        <a href="tel:+441615550123" class="btn btn-emergency"><svg class="icon-sm"><use href="#icon-phone"></use></svg> Call Now</a>
+        <a href="#booking" class="btn btn-primary"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
+    </div>
+    <div class="mobile-bar-spacer" id="mobileBarSpacer"></div>
+
+    <script src="{% static 'trades/js/booking.js' %}" defer></script>
+</body>
+</html>

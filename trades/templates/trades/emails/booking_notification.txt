@@ -1,0 +1,16 @@
+New plumbing booking enquiry
+
+Name: {{ booking.full_name }}
+Phone: {{ booking.phone }}
+Email: {{ booking.email|default:"Not provided" }}
+Preferred date: {{ booking.preferred_date }}
+Time slot: {{ booking.get_timeslot_display }}
+Address: {{ booking.address }}
+Postcode: {{ booking.postcode }}
+Service: {{ booking.get_service_display }}
+Emergency: {{ booking.is_emergency|yesno:"Yes,No" }}
+Status: {{ booking.get_status_display }}
+Created: {{ booking.created_at }}
+
+Description:
+{{ booking.description }}
