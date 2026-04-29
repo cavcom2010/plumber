@@ -1,3 +1,6 @@
+import re
+from urllib.parse import quote
+
 from django.db import models
 
 
@@ -30,6 +33,16 @@ class BusinessProfile(models.Model):
     )
     phone_display = models.CharField(max_length=40, default="0161 555 0123")
     phone_href = models.CharField(max_length=40, default="+441615550123")
+    whatsapp_number = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="International WhatsApp number. Use digits or + format, e.g. +441615550123.",
+    )
+    whatsapp_prefilled_message = models.TextField(
+        blank=True,
+        default="Hi, I would like to enquire about plumbing services.",
+        help_text="Message prefilled when a customer opens WhatsApp chat.",
+    )
     email = models.EmailField(default="hello@flowpro-plumbing.co.uk")
     service_area = models.CharField(
         max_length=160,
@@ -91,6 +104,18 @@ class BusinessProfile(models.Model):
 
     def __str__(self):
         return self.business_name
+
+    @property
+    def whatsapp_url(self):
+        number = re.sub(r"\D", "", self.whatsapp_number or "")
+        if not number:
+            return ""
+
+        message = self.whatsapp_prefilled_message.strip()
+        if not message:
+            return f"https://wa.me/{number}"
+
+        return f"https://wa.me/{number}?text={quote(message)}"
 
 
 class TrustIndicator(models.Model):

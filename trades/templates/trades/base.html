@@ -89,10 +89,17 @@
             <svg aria-hidden="true"><use href="#icon-check"></use></svg>
             <span>Reviews</span>
         </a>
-        <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+441615550123{% endif %}" class="mobile-nav-item mobile-nav-call">
-            <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
-            <span>Call</span>
-        </a>
+        {% if business and business.whatsapp_url %}
+            <a href="{{ business.whatsapp_url }}" class="mobile-nav-item mobile-nav-whatsapp" target="_blank" rel="noopener">
+                <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
+                <span>WhatsApp</span>
+            </a>
+        {% else %}
+            <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+441615550123{% endif %}" class="mobile-nav-item mobile-nav-call">
+                <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
+                <span>Call</span>
+            </a>
+        {% endif %}
     </nav>
     <div class="mobile-nav-spacer" id="mobileNavSpacer"></div>
 

@@ -74,6 +74,8 @@ class BusinessProfileAdmin(admin.ModelAdmin):
                 "fields": (
                     "phone_display",
                     "phone_href",
+                    "whatsapp_number",
+                    "whatsapp_prefilled_message",
                     "email",
                     "service_area",
                 )

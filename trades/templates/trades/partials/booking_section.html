@@ -5,6 +5,12 @@
             <span class="section-label">{% if business %}{{ business.booking_label }}{% else %}Book a Visit{% endif %}</span>
             <h2 class="section-title">{% if business %}{{ business.booking_title }}{% else %}Schedule Your Service{% endif %}</h2>
             <p class="section-subtitle">{% if business %}{{ business.booking_subtitle }}{% else %}Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.{% endif %}</p>
+            {% if business and business.whatsapp_url %}
+                <a href="{{ business.whatsapp_url }}" class="btn btn-whatsapp booking-whatsapp-cta" target="_blank" rel="noopener">
+                    <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
+                    Chat on WhatsApp
+                </a>
+            {% endif %}
         </div>
 
         <div class="booking-image">

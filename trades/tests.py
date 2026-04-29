@@ -27,6 +27,30 @@ def valid_booking_data(**overrides):
 
 
 class TradesLandingTests(TestCase):
+    def test_business_profile_builds_whatsapp_url(self):
+        business = BusinessProfile(
+            whatsapp_number="+44 161 555 0123",
+            whatsapp_prefilled_message="Hi FlowPro, I need help with a leak.",
+        )
+
+        self.assertEqual(
+            business.whatsapp_url,
+            "https://wa.me/441615550123?text=Hi%20FlowPro%2C%20I%20need%20help%20with%20a%20leak.",
+        )
+
+    def test_business_profile_whatsapp_url_without_message(self):
+        business = BusinessProfile(
+            whatsapp_number="+44 161 555 0123",
+            whatsapp_prefilled_message="",
+        )
+
+        self.assertEqual(business.whatsapp_url, "https://wa.me/441615550123")
+
+    def test_business_profile_whatsapp_url_is_blank_without_number(self):
+        business = BusinessProfile(whatsapp_prefilled_message="Hello")
+
+        self.assertEqual(business.whatsapp_url, "")
+
     def test_home_page_loads(self):
         response = self.client.get(reverse("trades_home"))
 
@@ -97,6 +121,32 @@ class TradesLandingTests(TestCase):
         self.assertContains(response, "Trusted Heating")
         self.assertContains(response, "Gas Safe Registered")
         self.assertContains(response, "What Do You Need Today?")
+
+    def test_whatsapp_link_renders_when_active_business_has_number(self):
+        BusinessProfile.objects.update(is_active=False)
+        BusinessProfile.objects.create(
+            business_name="Acme Heating",
+            whatsapp_number="+44 161 555 0123",
+            whatsapp_prefilled_message="Hi, I need a booking.",
+            is_active=True,
+        )
+
+        response = self.client.get(reverse("trades_booking"))
+
+        self.assertContains(
+            response,
+            "https://wa.me/441615550123?text=Hi%2C%20I%20need%20a%20booking.",
+        )
+        self.assertContains(response, "Chat on WhatsApp")
+        self.assertContains(response, "WhatsApp")
+
+    def test_mobile_nav_falls_back_to_call_without_whatsapp_number(self):
+        BusinessProfile.objects.update(whatsapp_number="")
+
+        response = self.client.get(reverse("trades_home"))
+
+        self.assertContains(response, "mobile-nav-call")
+        self.assertNotContains(response, "mobile-nav-whatsapp")
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",

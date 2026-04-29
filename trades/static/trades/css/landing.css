@@ -272,6 +272,18 @@
             transform: translateY(-1px);
         }
 
+        .btn-whatsapp {
+            background: #1fa855;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(31, 168, 85, 0.26);
+        }
+
+        .btn-whatsapp:hover {
+            background: #178846;
+            box-shadow: 0 6px 20px rgba(31, 168, 85, 0.34);
+            transform: translateY(-1px);
+        }
+
         .btn-lg {
             padding: 15px 30px;
             font-size: 1rem;
@@ -706,6 +718,12 @@
             color: rgba(255, 255, 255, 0.72);
             position: relative;
             z-index: 1;
+        }
+
+        .booking-whatsapp-cta {
+            position: relative;
+            z-index: 1;
+            margin-top: 18px;
         }
 
         .booking-card {
@@ -1316,6 +1334,12 @@
             background: var(--red);
             color: #fff;
             box-shadow: 0 4px 14px rgba(192, 57, 43, 0.24);
+        }
+
+        .mobile-nav-whatsapp {
+            background: #1fa855;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(31, 168, 85, 0.24);
         }
 
         .mobile-nav-spacer {
