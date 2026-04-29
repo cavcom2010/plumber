@@ -1341,6 +1341,77 @@
             }
         }
 
+        @media (min-width: 900px) {
+            .booking-card,
+            .booking-image {
+                max-width: 1040px;
+            }
+
+            .booking-card {
+                padding: 36px;
+            }
+
+            .booking-card-top {
+                margin-bottom: 24px;
+            }
+
+            .booking-card .form-grid {
+                grid-template-columns: repeat(12, minmax(0, 1fr));
+                gap: 18px 20px;
+            }
+
+            .booking-card .form-group {
+                grid-column: span 6;
+            }
+
+            .booking-card #group-address,
+            .booking-card #group-service,
+            .booking-card #group-time,
+            .booking-card #group-description,
+            .booking-card .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .booking-card #group-postcode {
+                grid-column: span 4;
+            }
+
+            .booking-card #group-service .service-select-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px 12px;
+            }
+
+            .booking-card #group-time .time-slot-grid {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .booking-card .card-label {
+                justify-content: flex-start;
+                min-height: 56px;
+                padding: 14px 16px;
+            }
+
+            .booking-card .pill-label {
+                min-height: 48px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .booking-card,
+            .booking-image {
+                max-width: 1160px;
+            }
+
+            .booking-card #group-service .service-select-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+
+            .booking-card #group-time {
+                grid-column: span 8;
+            }
+        }
+
         @media (max-width: 767px) {
             .header-cta .btn-primary {
                 display: none;
