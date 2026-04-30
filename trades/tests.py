@@ -60,6 +60,13 @@ class TradesLandingTests(TestCase):
         self.assertContains(response, "Book a Visit")
         self.assertContains(response, 'aria-label="Mobile navigation"')
 
+    def test_core_static_assets_are_cache_busted(self):
+        response = self.client.get(reverse("trades_home"))
+        content = response.content.decode()
+
+        self.assertRegex(content, r"trades/css/landing\.css\?v=\d+")
+        self.assertRegex(content, r"trades/js/booking\.js\?v=\d+")
+
     def test_services_page_loads(self):
         response = self.client.get(reverse("trades_services"))
 
