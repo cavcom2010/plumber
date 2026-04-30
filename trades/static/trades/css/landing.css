@@ -1520,6 +1520,11 @@
                 max-width: 100%;
             }
 
+            .hero-inner {
+                width: 100%;
+                max-width: 300px;
+            }
+
             .hero-badge {
                 max-width: 100%;
                 white-space: normal;
@@ -1541,7 +1546,7 @@
             }
 
             .hero h1 {
-                font-size: 1.85rem;
+                font-size: 1.64rem;
                 overflow-wrap: anywhere;
             }
 
