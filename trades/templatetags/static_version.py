@@ -22,5 +22,5 @@ def versioned_static(path):
 def _static_asset_version(path):
     found_path = finders.find(path)
     if found_path:
-        return str(int(os.path.getmtime(found_path)))
+        return str(os.stat(found_path).st_mtime_ns)
     return getattr(settings, "STATIC_ASSET_VERSION", "1")
