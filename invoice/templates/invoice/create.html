@@ -5,6 +5,13 @@
 {% block content %}
 <section class="inv-section">
     <div class="inv-section-inner">
+        <nav class="inv-breadcrumbs" aria-label="Breadcrumb">
+            <a href="{% url 'trades_home' %}">Home</a>
+            <span class="inv-breadcrumb-sep">›</span>
+            <span>Invoice</span>
+            <span class="inv-breadcrumb-sep">›</span>
+            <span>New</span>
+        </nav>
         <h2 class="inv-section-title">Create Invoice Draft</h2>
         {% if booking %}
             <div class="inv-booking-banner">

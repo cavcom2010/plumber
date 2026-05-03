@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+        <div style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem;">New Bookings Today</div>
+        <div style="font-size:2rem;font-weight:700;color:#1e40af;">{{ new_bookings_today }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+        <div style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem;">Revenue This Month</div>
+        <div style="font-size:2rem;font-weight:700;color:#059669;">£{{ revenue_this_month|floatformat:2 }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+        <div style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem;">Pending Testimonials</div>
+        <div style="font-size:2rem;font-weight:700;color:#d97706;">{{ pending_testimonials }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+        <div style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem;">Unsent Invoices</div>
+        <div style="font-size:2rem;font-weight:700;color:#6b7280;">{{ unsent_invoices }}</div>
+    </div>
+</div>
+
+<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+    <h3 style="margin:0 0 0.75rem;font-size:0.9rem;color:#1e40af;">Quick Links</h3>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a href="{% url 'admin:trades_bookingenquiry_changelist' %}?status__exact=new" style="display:inline-block;padding:0.45rem 0.8rem;background:#1e40af;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:500;">New Bookings</a>
+        <a href="{% url 'admin:trades_testimonial_changelist' %}?is_active__exact=0" style="display:inline-block;padding:0.45rem 0.8rem;background:#d97706;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:500;">Approve Reviews</a>
+        <a href="{% url 'admin:invoice_invoice_changelist' %}?status__exact=completed" style="display:inline-block;padding:0.45rem 0.8rem;background:#059669;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:500;">Completed Invoices</a>
+        <a href="{% url 'admin:trades_businessprofile_changelist' %}" style="display:inline-block;padding:0.45rem 0.8rem;background:#6b7280;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:500;">Business Profile</a>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

@@ -7,6 +7,15 @@ Thank you for choosing {{ business_name }}. Your invoice is attached.
   Service: {{ invoice.get_service_type_display }}
   Total:   £{{ invoice.total_cost|floatformat:2 }}
 
+{% if bank_account_name %}
+Payment Details
+
+  Bank:           {{ bank_name|default:"—" }}
+  Account Name:   {{ bank_account_name }}
+  Sort Code:      {{ bank_sort_code }}
+  Account Number: {{ bank_account_number }}
+
+{% endif %}
 {% if testimonial_url %}
 We hope you're happy with our service. Your feedback helps us improve:
 

@@ -75,6 +75,7 @@ def trades_booking(request):
                         sort_order=i - 1,
                     )
             _send_booking_notification(request, booking)
+            _send_booking_confirmation(request, booking)
             messages.success(
                 request,
                 "Booking enquiry received. We will call back to confirm availability.",
@@ -177,5 +178,36 @@ def _send_booking_notification(request, booking):
         message.send(fail_silently=False)
     except Exception:
         logger.exception("Failed to send booking notification for enquiry %s.", booking.pk)
+
+
+def _send_booking_confirmation(request, booking):
+    if not booking.email:
+        return
+    business = BusinessProfile.objects.filter(is_active=True).first()
+    business_name = business.business_name if business else "FlowPro Plumbing"
+    business_phone = business.phone_display if business else "0161 555 0123"
+
+    context = {
+        "booking": booking,
+        "business_name": business_name,
+        "business_phone": business_phone,
+        "service": booking.get_service_display(),
+    }
+    subject = f"Booking enquiry received — {business_name}"
+    text_body = render_to_string("trades/emails/booking_confirmation.txt", context)
+    html_body = render_to_string("trades/emails/booking_confirmation.html", context)
+
+    message = EmailMultiAlternatives(
+        subject=subject,
+        body=text_body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[booking.email],
+    )
+    message.attach_alternative(html_body, "text/html")
+
+    try:
+        message.send(fail_silently=False)
+    except Exception:
+        logger.exception("Failed to send booking confirmation for enquiry %s.", booking.pk)
 
 # Create your views here.

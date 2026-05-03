@@ -91,6 +91,7 @@ class CreateInvoiceView(View):
         return render(request, "invoice/create.html", {
             "form": form,
             "booking": booking,
+            "business": _get_active_business(),
         })
 
     def post(self, request):
@@ -117,6 +118,7 @@ class CreateInvoiceView(View):
         return render(request, "invoice/create.html", {
             "form": form,
             "booking": booking,
+            "business": _get_active_business(),
         })
 
 
@@ -200,6 +202,10 @@ class ManageInvoiceView(View):
             "business_name": business_name,
             "business_phone": business_phone,
             "business_email": business_email,
+            "bank_name": business.bank_name if business else "",
+            "bank_account_name": business.bank_account_name if business else "",
+            "bank_sort_code": business.bank_sort_code if business else "",
+            "bank_account_number": business.bank_account_number if business else "",
             "testimonial_url": testimonial_url,
         }
 
@@ -335,6 +341,7 @@ class ManageInvoiceView(View):
         return {
             "form": form,
             "invoice": invoice,
+            "business": _get_active_business(),
             "before_images": invoice.images.filter(image_type="before"),
             "after_images": invoice.images.filter(image_type="after"),
             "products": invoice.products.all(),

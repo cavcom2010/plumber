@@ -1,0 +1,16 @@
+{% autoescape off %}
+Dear {{ booking.full_name }},
+
+Thank you for your booking enquiry with {{ business_name }}.
+
+We have received your request for {{ service }} and will call you back within 2 hours to confirm availability.
+
+Booked date: {{ booking.preferred_date|date:"j F Y" }}
+Time slot: {{ booking.get_timeslot_display }}
+Address: {{ booking.address }}, {{ booking.postcode }}
+
+If this is an emergency, call us immediately on {{ business_phone }}.
+
+{{ business_name }}
+{{ business_phone }}
+{% endautoescape %}

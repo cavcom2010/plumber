@@ -34,6 +34,16 @@
                 <a href="{{ testimonial_url }}" style="display:inline-block; padding:0.7rem 1.5rem; background:#1e40af; color:#ffffff; text-decoration:none; border-radius:8px; font-weight:600; font-size:0.9rem; margin-bottom:1.5rem;">Leave a Review</a>
             {% endif %}
 
+            {% if bank_account_name %}
+                <p style="margin:0 0 0.5rem; font-weight:600; color:#1e40af;">Payment Details</p>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:1.5rem; font-size:0.85rem;">
+                    {% if bank_name %}<tr><td style="padding:0.3rem 0; color:#6b7280;">Bank</td><td style="padding:0.3rem 0; text-align:right;">{{ bank_name }}</td></tr>{% endif %}
+                    <tr><td style="padding:0.3rem 0; color:#6b7280;">Account Name</td><td style="padding:0.3rem 0; text-align:right; font-weight:600;">{{ bank_account_name }}</td></tr>
+                    <tr><td style="padding:0.3rem 0; color:#6b7280;">Sort Code</td><td style="padding:0.3rem 0; text-align:right; font-weight:600;">{{ bank_sort_code }}</td></tr>
+                    <tr><td style="padding:0.3rem 0; color:#6b7280;">Account Number</td><td style="padding:0.3rem 0; text-align:right; font-weight:600;">{{ bank_account_number }}</td></tr>
+                </table>
+            {% endif %}
+
             <p style="margin:0 0 0.25rem; font-size:0.85rem; color:#6b7280;">Thank you for your business.</p>
             <p style="margin:0; font-size:0.85rem; color:#6b7280;">{{ business_name }}{% if business_phone %} — {{ business_phone }}{% endif %}</p>
         </div>

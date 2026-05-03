@@ -170,6 +170,9 @@
 <body>
     <div class="header">
         <div class="header-brand">
+            {% if invoice.business and invoice.business.logo_image %}
+                <img src="file://{{ invoice.business.logo_image.path }}" style="max-height:50px;margin-bottom:0.3rem;" alt="{{ invoice.business.business_name }} logo">
+            {% endif %}
             <h1>{{ invoice.business.business_name|default:"FlowPro Plumbing" }}</h1>
             <p>{{ invoice.business.phone_display|default:"" }}</p>
             <p>{{ invoice.business.email|default:"" }}</p>
@@ -313,6 +316,18 @@
     {% if invoice.notes %}
         <div class="notes">
             <span class="notes-label">Notes:</span> {{ invoice.notes }}
+        </div>
+    {% endif %}
+
+    {% if invoice.business and invoice.business.bank_account_name %}
+        <div class="section" style="margin-top:1rem;">
+            <div class="section-title">Payment Details</div>
+            <div style="font-size:0.9rem;line-height:1.6;">
+                <strong>Bank:</strong> {{ invoice.business.bank_name|default:"—" }}<br>
+                <strong>Account Name:</strong> {{ invoice.business.bank_account_name }}<br>
+                <strong>Sort Code:</strong> {{ invoice.business.bank_sort_code }}<br>
+                <strong>Account Number:</strong> {{ invoice.business.bank_account_number }}
+            </div>
         </div>
     {% endif %}
 

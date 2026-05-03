@@ -180,6 +180,35 @@
 
     initImagePreviews();
 
+    // -- Postcode service area check --
+    var servicePostcodes = form.dataset.servicePostcodes;
+    if (servicePostcodes) {
+        var postcodeInput = document.getElementById('postcode');
+        var postcodeGroup = document.getElementById('group-postcode');
+        if (postcodeInput && postcodeGroup) {
+            var postcodeNote = document.createElement('div');
+            postcodeNote.className = 'postcode-area-note';
+            postcodeNote.style.display = 'none';
+            postcodeGroup.appendChild(postcodeNote);
+
+            postcodeInput.addEventListener('blur', function () {
+                var val = this.value.trim().toUpperCase().replace(/\s/g, '');
+                if (!val) return;
+                var prefix = val.match(/^[A-Z]+/);
+                if (!prefix) return;
+                var prefixes = servicePostcodes.split(',').map(function (s) {
+                    return s.trim().toUpperCase();
+                });
+                if (prefixes.indexOf(prefix[0]) === -1) {
+                    postcodeNote.textContent = 'This postcode may be outside our normal service area. We will check availability and confirm.';
+                    postcodeNote.style.display = 'block';
+                } else {
+                    postcodeNote.style.display = 'none';
+                }
+            });
+        }
+    }
+
     // -- Booking lookup --
     var lookupDropdown = document.getElementById('bookingLookupDropdown');
     if (lookupDropdown) {

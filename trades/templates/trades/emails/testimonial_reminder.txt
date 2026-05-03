@@ -1,0 +1,16 @@
+{% autoescape off %}
+Dear {{ booking.full_name }},
+
+We recently completed your {{ booking.get_service_display }} at {{ booking.address }}.
+
+We hope everything is working well. Your feedback helps us improve and lets other local customers know what to expect.
+
+Leave a quick review here:
+
+{{ testimonial_url }}
+
+Thank you for choosing {{ business_name }}.
+
+{{ business_name }}
+{{ business_phone }}
+{% endautoescape %}

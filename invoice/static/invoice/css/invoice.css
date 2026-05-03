@@ -14,58 +14,31 @@
     --inv-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: var(--inv-bg);
-    color: var(--inv-text);
-    line-height: 1.6;
-}
-
-/* Header */
-.inv-header {
-    background: var(--inv-surface);
-    border-bottom: 1px solid var(--inv-border);
-    padding: 0 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.inv-header-inner {
-    max-width: 960px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-}
-
-.inv-logo {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--inv-primary);
-    text-decoration: none;
-}
-
-.inv-nav a {
-    color: var(--inv-primary);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
 /* Main */
 .inv-main {
     max-width: 960px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
-    min-height: calc(100vh - 120px);
+}
+
+.inv-breadcrumbs {
+    font-size: 0.8rem;
+    color: var(--inv-text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.inv-breadcrumbs a {
+    color: var(--inv-primary);
+    text-decoration: none;
+}
+
+.inv-breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.inv-breadcrumb-sep {
+    margin: 0 0.4rem;
+    color: var(--inv-border);
 }
 
 /* Messages */
@@ -468,16 +441,6 @@ body {
 .inv-btn-sm:hover {
     background: var(--inv-primary);
     color: white;
-}
-
-/* Footer */
-.inv-footer {
-    background: var(--inv-surface);
-    border-top: 1px solid var(--inv-border);
-    padding: 1rem;
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--inv-text-muted);
 }
 
 /* Mobile */

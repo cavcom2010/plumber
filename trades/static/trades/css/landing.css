@@ -1198,6 +1198,17 @@
             background: var(--surface);
         }
 
+        .postcode-area-note {
+            margin-top: 0.35rem;
+            padding: 0.5rem 0.65rem;
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: #92400e;
+            line-height: 1.45;
+        }
+
         .review-overlay {
             display: none;
             position: fixed;

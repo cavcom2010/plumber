@@ -93,6 +93,20 @@ class BusinessProfile(models.Model):
     services_image = models.ImageField(upload_to="business/services/", blank=True)
     about_image = models.ImageField(upload_to="business/about/", blank=True)
     booking_image = models.ImageField(upload_to="business/booking/", blank=True)
+    logo_image = models.ImageField(
+        upload_to="business/logo/",
+        blank=True,
+        help_text="Company logo used on invoice PDFs and emails.",
+    )
+    bank_name = models.CharField(max_length=80, blank=True)
+    bank_account_name = models.CharField(max_length=120, blank=True)
+    bank_sort_code = models.CharField(max_length=16, blank=True)
+    bank_account_number = models.CharField(max_length=16, blank=True)
+    service_postcodes = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Comma-separated postcode prefixes this business serves, e.g. M,SK,WA.",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

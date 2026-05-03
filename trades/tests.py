@@ -171,6 +171,27 @@ class TradesLandingTests(TestCase):
         ADMIN_NOTIFICATION_EMAIL="owner@example.com",
         DEFAULT_FROM_EMAIL="website@example.com",
     )
+    def test_booking_confirmation_sent_to_client(self):
+        response = self.client.post(
+            reverse("trades_booking"),
+            {
+                **valid_booking_data(email="john@example.com"),
+                "diagnostic_image_1": "",
+                "diagnostic_image_2": "",
+                "diagnostic_image_3": "",
+            },
+        )
+        self.assertRedirects(response, reverse("trades_booking"))
+        self.assertEqual(len(mail.outbox), 2)
+        client_mail = [m for m in mail.outbox if m.to == ["john@example.com"]]
+        self.assertEqual(len(client_mail), 1)
+        self.assertIn("Booking enquiry received", client_mail[0].subject)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        ADMIN_NOTIFICATION_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="website@example.com",
+    )
     def test_valid_booking_creates_enquiry_redirects_and_sends_email(self):
         response = self.client.post(reverse("trades_booking"), valid_booking_data())
 
@@ -178,7 +199,8 @@ class TradesLandingTests(TestCase):
         self.assertEqual(BookingEnquiry.objects.count(), 1)
         booking = BookingEnquiry.objects.get()
         self.assertEqual(booking.postcode, "M20 1AB")
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn("New plumbing booking enquiry", mail.outbox[0].subject)
         self.assertIn("New plumbing booking enquiry", mail.outbox[0].subject)
 
     def test_success_redirect_uses_post_redirect_get(self):

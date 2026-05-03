@@ -5,6 +5,13 @@
 {% block content %}
 <section class="inv-section">
     <div class="inv-section-inner">
+        <nav class="inv-breadcrumbs" aria-label="Breadcrumb">
+            <a href="{% url 'trades_home' %}">Home</a>
+            <span class="inv-breadcrumb-sep">›</span>
+            <a href="{% url 'invoice_create' %}">Invoice</a>
+            <span class="inv-breadcrumb-sep">›</span>
+            <span>{{ invoice.invoice_number }}</span>
+        </nav>
         <div class="inv-manage-header">
             <h2 class="inv-section-title">{{ invoice.invoice_number }}</h2>
             <span class="inv-status inv-status-{{ invoice.status }}">{{ invoice.get_status_display }}</span>
@@ -49,6 +56,9 @@
                             {{ form.client_postcode }}
                             <span class="inv-error-msg">{{ form.client_postcode.errors.0 }}</span>
                         </div>
+                    </div>
+                    <div style="margin-top:-0.5rem;margin-bottom:0.75rem;">
+                        <a href="https://www.google.com/maps/search/?api=1&amp;query={{ invoice.client_address|urlencode }},%20{{ invoice.client_postcode|urlencode }}" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--inv-primary);">View on map →</a>
                     </div>
                 </fieldset>
 

@@ -19,6 +19,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 
+import flowpro.admin  # noqa — admin dashboard monkey-patch
+
 urlpatterns = [
     path('', include('trades.urls')),
     path('invoice/', include('invoice.urls')),
