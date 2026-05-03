@@ -200,8 +200,7 @@ class TradesLandingTests(TestCase):
         booking = BookingEnquiry.objects.get()
         self.assertEqual(booking.postcode, "M20 1AB")
         self.assertEqual(len(mail.outbox), 2)
-        self.assertIn("New plumbing booking enquiry", mail.outbox[0].subject)
-        self.assertIn("New plumbing booking enquiry", mail.outbox[0].subject)
+        self.assertIn("New booking from FlowPro Plumbing", mail.outbox[0].subject)
 
     def test_success_redirect_uses_post_redirect_get(self):
         response = self.client.post(reverse("trades_booking"), valid_booking_data())

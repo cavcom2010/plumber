@@ -190,6 +190,42 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_TIMEOUT = config("EMAIL_TIMEOUT", default=20, cast=int)
 
+# Trade-agnostic configuration
+# Comma-separated list of service choices shown on booking/invoice forms.
+# Override in .env per trade, e.g. SERVICE_CHOICES=Kitchen Fitting,Decking
+_SERVICE_CHOICES_DEFAULT = [
+    ("leaking_pipe", "Leaking Pipe"),
+    ("blocked_drain", "Blocked Drain"),
+    ("water_heater", "Water Heater"),
+    ("toilet_repair", "Toilet Repair"),
+    ("burst_pipe", "Burst Pipe"),
+    ("bathroom_kitchen", "Bathroom / Kitchen"),
+    ("gas_plumbing", "Gas Plumbing"),
+    ("general", "General Maintenance"),
+    ("other", "Other"),
+]
+
+
+def _load_service_choices():
+    raw = config("SERVICE_CHOICES", default="")
+    if not raw:
+        return _SERVICE_CHOICES_DEFAULT
+    items = [s.strip() for s in raw.split(",") if s.strip()]
+    return [(s.lower().replace(" ", "_").replace("/", "_"), s) for s in items]
+
+
+SERVICE_CHOICES = property(lambda _: _load_service_choices())  # callable ref
+
+
+def get_service_choices():
+    return _load_service_choices()
+
+
+# Set to "UK" to enforce UK phone number and postcode validation on
+# booking and invoice forms. Leave blank or set to another value for
+# international mode (no phone/postcode regex enforced).
+COUNTRY = config("COUNTRY", default="UK")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

@@ -159,8 +159,11 @@ def _send_booking_notification(request, booking):
         return
 
     context = _site_context({"booking": booking, "request": request})
+    business_name = (
+        context["business"].business_name if context.get("business") else "FlowPro"
+    )
     subject = (
-        f"New plumbing booking enquiry: "
+        f"New booking from {business_name}: "
         f"{booking.get_service_display()} - {booking.postcode}"
     )
     text_body = render_to_string("trades/emails/booking_notification.txt", context)

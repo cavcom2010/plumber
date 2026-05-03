@@ -5,28 +5,28 @@ from django.db import models
 
 
 class BusinessProfile(models.Model):
-    business_name = models.CharField(max_length=120, default="FlowPro Plumbing")
-    brand_first = models.CharField(max_length=40, default="Flow")
+    business_name = models.CharField(max_length=120, default="Your Local Tradesperson")
+    brand_first = models.CharField(max_length=40, default="Local")
     brand_second = models.CharField(max_length=40, default="Pro")
     tagline = models.CharField(
         max_length=180,
-        default="Premium local plumbing services - fast, clear, and reliable.",
+        default="Quality local trade services — fast, clear, and reliable.",
     )
     meta_description = models.TextField(
         default=(
-            "Premium local plumbing services with fast response, online booking, "
-            "emergency call-outs, leak repairs, bathroom fitting, and drain unblocking."
+            "Quality local trade services with fast response, online booking, "
+            "emergency call-outs, repairs, installations, and maintenance."
         )
     )
     hero_badge = models.CharField(
         max_length=120,
-        default="Trusted local plumbing specialists",
+        default="Trusted local trade specialists",
     )
-    hero_heading_line_one = models.CharField(max_length=80, default="Premium Plumbing")
+    hero_heading_line_one = models.CharField(max_length=80, default="Quality Workmanship")
     hero_heading_line_two = models.CharField(max_length=80, default="Without the Stress")
     hero_body = models.TextField(
         default=(
-            "Reliable local plumbers for urgent repairs, leaks, drains, bathrooms, "
+            "Reliable local tradespeople for urgent repairs, installations, "
             "and general maintenance. Clear communication, tidy workmanship, and "
             "fast call-backs."
         )
@@ -40,20 +40,20 @@ class BusinessProfile(models.Model):
     )
     whatsapp_prefilled_message = models.TextField(
         blank=True,
-        default="Hi, I would like to enquire about plumbing services.",
+        default="Hi, I would like to enquire about your services.",
         help_text="Message prefilled when a customer opens WhatsApp chat.",
     )
-    email = models.EmailField(default="hello@flowpro-plumbing.co.uk")
+    email = models.EmailField(default="hello@example.com")
     service_area = models.CharField(
         max_length=160,
-        default="Serving Manchester & surrounding areas",
+        default="Serving your local area",
     )
-    owner_name = models.CharField(max_length=120, default="Mark Henderson")
-    owner_role = models.CharField(max_length=120, default="Local Plumbing Specialist")
-    about_label = models.CharField(max_length=80, default="Meet Your Plumber")
+    owner_name = models.CharField(max_length=120, default="Your Name Here")
+    owner_role = models.CharField(max_length=120, default="Local Trades Specialist")
+    about_label = models.CharField(max_length=80, default="Meet Your Tradesperson")
     about_text = models.TextField(
         default=(
-            "FlowPro is built around a simple promise: clear communication, fair "
+            "Built around a simple promise: clear communication, fair "
             "pricing, and respect for your home. This section can be replaced with "
             "the real business owner's story, qualifications, guarantees, and "
             "service area."
@@ -62,7 +62,7 @@ class BusinessProfile(models.Model):
     services_label = models.CharField(max_length=80, default="Our Services")
     services_title = models.CharField(
         max_length=120,
-        default="Complete Plumbing Solutions",
+        default="Our Services",
     )
     services_subtitle = models.TextField(
         default=(

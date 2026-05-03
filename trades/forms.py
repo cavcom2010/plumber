@@ -1,8 +1,11 @@
 import re
 
 from django import forms
+from django.conf import settings
 from django.core.validators import FileExtensionValidator, validate_email
 from django.utils import timezone
+
+from flowpro.settings import get_service_choices
 
 from .models import BookingEnquiry, Testimonial
 
@@ -88,6 +91,7 @@ class BookingEnquiryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["service"].choices = get_service_choices()
         for name, field in self.fields.items():
             if name != "email" and not name.startswith("diagnostic_image_"):
                 field.required = True
@@ -104,6 +108,8 @@ class BookingEnquiryForm(forms.ModelForm):
 
     def clean_phone(self):
         value = self.cleaned_data["phone"].strip()
+        if getattr(settings, "COUNTRY", "") != "UK":
+            return value
         normalised = re.sub(r"[\s().-]", "", value)
         if normalised.startswith("0044"):
             normalised = "+44" + normalised[4:]
@@ -133,9 +139,11 @@ class BookingEnquiryForm(forms.ModelForm):
 
     def clean_postcode(self):
         value = re.sub(r"\s+", "", self.cleaned_data["postcode"].strip()).upper()
-        if not UK_POSTCODE_RE.match(value):
-            raise forms.ValidationError("Please enter a valid UK postcode.")
-        return f"{value[:-3]} {value[-3:]}"
+        if getattr(settings, "COUNTRY", "") == "UK":
+            if not UK_POSTCODE_RE.match(value):
+                raise forms.ValidationError("Please enter a valid UK postcode.")
+            return f"{value[:-3]} {value[-3:]}"
+        return value
 
     def clean_description(self):
         value = self.cleaned_data["description"].strip()

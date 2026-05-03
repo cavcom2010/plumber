@@ -1,7 +1,10 @@
 import re
 
 from django import forms
+from django.conf import settings
 from django.core.validators import FileExtensionValidator
+
+from flowpro.settings import get_service_choices
 
 from .models import Invoice, InvoiceImage, InvoiceProduct
 
@@ -78,6 +81,7 @@ class InvoiceCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["service_type"].choices = get_service_choices()
         for name in [
             "client_name",
             "client_phone",
@@ -97,6 +101,8 @@ class InvoiceCreateForm(forms.ModelForm):
 
     def clean_client_phone(self):
         value = self.cleaned_data["client_phone"].strip()
+        if getattr(settings, "COUNTRY", "") != "UK":
+            return value
         normalised = re.sub(r"[\s().-]", "", value)
         if normalised.startswith("0044"):
             normalised = "+44" + normalised[4:]
@@ -108,9 +114,11 @@ class InvoiceCreateForm(forms.ModelForm):
 
     def clean_client_postcode(self):
         value = re.sub(r"\s+", "", self.cleaned_data["client_postcode"].strip()).upper()
-        if not UK_POSTCODE_RE.match(value):
-            raise forms.ValidationError("Please enter a valid UK postcode.")
-        return f"{value[:-3]} {value[-3:]}"
+        if getattr(settings, "COUNTRY", "") == "UK":
+            if not UK_POSTCODE_RE.match(value):
+                raise forms.ValidationError("Please enter a valid UK postcode.")
+            return f"{value[:-3]} {value[-3:]}"
+        return value
 
 
 class InvoiceManageForm(forms.ModelForm):
@@ -209,6 +217,7 @@ class InvoiceManageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["service_type"].choices = get_service_choices()
         for name in [
             "client_name",
             "client_phone",
@@ -223,6 +232,8 @@ class InvoiceManageForm(forms.ModelForm):
 
     def clean_client_phone(self):
         value = self.cleaned_data["client_phone"].strip()
+        if getattr(settings, "COUNTRY", "") != "UK":
+            return value
         normalised = re.sub(r"[\s().-]", "", value)
         if normalised.startswith("0044"):
             normalised = "+44" + normalised[4:]
@@ -234,6 +245,8 @@ class InvoiceManageForm(forms.ModelForm):
 
     def clean_client_postcode(self):
         value = re.sub(r"\s+", "", self.cleaned_data["client_postcode"].strip()).upper()
-        if not UK_POSTCODE_RE.match(value):
-            raise forms.ValidationError("Please enter a valid UK postcode.")
-        return f"{value[:-3]} {value[-3:]}"
+        if getattr(settings, "COUNTRY", "") == "UK":
+            if not UK_POSTCODE_RE.match(value):
+                raise forms.ValidationError("Please enter a valid UK postcode.")
+            return f"{value[:-3]} {value[-3:]}"
+        return value
