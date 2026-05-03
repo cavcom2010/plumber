@@ -2,7 +2,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import IntegrityError, models
 
 
 class Invoice(models.Model):
@@ -67,22 +67,35 @@ class Invoice(models.Model):
         return f"{self.invoice_number or 'Draft'} — {self.client_name}"
 
     def save(self, *args, **kwargs):
-        if not self.invoice_number:
-            today = date.today()
-            prefix = f"INV-{today.year}-"
-            last = (
-                Invoice.objects.filter(invoice_number__startswith=prefix)
-                .order_by("-invoice_number")
-                .first()
-            )
-            next_num = 1
-            if last:
-                try:
-                    next_num = int(last.invoice_number.rsplit("-", 1)[-1]) + 1
-                except (ValueError, IndexError):
-                    pass
-            self.invoice_number = f"{prefix}{next_num:04d}"
-        super().save(*args, **kwargs)
+        if self.invoice_number:
+            return super().save(*args, **kwargs)
+
+        last_error = None
+        for _ in range(5):
+            self.invoice_number = self._next_invoice_number()
+            try:
+                return super().save(*args, **kwargs)
+            except IntegrityError as exc:
+                last_error = exc
+                self.invoice_number = ""
+        raise last_error
+
+    @classmethod
+    def _next_invoice_number(cls):
+        today = date.today()
+        prefix = f"INV-{today.year}-"
+        last = (
+            cls.objects.filter(invoice_number__startswith=prefix)
+            .order_by("-invoice_number")
+            .first()
+        )
+        next_num = 1
+        if last:
+            try:
+                next_num = int(last.invoice_number.rsplit("-", 1)[-1]) + 1
+            except (ValueError, IndexError):
+                pass
+        return f"{prefix}{next_num:04d}"
 
     @property
     def total_cost(self):

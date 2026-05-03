@@ -14,6 +14,7 @@ from pathlib import Path
 
 import dj_database_url
 from decouple import Csv, config
+from django.utils.text import slugify
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +35,40 @@ CSRF_TRUSTED_ORIGINS = config(
     default="http://127.0.0.1:8000,http://localhost:8000",
     cast=Csv(),
 )
+
+# Reverse proxy and browser security settings. These default to local-dev safe
+# values and are switched on through environment variables for production clones.
+USE_X_FORWARDED_HOST = config("USE_X_FORWARDED_HOST", default=False, cast=bool)
+USE_X_FORWARDED_PORT = config("USE_X_FORWARDED_PORT", default=False, cast=bool)
+SECURE_PROXY_SSL_HEADER_ENABLED = config(
+    "SECURE_PROXY_SSL_HEADER", default=False, cast=bool
+)
+if SECURE_PROXY_SSL_HEADER_ENABLED:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=False, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=False, cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
+    "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False, cast=bool
+)
+SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=False, cast=bool)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = config(
+    "SECURE_REFERRER_POLICY", default="same-origin"
+)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = config("CSRF_COOKIE_HTTPONLY", default=False, cast=bool)
+X_FRAME_OPTIONS = config("X_FRAME_OPTIONS", default="DENY")
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = config(
+    "DATA_UPLOAD_MAX_MEMORY_SIZE", default=25 * 1024 * 1024, cast=int
+)
+FILE_UPLOAD_MAX_MEMORY_SIZE = config(
+    "FILE_UPLOAD_MAX_MEMORY_SIZE", default=10 * 1024 * 1024, cast=int
+)
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 
 # Application definition
@@ -211,10 +246,22 @@ def _load_service_choices():
     if not raw:
         return _SERVICE_CHOICES_DEFAULT
     items = [s.strip() for s in raw.split(",") if s.strip()]
-    return [(s.lower().replace(" ", "_").replace("/", "_"), s) for s in items]
+    choices = []
+    seen = set()
+    for item in items:
+        base_value = slugify(item).replace("-", "_")[:32] or "service"
+        value = base_value
+        suffix = 2
+        while value in seen:
+            suffix_text = f"_{suffix}"
+            value = f"{base_value[:32 - len(suffix_text)]}{suffix_text}"
+            suffix += 1
+        seen.add(value)
+        choices.append((value, item))
+    return choices
 
 
-SERVICE_CHOICES = property(lambda _: _load_service_choices())  # callable ref
+SERVICE_CHOICES = _load_service_choices()
 
 
 def get_service_choices():

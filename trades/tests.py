@@ -1,5 +1,6 @@
 from datetime import timedelta
 from io import BytesIO
+from unittest.mock import patch
 
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -11,6 +12,7 @@ from PIL import Image as PILImage
 from .forms import BookingEnquiryForm
 from .models import BookingEnquiry, BookingImage, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
 from .views import testimonial_token_for_booking
+from flowpro.settings import get_service_choices
 
 
 def valid_booking_data(**overrides):
@@ -210,6 +212,22 @@ class TradesLandingTests(TestCase):
 
 
 class BookingEnquiryFormTests(TestCase):
+    def test_dynamic_service_choice_values_fit_database_column(self):
+        with patch.dict(
+            "os.environ",
+            {
+                "SERVICE_CHOICES": (
+                    "Garden Clearance and Waste Removal,"
+                    "Garden Clearance and Waste Removal"
+                )
+            },
+        ):
+            values = [value for value, label in get_service_choices()]
+
+        self.assertEqual(len(values), 2)
+        self.assertEqual(len(set(values)), 2)
+        self.assertTrue(all(len(value) <= 32 for value in values))
+
     def test_invalid_date_in_past_is_rejected(self):
         form = BookingEnquiryForm(
             data=valid_booking_data(

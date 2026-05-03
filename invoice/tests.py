@@ -274,6 +274,28 @@ class InvoiceManageAccessTests(TestCase):
             )
         self.assertEqual(self.invoice.images.filter(image_type="before").count(), 3)
 
+    def test_before_image_limit_ignores_extra_upload(self):
+        self.client.login(username="staff", password="pass")
+        for i in range(3):
+            InvoiceImage.objects.create(
+                invoice=self.invoice,
+                image=_make_image(f"before{i}.jpg"),
+                image_type="before",
+                sort_order=i,
+            )
+
+        response = self.client.post(
+            self.url,
+            _manage_post_data(
+                self.invoice,
+                status="draft",
+                new_before_image=_make_image("too-many.jpg"),
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        self.assertEqual(self.invoice.images.filter(image_type="before").count(), 3)
+
     def test_can_delete_image_via_form(self):
         self.client.login(username="staff", password="pass")
         img = InvoiceImage.objects.create(
@@ -313,6 +335,28 @@ class InvoiceManageAccessTests(TestCase):
         self.assertEqual(product.product_name, "Worcester Bosch Greenstar 8000")
         self.assertEqual(product.serial_number, "WB-2026-001234")
         self.assertEqual(float(product.unit_price), 1850.00)
+
+    def test_malformed_product_id_does_not_crash(self):
+        self.client.login(username="staff", password="pass")
+        response = self.client.post(
+            self.url,
+            _manage_post_data(
+                self.invoice,
+                status="draft",
+                product_id_0="not-an-id",
+                product_name_0="Replacement tap",
+                product_serial_0="",
+                product_price_0="42.50",
+                product_qty_0="1",
+                product_warranty_0="",
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        self.assertEqual(
+            self.invoice.products.get().product_name,
+            "Replacement tap",
+        )
 
     def test_product_deletion(self):
         self.client.login(username="staff", password="pass")
@@ -572,6 +616,39 @@ class BookingLookupTests(TestCase):
         resp = self.client.get(self.url)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), [])
+
+    def test_lookup_finds_match_beyond_latest_50_bookings(self):
+        from trades.models import BookingEnquiry
+        old_booking = BookingEnquiry.objects.create(
+            full_name="Older Match",
+            phone="+44 7000 000001",
+            email="older@example.com",
+            preferred_date=timezone.localdate(),
+            address="1 Old Road",
+            postcode="M20 1AB",
+            service=BookingEnquiry.ServiceChoices.GENERAL,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Older matching job",
+        )
+        BookingEnquiry.objects.filter(pk=old_booking.pk).update(
+            created_at=timezone.now() - timezone.timedelta(days=30)
+        )
+        for i in range(60):
+            BookingEnquiry.objects.create(
+                full_name=f"Recent User {i}",
+                phone=f"07123 4567{i:02d}",
+                preferred_date=timezone.localdate(),
+                address="Test St",
+                postcode="M20 1AB",
+                service=BookingEnquiry.ServiceChoices.GENERAL,
+                timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+                description="Recent job",
+            )
+
+        resp = self.client.get(self.url + "?q=older")
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()[0]["full_name"], "Older Match")
 
     def test_max_10_results(self):
         from trades.models import BookingEnquiry

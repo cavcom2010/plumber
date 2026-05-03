@@ -1,10 +1,12 @@
 import logging
 import re
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -39,7 +41,14 @@ def booking_lookup(request):
     if query_digits.startswith("0"):
         query_digits = query_digits[1:]
 
-    candidates = BookingEnquiry.objects.order_by("-created_at")[:50]
+    filters = Q(full_name__icontains=query)
+    filters |= Q(email__icontains=query)
+    filters |= Q(phone__icontains=query)
+    if query_digits:
+        phone_tail = query_digits[1:] if query_digits.startswith("0") else query_digits
+        filters |= Q(phone__icontains=phone_tail)
+
+    candidates = BookingEnquiry.objects.filter(filters).order_by("-created_at")[:50]
     matches = []
     for b in candidates:
         if query_lower in b.full_name.lower():
@@ -149,11 +158,11 @@ class ManageInvoiceView(View):
 
             if form.cleaned_data.get("new_before_image"):
                 self._add_image(
-                    invoice, "before", form.cleaned_data["new_before_image"]
+                    request, invoice, "before", form.cleaned_data["new_before_image"]
                 )
             if form.cleaned_data.get("new_after_image"):
                 self._add_image(
-                    invoice, "after", form.cleaned_data["new_after_image"]
+                    request, invoice, "after", form.cleaned_data["new_after_image"]
                 )
 
             self._delete_marked_images(invoice, request.POST)
@@ -257,10 +266,13 @@ class ManageInvoiceView(View):
                 "Invoice saved but email delivery failed. Please try resending.",
             )
 
-    def _add_image(self, invoice, image_type, image_file):
+    def _add_image(self, request, invoice, image_type, image_file):
         count = invoice.images.filter(image_type=image_type).count()
         if count >= 3:
-            messages.warning(request=None)
+            messages.warning(
+                request,
+                f"Maximum 3 {image_type} images per invoice. Extra image ignored.",
+            )
             return
         InvoiceImage.objects.create(
             invoice=invoice,
@@ -300,16 +312,19 @@ class ManageInvoiceView(View):
 
             price = self._parse_decimal(price)
             qty = self._parse_int(qty, 1)
+            existing_id = self._parse_int(prod_id, None) if prod_id else None
 
-            if prod_id and int(prod_id) in existing_ids:
-                InvoiceProduct.objects.filter(id=int(prod_id)).update(
+            if existing_id in existing_ids:
+                InvoiceProduct.objects.filter(
+                    id=existing_id, invoice=invoice
+                ).update(
                     product_name=name,
                     serial_number=serial,
                     unit_price=price,
                     quantity=qty,
                     warranty_info=warranty,
                 )
-                submitted_ids.add(int(prod_id))
+                submitted_ids.add(existing_id)
             else:
                 prod = InvoiceProduct.objects.create(
                     invoice=invoice,
@@ -329,9 +344,9 @@ class ManageInvoiceView(View):
 
     def _parse_decimal(self, value):
         try:
-            return round(float(value), 2)
-        except (ValueError, TypeError):
-            return 0
+            return Decimal(value).quantize(Decimal("0.01"))
+        except (InvalidOperation, TypeError, ValueError):
+            return Decimal("0.00")
 
     def _parse_int(self, value, default=1):
         try:
