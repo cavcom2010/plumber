@@ -7,6 +7,10 @@
     const submitBtn = document.getElementById('submitBtn');
     const successOverlay = document.getElementById('successOverlay');
     const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+    const reviewOverlay = document.getElementById('reviewOverlay');
+    const reviewContent = document.getElementById('reviewContent');
+    const reviewEditBtn = document.getElementById('reviewEditBtn');
+    const reviewConfirmBtn = document.getElementById('reviewConfirmBtn');
 
     if (!form) return;
 
@@ -145,9 +149,160 @@
         });
     });
 
+    // -- Image preview --
+    function initImagePreviews() {
+        document.querySelectorAll('.diagnostic-upload-row input[type="file"]').forEach(function (input) {
+            var preview = input.parentElement.querySelector('.image-preview');
+            if (!preview) return;
+
+            input.addEventListener('change', function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.innerHTML =
+                            '<img src="' + e.target.result + '" alt="Preview">' +
+                            '<button type="button" class="preview-remove" aria-label="Remove photo">Remove</button>';
+                        preview.classList.add('has-image');
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            preview.addEventListener('click', function (e) {
+                if (e.target.classList.contains('preview-remove')) {
+                    input.value = '';
+                    preview.innerHTML = '';
+                    preview.classList.remove('has-image');
+                }
+            });
+        });
+    }
+
+    initImagePreviews();
+
+    // -- Review modal --
+    function getFieldValue(selector, fallback) {
+        var el = document.querySelector(selector);
+        if (!el || !el.value) return fallback || '—';
+        return el.value.trim();
+    }
+
+    function getCheckedLabel(name, fallback) {
+        var checked = document.querySelector('input[name="' + name + '"]:checked');
+        if (!checked) return fallback || '—';
+        var card = checked.closest('label');
+        if (card) {
+            var span = card.querySelector('.card-label, .pill-label');
+            if (span) return span.textContent.trim();
+        }
+        return checked.value;
+    }
+
+    function getEmergencyText() {
+        if (emergencyCheck && emergencyCheck.checked) return 'Yes';
+        return 'No';
+    }
+
+    function fieldHasError(groupId) {
+        var group = document.getElementById(groupId);
+        return group && group.classList.contains('error');
+    }
+
+    function reviewField(labelText, value, hasError) {
+        var cls = 'review-field';
+        if (hasError) cls += ' review-error';
+        return '<div class="' + cls + '"><span class="review-label">' + labelText + '</span><span class="review-value">' + value + '</span></div>';
+    }
+
+    function buildReviewContent() {
+        var html = '';
+
+        html += '<div class="review-section">';
+        html += '<div class="review-section-title">Client Details</div>';
+        html += reviewField('Name', getFieldValue('#name'), fieldHasError('group-name'));
+        html += reviewField('Phone', getFieldValue('#phone'), fieldHasError('group-phone'));
+        var emailVal = getFieldValue('#email', '');
+        html += reviewField('Email', emailVal || '(not provided)', false);
+        html += reviewField('Address', getFieldValue('#address'), fieldHasError('group-address'));
+        html += reviewField('Postcode', getFieldValue('#postcode'), fieldHasError('group-postcode'));
+        html += '</div>';
+
+        html += '<div class="review-section">';
+        html += '<div class="review-section-title">Job Details</div>';
+        html += reviewField('Service', getCheckedLabel('service'), fieldHasError('group-service'));
+        html += reviewField('Date', getFieldValue('#date'), fieldHasError('group-date'));
+        html += reviewField('Time', getCheckedLabel('timeslot'), fieldHasError('group-time'));
+        html += reviewField('Emergency', getEmergencyText(), false);
+        html += reviewField('Description', getFieldValue('#description'), fieldHasError('group-description'));
+        html += '</div>';
+
+        html += '<div class="review-section">';
+        html += '<div class="review-section-title">Diagnostic Photos</div>';
+        html += '<div class="review-images">';
+        var hasImages = false;
+        for (var i = 1; i <= 3; i++) {
+            var previewEl = document.querySelector('.diagnostic-upload-row:nth-child(' + i + ') .image-preview img');
+            if (previewEl) {
+                html += '<img src="' + previewEl.src + '" alt="Diagnostic photo ' + i + '">';
+                hasImages = true;
+            }
+        }
+        if (!hasImages) {
+            html += '<span class="review-empty">No photos uploaded</span>';
+        }
+        html += '</div>';
+        html += '</div>';
+
+        return html;
+    }
+
+    function openReview() {
+        if (!reviewOverlay || !reviewContent) return;
+        reviewContent.innerHTML = buildReviewContent();
+        reviewOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeReview() {
+        if (!reviewOverlay) return;
+        reviewOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (reviewEditBtn) {
+        reviewEditBtn.addEventListener('click', function () {
+            closeReview();
+            var firstField = document.getElementById('name');
+            if (firstField) firstField.focus();
+        });
+    }
+
+    if (reviewConfirmBtn) {
+        reviewConfirmBtn.addEventListener('click', function () {
+            closeReview();
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+            }
+            form.requestSubmit();
+        });
+    }
+
+    if (reviewOverlay) {
+        reviewOverlay.addEventListener('click', function (event) {
+            if (event.target === reviewOverlay) closeReview();
+        });
+    }
+
     form.addEventListener('submit', function (event) {
         if (!validateForm()) {
             event.preventDefault();
+            return;
+        }
+
+        if (reviewOverlay && !reviewOverlay.classList.contains('active')) {
+            event.preventDefault();
+            openReview();
             return;
         }
 
@@ -157,6 +312,7 @@
         }
     });
 
+    // -- Success overlay --
     function openSuccess() {
         if (!successOverlay) return;
         successOverlay.classList.add('active');
@@ -182,8 +338,12 @@
     }
 
     document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && successOverlay && successOverlay.classList.contains('active')) {
-            closeSuccess();
+        if (event.key === 'Escape') {
+            if (reviewOverlay && reviewOverlay.classList.contains('active')) {
+                closeReview();
+            } else if (successOverlay && successOverlay.classList.contains('active')) {
+                closeSuccess();
+            }
         }
     });
 })();

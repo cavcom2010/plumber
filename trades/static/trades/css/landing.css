@@ -1047,6 +1047,257 @@
             display: flex;
         }
 
+        .fieldset-help {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .optional-tag {
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .diagnostic-uploads {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .diagnostic-upload-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .diagnostic-upload-row.error input {
+            border-color: var(--red);
+        }
+
+        .diagnostic-upload-row.error .error-msg {
+            display: block;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.6rem;
+            background: var(--blue-50);
+            border: 1px solid var(--blue-200, rgba(30, 64, 175, 0.18));
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--blue);
+            transition: background 0.15s;
+        }
+
+        .file-upload-label:hover {
+            background: var(--blue-100, rgba(30, 64, 175, 0.08));
+        }
+
+        .file-upload-icon {
+            font-size: 1rem;
+        }
+
+        .diagnostic-upload-row input[type="file"] {
+            margin-top: 0.35rem;
+            font-size: 0.78rem;
+        }
+
+        .image-preview {
+            display: none;
+            margin-top: 0.4rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            max-width: 160px;
+        }
+
+        .image-preview.has-image {
+            display: block;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            max-height: 120px;
+        }
+
+        .image-preview .preview-remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.72rem;
+            color: var(--red);
+            cursor: pointer;
+            border-top: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .review-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 998;
+            background: rgba(26, 31, 60, 0.68);
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .review-overlay.active {
+            display: flex;
+        }
+
+        .review-modal {
+            background: var(--surface);
+            border-radius: 14px;
+            max-width: 540px;
+            width: 100%;
+            padding: 1.75rem 1.5rem;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+            animation: reviewSlideUp 0.25s ease-out;
+        }
+
+        @keyframes reviewSlideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .review-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .review-section {
+            margin-bottom: 1rem;
+        }
+
+        .review-section-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .review-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.45rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            font-size: 0.88rem;
+        }
+
+        .review-field:last-child {
+            border-bottom: none;
+        }
+
+        .review-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            flex-shrink: 0;
+            min-width: 90px;
+        }
+
+        .review-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .review-field.review-error {
+            background: var(--error-bg, rgba(220, 38, 38, 0.05));
+            border-radius: 6px;
+            padding: 0.45rem 0.55rem;
+        }
+
+        .review-field.review-error .review-value {
+            color: var(--red);
+        }
+
+        .review-field.review-error .review-label::after {
+            content: ' ⚠';
+        }
+
+        .review-images {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .review-images img {
+            width: 90px;
+            height: 68px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border-light);
+        }
+
+        .review-images .review-empty {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .review-btn {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .review-btn-edit {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .review-btn-edit:hover {
+            background: var(--bg-light);
+        }
+
+        .review-btn-confirm {
+            background: var(--gold);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(199, 150, 46, 0.3);
+        }
+
+        .review-btn-confirm:hover {
+            background: var(--gold-light);
+            box-shadow: 0 6px 20px rgba(199, 150, 46, 0.4);
+        }
+
         .form-submit-area {
             margin-top: 8px;
             padding-top: 16px;

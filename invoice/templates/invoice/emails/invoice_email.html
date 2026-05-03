@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; color: #1a1a2e; line-height: 1.6; margin: 0; padding: 0; background: #f8f9fa;">
+    <div style="max-width: 560px; margin: 0 auto; padding: 2rem 1rem;">
+        <div style="background: #ffffff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+            <h2 style="margin:0 0 0.5rem; font-size: 1.2rem; color: #1e40af;">{{ business_name }}</h2>
+            <p style="margin:0 0 1.5rem; color: #6b7280; font-size: 0.85rem;">Invoice {{ invoice.invoice_number }}</p>
+
+            <p style="margin:0 0 1rem;">Dear {{ invoice.client_name }},</p>
+            <p style="margin:0 0 1rem;">Your invoice is attached. Here's a summary:</p>
+
+            <table style="width:100%; border-collapse:collapse; margin-bottom:1.5rem; font-size:0.9rem;">
+                <tr>
+                    <td style="padding:0.4rem 0; color:#6b7280;">Service</td>
+                    <td style="padding:0.4rem 0; text-align:right; font-weight:600;">{{ invoice.get_service_type_display }}</td>
+                </tr>
+                <tr>
+                    <td style="padding:0.4rem 0; color:#6b7280;">Invoice Number</td>
+                    <td style="padding:0.4rem 0; text-align:right; font-weight:600;">{{ invoice.invoice_number }}</td>
+                </tr>
+                <tr>
+                    <td style="padding:0.4rem 0; color:#6b7280;">Total</td>
+                    <td style="padding:0.4rem 0; text-align:right; font-weight:700; font-size:1.05rem; color:#1e40af;">£{{ invoice.total_cost|floatformat:2 }}</td>
+                </tr>
+            </table>
+
+            {% if testimonial_url %}
+                <p style="margin:0 0 0.75rem; font-weight:600;">How did we do?</p>
+                <p style="margin:0 0 1.5rem; font-size:0.9rem; color:#4b5563;">Your feedback helps us improve and lets other customers know what to expect.</p>
+                <a href="{{ testimonial_url }}" style="display:inline-block; padding:0.7rem 1.5rem; background:#1e40af; color:#ffffff; text-decoration:none; border-radius:8px; font-weight:600; font-size:0.9rem; margin-bottom:1.5rem;">Leave a Review</a>
+            {% endif %}
+
+            <p style="margin:0 0 0.25rem; font-size:0.85rem; color:#6b7280;">Thank you for your business.</p>
+            <p style="margin:0; font-size:0.85rem; color:#6b7280;">{{ business_name }}{% if business_phone %} — {{ business_phone }}{% endif %}</p>
+        </div>
+    </div>
+</body>
+</html>

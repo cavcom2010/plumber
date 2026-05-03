@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <form id="bookingForm" method="post" action="{% url 'trades_booking' %}" novalidate>
+            <form id="bookingForm" method="post" action="{% url 'trades_booking' %}" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 <div class="form-grid">
                     <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
@@ -114,12 +114,60 @@
                                     <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
                         </div>
                     </div>
+
+                    <fieldset class="form-group full-width">
+                        <legend class="fieldset-label">Photos of the Issue <span class="optional-tag">(optional)</span></legend>
+                        <p class="fieldset-help" id="diagnostic-help">
+                            Upload up to 3 photos of the damaged area or equipment. Clear shots of brand labels (e.g. boiler make/model) help us bring the right parts for the first visit.
+                        </p>
+                        <div class="diagnostic-uploads">
+                            <div class="diagnostic-upload-row{% if form.diagnostic_image_1.errors %} error{% endif %}">
+                                <label for="id_diagnostic_image_1" class="file-upload-label">
+                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-text">Photo 1</span>
+                                </label>
+                                {{ form.diagnostic_image_1 }}
+                                <div class="image-preview"></div>
+                                <span class="error-msg">{{ form.diagnostic_image_1.errors.0 }}</span>
+                            </div>
+                            <div class="diagnostic-upload-row{% if form.diagnostic_image_2.errors %} error{% endif %}">
+                                <label for="id_diagnostic_image_2" class="file-upload-label">
+                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-text">Photo 2</span>
+                                </label>
+                                {{ form.diagnostic_image_2 }}
+                                <div class="image-preview"></div>
+                                <span class="error-msg">{{ form.diagnostic_image_2.errors.0 }}</span>
+                            </div>
+                            <div class="diagnostic-upload-row{% if form.diagnostic_image_3.errors %} error{% endif %}">
+                                <label for="id_diagnostic_image_3" class="file-upload-label">
+                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-text">Photo 3</span>
+                                </label>
+                                {{ form.diagnostic_image_3 }}
+                                <div class="image-preview"></div>
+                                <span class="error-msg">{{ form.diagnostic_image_3.errors.0 }}</span>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
 
                 <div class="form-submit-area">
-                    <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking Enquiry</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">Review &amp; Confirm</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="review-overlay" id="reviewOverlay" role="dialog" aria-modal="true" aria-labelledby="review-overlay-title">
+        <div class="review-modal">
+            <h2 class="review-title" id="review-overlay-title">Review Your Booking</h2>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Check everything looks right before confirming.</p>
+            <div id="reviewContent"></div>
+            <div class="review-actions">
+                <button type="button" class="review-btn review-btn-edit" id="reviewEditBtn">Edit Details</button>
+                <button type="button" class="review-btn review-btn-confirm" id="reviewConfirmBtn">Confirm &amp; Send</button>
+            </div>
         </div>
     </div>
 </section>

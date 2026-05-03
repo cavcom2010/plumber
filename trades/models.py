@@ -276,4 +276,21 @@ class BookingEnquiry(models.Model):
     def testimonial_job_display(self):
         return self.testimonial_job_label.strip() or self.get_service_display()
 
-# Create your models here.
+
+class BookingImage(models.Model):
+    booking = models.ForeignKey(
+        BookingEnquiry,
+        on_delete=models.CASCADE,
+        related_name="diagnostic_images",
+    )
+    image = models.ImageField(upload_to="booking/diagnostics/")
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["sort_order", "created_at"]
+        verbose_name = "booking diagnostic image"
+        verbose_name_plural = "booking diagnostic images"
+
+    def __str__(self):
+        return f"Image {self.sort_order} for {self.booking}"

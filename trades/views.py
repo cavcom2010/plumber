@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 
 from .forms import BookingEnquiryForm, TestimonialSubmissionForm
-from .models import BookingEnquiry, BusinessProfile, Testimonial
+from .models import BookingEnquiry, BookingImage, BusinessProfile, Testimonial
 
 logger = logging.getLogger(__name__)
 TESTIMONIAL_LINK_SALT = "trades.testimonial-link"
@@ -63,9 +63,17 @@ def trades_reviews(request):
 
 def trades_booking(request):
     if request.method == "POST":
-        form = BookingEnquiryForm(request.POST)
+        form = BookingEnquiryForm(request.POST, request.FILES)
         if form.is_valid():
             booking = form.save()
+            for i in range(1, 4):
+                img = form.cleaned_data.get(f"diagnostic_image_{i}")
+                if img:
+                    BookingImage.objects.create(
+                        booking=booking,
+                        image=img,
+                        sort_order=i - 1,
+                    )
             _send_booking_notification(request, booking)
             messages.success(
                 request,

@@ -4,6 +4,7 @@ from django.utils.html import format_html
 
 from .models import (
     BookingEnquiry,
+    BookingImage,
     BusinessProfile,
     ServiceOffering,
     Testimonial,
@@ -28,6 +29,13 @@ class TestimonialInline(admin.TabularInline):
     model = Testimonial
     extra = 1
     fields = ("quote", "author_name", "author_label", "rating", "sort_order", "is_active")
+
+
+class BookingImageInline(admin.TabularInline):
+    model = BookingImage
+    extra = 0
+    readonly_fields = ("created_at",)
+    fields = ("image", "sort_order")
 
 
 @admin.register(Testimonial)
@@ -155,6 +163,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
     readonly_fields = ("testimonial_request_link", "created_at", "updated_at")
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
+    inlines = (BookingImageInline,)
     fieldsets = (
         (
             "Customer",

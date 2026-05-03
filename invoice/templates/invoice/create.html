@@ -1,0 +1,93 @@
+{% extends "invoice/base.html" %}
+
+{% block title %}New Invoice | Invoice Manager{% endblock %}
+
+{% block content %}
+<section class="inv-section">
+    <div class="inv-section-inner">
+        <h2 class="inv-section-title">Create Invoice Draft</h2>
+        <p class="inv-section-sub">Fill in the client and job details to start a new invoice.</p>
+
+        <div class="inv-card">
+            <form method="post" action="{% url 'invoice_create' %}" id="invoiceCreateForm" novalidate>
+                {% csrf_token %}
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Client Details</legend>
+                    <div class="inv-form-grid">
+                        <div class="inv-form-group{% if form.client_name.errors %} inv-error{% endif %}">
+                            <label for="inv-name">Full Name <span class="inv-required">*</span></label>
+                            {{ form.client_name }}
+                            <span class="inv-error-msg">{{ form.client_name.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_phone.errors %} inv-error{% endif %}">
+                            <label for="inv-phone">Phone Number <span class="inv-required">*</span></label>
+                            {{ form.client_phone }}
+                            <span class="inv-error-msg">{{ form.client_phone.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_email.errors %} inv-error{% endif %}">
+                            <label for="inv-email">Email Address</label>
+                            {{ form.client_email }}
+                            <span class="inv-error-msg">{{ form.client_email.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group inv-full{% if form.client_address.errors %} inv-error{% endif %}">
+                            <label for="inv-address">Full Address <span class="inv-required">*</span></label>
+                            {{ form.client_address }}
+                            <span class="inv-error-msg">{{ form.client_address.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_postcode.errors %} inv-error{% endif %}">
+                            <label for="inv-postcode">Postcode <span class="inv-required">*</span></label>
+                            {{ form.client_postcode }}
+                            <span class="inv-error-msg">{{ form.client_postcode.errors.0 }}</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Job Details</legend>
+                    <div class="inv-form-grid">
+                        <div class="inv-form-group inv-full{% if form.service_type.errors %} inv-error{% endif %}">
+                            <label>Service Required <span class="inv-required">*</span></label>
+                            <div class="inv-radio-grid">
+                                {% for value, label in form.service_type.field.choices %}
+                                    <label class="inv-radio-card">
+                                        <input type="radio" name="service_type" value="{{ value }}"{% if form.service_type.value == value %} checked{% endif %}>
+                                        <span>{{ label }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            <span class="inv-error-msg">{{ form.service_type.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group inv-full{% if form.job_description.errors %} inv-error{% endif %}">
+                            <label for="inv-description">Job Description <span class="inv-required">*</span></label>
+                            {{ form.job_description }}
+                            <span class="inv-error-msg">{{ form.job_description.errors.0 }}</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="inv-submit-area">
+                    <button type="submit" class="inv-btn inv-btn-primary">Review &amp; Create Draft</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="inv-review-overlay" id="invReviewOverlay" role="dialog" aria-modal="true" aria-labelledby="inv-review-overlay-title">
+        <div class="inv-review-modal">
+            <h2 class="inv-review-title" id="inv-review-overlay-title">Review Invoice Draft</h2>
+            <p style="font-size:0.82rem;color:var(--inv-text-muted);margin-bottom:1rem;">Check everything looks right before creating the draft.</p>
+            <div id="invReviewContent"></div>
+            <div class="inv-review-actions">
+                <button type="button" class="inv-review-btn inv-review-btn-edit" id="invReviewEditBtn">Edit Details</button>
+                <button type="button" class="inv-review-btn inv-review-btn-confirm" id="invReviewConfirmBtn">Confirm &amp; Create</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

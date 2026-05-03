@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ invoice.invoice_number }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.8cm 1.6cm;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10pt;
+            color: #1a1a2e;
+            line-height: 1.45;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 3px solid #1e40af;
+        }
+        .header-brand h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+        }
+        .header-brand p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .header-info {
+            text-align: right;
+            font-size: 0.85rem;
+        }
+        .header-info .inv-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .header-info .inv-date {
+            color: #6b7280;
+            margin-top: 0.15rem;
+        }
+        .section {
+            margin-bottom: 1.2rem;
+        }
+        .section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .client-grid {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+        .client-grid .col {
+            flex: 1;
+        }
+        .client-grid .label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .client-grid .value {
+            font-weight: 600;
+        }
+        .job-desc {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #1e40af;
+        }
+        .image-section {
+            margin-bottom: 0.75rem;
+        }
+        .image-section .label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.35rem;
+        }
+        .image-grid {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .image-grid img {
+            width: 110px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        .image-grid .empty {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-style: italic;
+            padding: 0.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+        th {
+            text-align: left;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            padding: 0.4rem 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        td {
+            padding: 0.45rem 0.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+        .cost-table {
+            width: 50%;
+            margin-left: auto;
+        }
+        .cost-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+        .cost-table .total-row td {
+            border-top: 2px solid #1e40af;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1e40af;
+            padding-top: 0.5rem;
+        }
+        .notes {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .notes-label {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .footer {
+            margin-top: 2rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.7rem;
+            color: #9ca3af;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-brand">
+            <h1>{{ invoice.business.business_name|default:"FlowPro Plumbing" }}</h1>
+            <p>{{ invoice.business.phone_display|default:"" }}</p>
+            <p>{{ invoice.business.email|default:"" }}</p>
+            <p>{{ invoice.business.service_area|default:"" }}</p>
+        </div>
+        <div class="header-info">
+            <div class="inv-number">{{ invoice.invoice_number }}</div>
+            <div class="inv-date">{{ invoice.created_at|date:"j F Y" }}</div>
+            <div style="margin-top:0.4rem;font-weight:600;color:#1e40af;">{{ invoice.get_status_display }}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Bill To</div>
+        <div class="client-grid">
+            <div class="col">
+                <div class="label">Name</div>
+                <div class="value">{{ invoice.client_name }}</div>
+            </div>
+            <div class="col">
+                <div class="label">Phone</div>
+                <div class="value">{{ invoice.client_phone }}</div>
+            </div>
+            <div class="col">
+                <div class="label">Email</div>
+                <div class="value">{{ invoice.client_email|default:"—" }}</div>
+            </div>
+        </div>
+        <div class="client-grid" style="margin-top:0.4rem;">
+            <div class="col">
+                <div class="label">Address</div>
+                <div class="value">{{ invoice.client_address }}</div>
+            </div>
+            <div class="col">
+                <div class="label">Postcode</div>
+                <div class="value">{{ invoice.client_postcode }}</div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Job Details</div>
+        <div class="job-desc">
+            <strong>{{ invoice.get_service_type_display }}</strong><br>
+            {{ invoice.job_description }}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="image-section">
+            <div class="label">Before Photos</div>
+            <div class="image-grid">
+                {% for img in invoice.images.all %}
+                    {% if img.image_type == "before" %}
+                        <img src="file://{{ img.image.path }}" alt="Before photo {{ img.sort_order|add:1 }}">
+                    {% endif %}
+                {% empty %}
+                    <span class="empty">No before photos</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="image-section">
+            <div class="label">After Photos</div>
+            <div class="image-grid">
+                {% for img in invoice.images.all %}
+                    {% if img.image_type == "after" %}
+                        <img src="file://{{ img.image.path }}" alt="After photo {{ img.sort_order|add:1 }}">
+                    {% endif %}
+                {% empty %}
+                    <span class="empty">No after photos</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if invoice.products.exists %}
+    <div class="section">
+        <div class="section-title">Products Installed</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Serial Number</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Warranty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in invoice.products.all %}
+                    <tr>
+                        <td>{{ product.product_name }}</td>
+                        <td>{{ product.serial_number|default:"—" }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>&pound;{{ product.unit_price|floatformat:2 }}</td>
+                        <td>{{ product.warranty_info|default:"—" }}</td>
+                        <td>&pound;{{ product.line_total|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">Cost Breakdown</div>
+        <table class="cost-table">
+            <tbody>
+                {% if invoice.labour_description %}
+                    <tr>
+                        <td>Labour — {{ invoice.labour_description }}</td>
+                        <td>&pound;{{ invoice.labour_cost|floatformat:2 }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>Labour</td>
+                        <td>&pound;{{ invoice.labour_cost|floatformat:2 }}</td>
+                    </tr>
+                {% endif %}
+                {% if invoice.materials_description %}
+                    <tr>
+                        <td>Materials — {{ invoice.materials_description }}</td>
+                        <td>&pound;{{ invoice.materials_cost|floatformat:2 }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>Materials</td>
+                        <td>&pound;{{ invoice.materials_cost|floatformat:2 }}</td>
+                    </tr>
+                {% endif %}
+                <tr class="total-row">
+                    <td>Total</td>
+                    <td>&pound;{{ invoice.total_cost|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {% if invoice.notes %}
+        <div class="notes">
+            <span class="notes-label">Notes:</span> {{ invoice.notes }}
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        {{ invoice.business.business_name|default:"FlowPro Plumbing" }} &mdash;
+        {{ invoice.business.phone_display|default:"" }}
+        {% if invoice.business.service_area %} &mdash; {{ invoice.business.service_area }}{% endif %}
+    </div>
+</body>
+</html>

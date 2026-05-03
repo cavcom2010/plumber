@@ -1,10 +1,12 @@
 import re
 
 from django import forms
-from django.core.validators import validate_email
+from django.core.validators import FileExtensionValidator, validate_email
 from django.utils import timezone
 
 from .models import BookingEnquiry, Testimonial
+
+MAX_DIAGNOSTIC_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 UK_POSTCODE_RE = re.compile(
@@ -87,7 +89,7 @@ class BookingEnquiryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            if name != "email":
+            if name != "email" and not name.startswith("diagnostic_image_"):
                 field.required = True
         self.fields["email"].required = False
         self.fields["is_emergency"].required = False
@@ -140,6 +142,54 @@ class BookingEnquiryForm(forms.ModelForm):
         if len(value) < 10:
             raise forms.ValidationError("Please describe the issue in at least 10 characters.")
         return value
+
+    def _validate_image(self, image, field_name):
+        if image:
+            if image.size > MAX_DIAGNOSTIC_IMAGE_SIZE:
+                raise forms.ValidationError("Image must be under 10 MB.")
+
+    diagnostic_image_1 = forms.ImageField(
+        required=False,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+        widget=forms.FileInput(attrs={
+            "accept": "image/jpeg,image/png,image/webp",
+            "capture": "environment",
+            "aria-describedby": "diagnostic-help-1",
+        }),
+    )
+    diagnostic_image_2 = forms.ImageField(
+        required=False,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+        widget=forms.FileInput(attrs={
+            "accept": "image/jpeg,image/png,image/webp",
+            "capture": "environment",
+            "aria-describedby": "diagnostic-help-2",
+        }),
+    )
+    diagnostic_image_3 = forms.ImageField(
+        required=False,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+        widget=forms.FileInput(attrs={
+            "accept": "image/jpeg,image/png,image/webp",
+            "capture": "environment",
+            "aria-describedby": "diagnostic-help-3",
+        }),
+    )
+
+    def clean_diagnostic_image_1(self):
+        image = self.cleaned_data.get("diagnostic_image_1")
+        self._validate_image(image, "diagnostic_image_1")
+        return image
+
+    def clean_diagnostic_image_2(self):
+        image = self.cleaned_data.get("diagnostic_image_2")
+        self._validate_image(image, "diagnostic_image_2")
+        return image
+
+    def clean_diagnostic_image_3(self):
+        image = self.cleaned_data.get("diagnostic_image_3")
+        self._validate_image(image, "diagnostic_image_3")
+        return image
 
 
 class TestimonialSubmissionForm(forms.ModelForm):

@@ -1,0 +1,21 @@
+{% autoescape off %}
+Dear {{ invoice.client_name }},
+
+Thank you for choosing {{ business_name }}. Your invoice is attached.
+
+  Invoice: {{ invoice.invoice_number }}
+  Service: {{ invoice.get_service_type_display }}
+  Total:   £{{ invoice.total_cost|floatformat:2 }}
+
+{% if testimonial_url %}
+We hope you're happy with our service. Your feedback helps us improve:
+
+{{ testimonial_url }}
+
+{% endif %}
+Thank you for your business.
+
+{{ business_name }}
+{{ business_phone }}
+{{ business_email }}
+{% endautoescape %}

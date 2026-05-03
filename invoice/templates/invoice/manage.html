@@ -1,0 +1,230 @@
+{% extends "invoice/base.html" %}
+
+{% block title %}{{ invoice.invoice_number }} | Invoice Manager{% endblock %}
+
+{% block content %}
+<section class="inv-section">
+    <div class="inv-section-inner">
+        <div class="inv-manage-header">
+            <h2 class="inv-section-title">{{ invoice.invoice_number }}</h2>
+            <span class="inv-status inv-status-{{ invoice.status }}">{{ invoice.get_status_display }}</span>
+        </div>
+
+        <div class="inv-card">
+            <form method="post" action="{% url 'invoice_manage' invoice.pk %}" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Client Details</legend>
+                    <div class="inv-form-grid">
+                        <div class="inv-form-group{% if form.client_name.errors %} inv-error{% endif %}">
+                            <label for="inv-name">Full Name <span class="inv-required">*</span></label>
+                            {{ form.client_name }}
+                            <span class="inv-error-msg">{{ form.client_name.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_phone.errors %} inv-error{% endif %}">
+                            <label for="inv-phone">Phone <span class="inv-required">*</span></label>
+                            {{ form.client_phone }}
+                            <span class="inv-error-msg">{{ form.client_phone.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_email.errors %} inv-error{% endif %}">
+                            <label for="inv-email">Email</label>
+                            {{ form.client_email }}
+                            <span class="inv-error-msg">{{ form.client_email.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group inv-full{% if form.client_address.errors %} inv-error{% endif %}">
+                            <label for="inv-address">Address <span class="inv-required">*</span></label>
+                            {{ form.client_address }}
+                            <span class="inv-error-msg">{{ form.client_address.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group{% if form.client_postcode.errors %} inv-error{% endif %}">
+                            <label for="inv-postcode">Postcode <span class="inv-required">*</span></label>
+                            {{ form.client_postcode }}
+                            <span class="inv-error-msg">{{ form.client_postcode.errors.0 }}</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Job Details</legend>
+                    <div class="inv-form-grid">
+                        <div class="inv-form-group inv-full{% if form.service_type.errors %} inv-error{% endif %}">
+                            <label>Service <span class="inv-required">*</span></label>
+                            <div class="inv-radio-grid">
+                                {% for value, label in form.service_type.field.choices %}
+                                    <label class="inv-radio-card">
+                                        <input type="radio" name="service_type" value="{{ value }}"{% if form.service_type.value == value %} checked{% endif %}>
+                                        <span>{{ label }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            <span class="inv-error-msg">{{ form.service_type.errors.0 }}</span>
+                        </div>
+
+                        <div class="inv-form-group inv-full{% if form.job_description.errors %} inv-error{% endif %}">
+                            <label for="inv-description">Job Description <span class="inv-required">*</span></label>
+                            {{ form.job_description }}
+                            <span class="inv-error-msg">{{ form.job_description.errors.0 }}</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                {% if booking_images %}
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Client Diagnostic Photos (from Booking)</legend>
+                    <div class="inv-image-grid">
+                        {% for img in booking_images %}
+                            <div class="inv-image-thumb">
+                                <img src="{{ img.image.url }}" alt="Diagnostic photo {{ img.sort_order|add:1 }}" loading="lazy">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                {% endif %}
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Before Photos <span class="inv-limit">(max 3)</span></legend>
+                    {% if before_images %}
+                        <div class="inv-image-grid">
+                            {% for img in before_images %}
+                                <div class="inv-image-thumb inv-image-deletable">
+                                    <img src="{{ img.image.url }}" alt="Before photo {{ img.sort_order|add:1 }}" loading="lazy">
+                                    <label class="inv-delete-label">
+                                        <input type="checkbox" name="delete_image_{{ img.id }}" value="1">
+                                        Delete
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="inv-empty">No before photos yet.</p>
+                    {% endif %}
+                    {% if before_images.count < 3 %}
+                        <div class="inv-upload-row">
+                            <label for="new-before-image" class="inv-file-label">Add Before Photo</label>
+                            {{ form.new_before_image }}
+                            <span class="inv-error-msg">{{ form.new_before_image.errors.0 }}</span>
+                        </div>
+                    {% endif %}
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">After Photos <span class="inv-limit">(max 3)</span></legend>
+                    {% if after_images %}
+                        <div class="inv-image-grid">
+                            {% for img in after_images %}
+                                <div class="inv-image-thumb inv-image-deletable">
+                                    <img src="{{ img.image.url }}" alt="After photo {{ img.sort_order|add:1 }}" loading="lazy">
+                                    <label class="inv-delete-label">
+                                        <input type="checkbox" name="delete_image_{{ img.id }}" value="1">
+                                        Delete
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="inv-empty">No after photos yet.</p>
+                    {% endif %}
+                    {% if after_images.count < 3 %}
+                        <div class="inv-upload-row">
+                            <label for="new-after-image" class="inv-file-label">Add After Photo</label>
+                            {{ form.new_after_image }}
+                            <span class="inv-error-msg">{{ form.new_after_image.errors.0 }}</span>
+                        </div>
+                    {% endif %}
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Products Installed</legend>
+                    <div id="products-container">
+                        <div class="inv-product-header">
+                            <span class="inv-product-col inv-product-col-name">Product Name</span>
+                            <span class="inv-product-col inv-product-col-serial">Serial Number</span>
+                            <span class="inv-product-col inv-product-col-price">Unit Price</span>
+                            <span class="inv-product-col inv-product-col-qty">Qty</span>
+                            <span class="inv-product-col inv-product-col-warranty">Warranty</span>
+                            <span class="inv-product-col inv-product-col-delete">Del</span>
+                        </div>
+                        {% for product in products %}
+                            <div class="inv-product-row">
+                                <input type="hidden" name="product_id_{{ forloop.counter0 }}" value="{{ product.id }}">
+                                <input type="text" name="product_name_{{ forloop.counter0 }}" value="{{ product.product_name }}" class="inv-product-col inv-product-col-name" placeholder="e.g. Worcester Bosch Greenstar 8000">
+                                <input type="text" name="product_serial_{{ forloop.counter0 }}" value="{{ product.serial_number }}" class="inv-product-col inv-product-col-serial" placeholder="Serial #">
+                                <input type="number" name="product_price_{{ forloop.counter0 }}" value="{{ product.unit_price }}" class="inv-product-col inv-product-col-price" step="0.01" min="0">
+                                <input type="number" name="product_qty_{{ forloop.counter0 }}" value="{{ product.quantity }}" class="inv-product-col inv-product-col-qty" min="1">
+                                <input type="text" name="product_warranty_{{ forloop.counter0 }}" value="{{ product.warranty_info }}" class="inv-product-col inv-product-col-warranty" placeholder="e.g. 5 years">
+                                <label class="inv-product-col inv-product-col-delete">
+                                    <input type="checkbox" name="delete_product_{{ forloop.counter0 }}" value="1">
+                                </label>
+                            </div>
+                        {% empty %}
+                            <p class="inv-empty">No products added yet.</p>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-product-btn" class="inv-btn inv-btn-sm">+ Add Product</button>
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Costs</legend>
+                    <div class="inv-cost-grid">
+                        <div class="inv-cost-row">
+                            <div class="inv-form-group">
+                                <label for="inv-labour-desc">Labour Description</label>
+                                {{ form.labour_description }}
+                            </div>
+                            <div class="inv-form-group inv-cost-amount{% if form.labour_cost.errors %} inv-error{% endif %}">
+                                <label for="id_labour_cost">Labour Cost (&pound;)</label>
+                                <input type="number" name="labour_cost" id="id_labour_cost" value="{{ form.labour_cost.value|default:'0' }}" step="0.01" min="0" class="inv-input">
+                                <span class="inv-error-msg">{{ form.labour_cost.errors.0 }}</span>
+                            </div>
+                        </div>
+                        <div class="inv-cost-row">
+                            <div class="inv-form-group">
+                                <label for="inv-materials-desc">Materials Description</label>
+                                {{ form.materials_description }}
+                            </div>
+                            <div class="inv-form-group inv-cost-amount{% if form.materials_cost.errors %} inv-error{% endif %}">
+                                <label for="id_materials_cost">Materials Cost (&pound;)</label>
+                                <input type="number" name="materials_cost" id="id_materials_cost" value="{{ form.materials_cost.value|default:'0' }}" step="0.01" min="0" class="inv-input">
+                                <span class="inv-error-msg">{{ form.materials_cost.errors.0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="inv-fieldset">
+                    <legend class="inv-legend">Status &amp; Notes</legend>
+                    <div class="inv-form-grid">
+                        <div class="inv-form-group{% if form.status.errors %} inv-error{% endif %}">
+                            <label for="id_status">Status</label>
+                            <select name="status" id="id_status" class="inv-select">
+                                {% for value, label in form.status.field.choices %}
+                                    <option value="{{ value }}"{% if form.status.value == value %} selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="inv-error-msg">{{ form.status.errors.0 }}</span>
+                        </div>
+                        <div class="inv-form-group">
+                            <label for="inv-notes">Internal Notes</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="inv-total-bar">
+                    <span class="inv-total-label">Total:</span>
+                    <span class="inv-total-value">&pound;{{ invoice.total_cost|floatformat:2 }}</span>
+                </div>
+
+                <div class="inv-submit-area">
+                    <button type="submit" class="inv-btn inv-btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

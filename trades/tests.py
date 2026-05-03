@@ -1,12 +1,15 @@
 from datetime import timedelta
+from io import BytesIO
 
 from django.core import mail
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
+from PIL import Image as PILImage
 
 from .forms import BookingEnquiryForm
-from .models import BookingEnquiry, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
+from .models import BookingEnquiry, BookingImage, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
 from .views import testimonial_token_for_booking
 
 
@@ -24,6 +27,14 @@ def valid_booking_data(**overrides):
     }
     data.update(overrides)
     return data
+
+
+def _make_test_image(name="test.jpg"):
+    b = BytesIO()
+    img = PILImage.new("RGB", (10, 10), color="red")
+    img.save(b, format="JPEG")
+    b.seek(0)
+    return SimpleUploadedFile(name, b.read(), content_type="image/jpeg")
 
 
 class TradesLandingTests(TestCase):
@@ -310,4 +321,72 @@ class TestimonialPutTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-# Create your tests here.
+
+class BookingDiagnosticImageTests(TestCase):
+    def setUp(self):
+        BusinessProfile.objects.update(is_active=False)
+        BusinessProfile.objects.create(
+            business_name="FlowPro Plumbing",
+            is_active=True,
+        )
+
+    def test_booking_form_renders_image_upload_fields(self):
+        response = self.client.get(reverse("trades_booking"))
+        self.assertContains(response, "diagnostic_image_1")
+        self.assertContains(response, "Photos of the Issue")
+        self.assertContains(response, "image-preview")
+        self.assertContains(response, "reviewOverlay")
+        self.assertContains(response, "Review Your Booking")
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        ADMIN_NOTIFICATION_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="website@example.com",
+    )
+    def test_booking_with_diagnostic_images_creates_booking_images(self):
+        response = self.client.post(
+            reverse("trades_booking"),
+            {
+                **valid_booking_data(),
+                "diagnostic_image_1": _make_test_image("leak1.jpg"),
+                "diagnostic_image_2": _make_test_image("leak2.jpg"),
+            },
+        )
+        self.assertRedirects(response, reverse("trades_booking"))
+        booking = BookingEnquiry.objects.get()
+        images = booking.diagnostic_images.all()
+        self.assertEqual(images.count(), 2)
+        self.assertEqual(images[0].sort_order, 0)
+        self.assertEqual(images[1].sort_order, 1)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        ADMIN_NOTIFICATION_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="website@example.com",
+    )
+    def test_booking_without_diagnostic_images_works(self):
+        response = self.client.post(
+            reverse("trades_booking"),
+            {
+                **valid_booking_data(),
+                "diagnostic_image_1": "",
+                "diagnostic_image_2": "",
+                "diagnostic_image_3": "",
+            },
+        )
+        self.assertRedirects(response, reverse("trades_booking"))
+        booking = BookingEnquiry.objects.get()
+        self.assertEqual(booking.diagnostic_images.count(), 0)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        ADMIN_NOTIFICATION_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="website@example.com",
+    )
+    def test_booking_with_only_one_image(self):
+        response = self.client.post(
+            reverse("trades_booking"),
+            {**valid_booking_data(), "diagnostic_image_1": _make_test_image("leak.jpg")},
+        )
+        self.assertRedirects(response, reverse("trades_booking"))
+        self.assertEqual(BookingEnquiry.objects.get().diagnostic_images.count(), 1)

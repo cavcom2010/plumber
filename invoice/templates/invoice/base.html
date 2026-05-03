@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice Manager{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'invoice/css/invoice.css' %}">
+</head>
+<body>
+    <header class="inv-header">
+        <div class="inv-header-inner">
+            <a href="{% url 'invoice_create' %}" class="inv-logo">Invoice Manager</a>
+            <nav class="inv-nav">
+                <a href="{% url 'invoice_create' %}">New Invoice</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="inv-main">
+        {% if messages %}
+            <div class="inv-messages">
+                {% for message in messages %}
+                    <div class="inv-message inv-message-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="inv-footer">
+        <div class="inv-footer-inner">
+            <p>Invoice Manager &copy; 2026</p>
+        </div>
+    </footer>
+    <script src="{% static 'invoice/js/invoice.js' %}" defer></script>
+</body>
+</html>
