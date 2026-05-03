@@ -1,12 +1,12 @@
 {% load static %}
 <section class="hero" style="background-image: linear-gradient(180deg, rgba(26, 31, 60, 0.88), rgba(26, 31, 60, 0.92)), url('{% if business and business.hero_image %}{{ business.hero_image.url }}{% else %}{% static 'trades/images/hero-plumber.jpg' %}{% endif %}');">
     <div class="hero-inner">
-        <div class="hero-badge"><span class="badge-dot" aria-hidden="true"></span> {% if business %}{{ business.hero_badge }}{% else %}Trusted local plumbing specialists{% endif %}</div>
-        <h1>{% if business %}{{ business.hero_heading_line_one }}<br><span>{{ business.hero_heading_line_two }}</span>{% else %}Premium Plumbing<br><span>Without the Stress</span>{% endif %}</h1>
-        <p>{% if business %}{{ business.hero_body }}{% else %}Reliable local plumbers for urgent repairs, leaks, drains, bathrooms, and general maintenance. Clear communication, tidy workmanship, and fast call-backs.{% endif %}</p>
+        <div class="hero-badge"><span class="badge-dot" aria-hidden="true"></span> {% if business %}{{ business.hero_badge }}{% else %}Trusted local trade specialists{% endif %}</div>
+        <h1>{% if business %}{{ business.hero_heading_line_one }}<br><span>{{ business.hero_heading_line_two }}</span>{% else %}Quality Workmanship<br><span>Without the Stress</span>{% endif %}</h1>
+        <p>{% if business %}{{ business.hero_body }}{% else %}Reliable local tradespeople for urgent repairs, installations, and general maintenance. Clear communication, tidy workmanship, and fast call-backs.{% endif %}</p>
         <div class="hero-buttons">
             <a href="{% url 'trades_booking' %}" class="btn btn-primary btn-lg"><svg class="icon-sm"><use href="#icon-calendar"></use></svg> Book Online</a>
-            <a href="tel:+441615550123" class="btn btn-emergency btn-lg"><svg class="icon-sm"><use href="#icon-alert"></use></svg> Emergency Call</a>
+            <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="btn btn-emergency btn-lg"><svg class="icon-sm"><use href="#icon-alert"></use></svg> Emergency Call</a>
         </div>
     </div>
 </section>

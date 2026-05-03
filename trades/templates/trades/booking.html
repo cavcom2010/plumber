@@ -1,6 +1,6 @@
 {% extends "trades/base.html" %}
 
-{% block title %}Book a Visit | FlowPro Plumbing{% endblock %}
+{% block title %}Book a Visit | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
 
 {% block content %}
     {% include "trades/partials/booking_section.html" %}

@@ -66,7 +66,7 @@ class TradesLandingTests(TestCase):
         response = self.client.get(reverse("trades_home"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Premium Plumbing")
+        self.assertContains(response, "Quality Workmanship")
         self.assertContains(response, "What Do You Need Today?")
         self.assertContains(response, "Book a Visit")
         self.assertContains(response, 'aria-label="Mobile navigation"')
@@ -82,13 +82,13 @@ class TradesLandingTests(TestCase):
         response = self.client.get(reverse("trades_services"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Complete Plumbing Solutions")
+        self.assertContains(response, "Our Services")
 
     def test_about_page_loads(self):
         response = self.client.get(reverse("trades_about"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Meet Your Plumber")
+        self.assertContains(response, "Meet Your Tradesperson")
 
     def test_booking_page_loads(self):
         response = self.client.get(reverse("trades_booking"))
@@ -200,7 +200,7 @@ class TradesLandingTests(TestCase):
         booking = BookingEnquiry.objects.get()
         self.assertEqual(booking.postcode, "M20 1AB")
         self.assertEqual(len(mail.outbox), 2)
-        self.assertIn("New booking from FlowPro Plumbing", mail.outbox[0].subject)
+        self.assertIn("New booking from Your Local Tradesperson", mail.outbox[0].subject)
 
     def test_success_redirect_uses_post_redirect_get(self):
         response = self.client.post(reverse("trades_booking"), valid_booking_data())

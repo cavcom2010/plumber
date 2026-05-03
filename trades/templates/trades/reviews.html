@@ -1,6 +1,6 @@
 {% extends "trades/base.html" %}
 
-{% block title %}Reviews | FlowPro Plumbing{% endblock %}
+{% block title %}Reviews | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
 
 {% block content %}
     {% include "trades/partials/reviews_section.html" %}

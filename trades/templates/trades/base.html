@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}{% if business %}{{ business.meta_description }}{% else %}Premium local plumbing services with fast response, online booking, emergency call-outs, leak repairs, bathroom fitting, and drain unblocking.{% endif %}{% endblock %}">
-    <title>{% block title %}{% if business %}{{ business.business_name }}{% else %}FlowPro Plumbing{% endif %} | Premium Local Plumbing Services{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% if business %}{{ business.meta_description }}{% else %}Quality local trade services with fast response, online booking, emergency call-outs, repairs, installations, and maintenance.{% endif %}{% endblock %}">
+    <title>{% block title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} | Quality Local Trade Services{% endblock %}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +18,9 @@
 
     <header class="header">
         <div class="header-inner">
-            <a href="{% url 'trades_home' %}" class="logo-group" aria-label="{% if business %}{{ business.business_name }}{% else %}FlowPro Plumbing{% endif %} home">
+            <a href="{% url 'trades_home' %}" class="logo-group" aria-label="{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} home">
                 <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
-                <span class="logo-text">{% if business %}{{ business.brand_first }}<span>{{ business.brand_second }}</span>{% else %}Flow<span>Pro</span>{% endif %}</span>
+                <span class="logo-text">{% if business %}{{ business.brand_first }}<span>{{ business.brand_second }}</span>{% else %}Local<span>Trades</span>{% endif %}</span>
             </a>
 
             <nav aria-label="Primary navigation">
@@ -33,10 +33,10 @@
             </nav>
 
             <div class="header-cta">
-                <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+441615550123{% endif %}" class="phone-link" aria-label="Call {% if business %}{{ business.business_name }}{% else %}FlowPro Plumbing{% endif %} on {% if business %}{{ business.phone_display }}{% else %}0161 555 0123{% endif %}">
+                <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="phone-link" aria-label="Call {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} on {% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}"><
                     <span class="phone-dot" aria-hidden="true"></span>
                     <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
-                    <span>{% if business %}{{ business.phone_display }}{% else %}0161 555 0123{% endif %}</span>
+                    <span>{% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}</span>
                 </a>
                 <a href="{% url 'trades_booking' %}" class="btn btn-primary">Book Now</a>
             </div>
@@ -51,14 +51,14 @@
         <div class="footer-inner">
             <div class="logo-group">
                 <div class="logo-icon"><svg><use href="#icon-droplet"></use></svg></div>
-                <span class="logo-text">{% if business %}{{ business.brand_first }}<span style="color:#e0b44d;">{{ business.brand_second }}</span>{% else %}Flow<span style="color:#e0b44d;">Pro</span>{% endif %}</span>
+                <span class="logo-text">{% if business %}{{ business.brand_first }}<span style="color:#e0b44d;">{{ business.brand_second }}</span>{% else %}Local<span style="color:#e0b44d;">Trades</span>{% endif %}</span>
             </div>
-            <p>{% if business %}{{ business.tagline }}{% else %}Premium local plumbing services — fast, clear, and reliable.{% endif %}</p>
-            <p><a href="tel:{% if business %}{{ business.phone_href }}{% else %}+441615550123{% endif %}" class="footer-phone">{% if business %}{{ business.phone_display }}{% else %}0161 555 0123{% endif %}</a></p>
-            <p>{% if business %}{{ business.email }}{% else %}hello@flowpro-plumbing.co.uk{% endif %}</p>
-            <p style="margin-top:8px;">{% if business %}{{ business.service_area }}{% else %}Serving Manchester & surrounding areas{% endif %}</p>
+            <p>{% if business %}{{ business.tagline }}{% else %}Quality local trade services — fast, clear, and reliable.{% endif %}</p>
+            <p><a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="footer-phone">{% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}</a></p>
+            <p>{% if business %}{{ business.email }}{% else %}hello@example.com{% endif %}</p>
+            <p style="margin-top:8px;">{% if business %}{{ business.service_area }}{% else %}Serving your local area{% endif %}</p>
             <div class="footer-bottom">
-                &copy; 2026 {% if business %}{{ business.business_name }}{% else %}FlowPro Plumbing{% endif %}. All rights reserved. {% if business %}{{ business.footer_disclaimer }}{% else %}Replace claims, reviews, insurance details, and qualifications with verified client information.{% endif %}
+                &copy; 2026 {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}. All rights reserved. {% if business %}{{ business.footer_disclaimer }}{% else %}Replace claims, reviews, insurance details, and qualifications with verified client information.{% endif %}
             </div>
         </div>
     </footer>
@@ -67,8 +67,8 @@
         <div class="success-modal">
             <div class="check-circle" aria-hidden="true"><svg><use href="#icon-check"></use></svg></div>
             <h3 id="success-title">Booking Enquiry Received</h3>
-            <p id="success-description">{% for message in messages %}{{ message }}{% empty %}Thank you for choosing FlowPro. Your enquiry has been received and the team will confirm availability.{% endfor %}</p>
-            <p style="font-size:0.8rem;color:var(--text-muted);">For emergencies, call <strong>{% if business %}{{ business.phone_display }}{% else %}0161 555 0123{% endif %}</strong> directly.</p>
+            <p id="success-description">{% for message in messages %}{{ message }}{% empty %}Thank you for your enquiry. Your enquiry has been received and the team will confirm availability.{% endfor %}</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">For emergencies, call <strong>{% if business %}{{ business.phone_display }}{% else %}the number above{% endif %}</strong> directly.</p>
             <button class="btn-close-modal" type="button" id="closeSuccessBtn">Got It, Thanks</button>
         </div>
     </div>
@@ -96,7 +96,7 @@
                 <span>WhatsApp</span>
             </a>
         {% else %}
-            <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+441615550123{% endif %}" class="mobile-nav-item mobile-nav-call">
+            <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="mobile-nav-item mobile-nav-call">
                 <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
                 <span>Call</span>
             </a>

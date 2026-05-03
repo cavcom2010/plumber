@@ -6,10 +6,10 @@
                 <img src="{% if business and business.about_image %}{{ business.about_image.url }}{% else %}{% static 'trades/images/about-tradesman.jpg' %}{% endif %}" alt="" loading="lazy">
             </div>
             <div class="about-content">
-                <span class="section-label">{% if business %}{{ business.about_label }}{% else %}Meet Your Plumber{% endif %}</span>
-                <h3>{% if business %}{{ business.owner_name }}{% else %}Mark Henderson{% endif %}</h3>
-                <p class="role">{% if business %}{{ business.owner_role }}{% else %}Local Plumbing Specialist{% endif %}</p>
-                <p>{% if business %}{{ business.about_text|linebreaksbr }}{% else %}FlowPro is built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.{% endif %}</p>
+                <span class="section-label">{% if business %}{{ business.about_label }}{% else %}Meet Your Tradesperson{% endif %}</span>
+                <h3>{% if business %}{{ business.owner_name }}{% else %}Your Name Here{% endif %}</h3>
+                <p class="role">{% if business %}{{ business.owner_role }}{% else %}Local Trades Specialist{% endif %}</p>
+                <p>{% if business %}{{ business.about_text|linebreaksbr }}{% else %}Built around a simple promise: <strong>clear communication, fair pricing, and respect for your home</strong>. This section can be replaced with the real business owner’s story, qualifications, guarantees, and service area.{% endif %}</p>
                 <div class="about-stats" aria-label="Business highlights">
                     {% for item in trust_indicators|slice:":3" %}
                         <div class="about-stat"><div class="num">{{ item.label|truncatewords:1 }}</div><div class="lbl">Business Highlight</div></div>

@@ -937,6 +937,26 @@
             flex-shrink: 0;
         }
 
+        .card-icon-svg {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon-svg svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .service-select-card input:checked + .card-label .card-icon-svg svg {
+            stroke: var(--navy);
+        }
+
         .time-slot-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;

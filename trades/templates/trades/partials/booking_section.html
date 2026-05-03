@@ -1,4 +1,4 @@
-{% load static %}
+{% load static service_icon %}
 <section class="booking-section" id="booking">
     <div class="section-inner">
         <div class="section-header">
@@ -14,7 +14,7 @@
         </div>
 
         <div class="booking-image">
-            <img src="{% if business and business.booking_image %}{{ business.booking_image.url }}{% else %}{% static 'trades/images/booking-bathroom.jpg' %}{% endif %}" alt="Clean modern bathroom plumbing fixtures" loading="lazy">
+            <img src="{% if business and business.booking_image %}{{ business.booking_image.url }}{% else %}{% static 'trades/images/booking-bathroom.jpg' %}{% endif %}" alt="Clean modern trade service area" loading="lazy">
         </div>
 
         <div class="booking-card">
@@ -71,15 +71,9 @@
                     <fieldset class="form-group full-width{% if form.service.errors %} error{% endif %}" id="group-service">
                         <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
                         <div class="service-select-grid">
-                            <label class="service-select-card"><input type="radio" name="service" value="leaking_pipe" required{% if form.service.value == "leaking_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">💧</span> Leaking Pipe</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="blocked_drain"{% if form.service.value == "blocked_drain" %} checked{% endif %}><span class="card-label"><span class="card-emoji">◉</span> Blocked Drain</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="water_heater"{% if form.service.value == "water_heater" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔥</span> Water Heater</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="toilet_repair"{% if form.service.value == "toilet_repair" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🚽</span> Toilet Repair</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="burst_pipe"{% if form.service.value == "burst_pipe" %} checked{% endif %}><span class="card-label"><span class="card-emoji">!</span> Burst Pipe</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="bathroom_kitchen"{% if form.service.value == "bathroom_kitchen" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⌂</span> Bathroom/Kitchen</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="gas_plumbing"{% if form.service.value == "gas_plumbing" %} checked{% endif %}><span class="card-label"><span class="card-emoji">⛽</span> Gas Plumbing</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="general"{% if form.service.value == "general" %} checked{% endif %}><span class="card-label"><span class="card-emoji">🔧</span> General</span></label>
-                            <label class="service-select-card"><input type="radio" name="service" value="other"{% if form.service.value == "other" %} checked{% endif %}><span class="card-label"><span class="card-emoji">+</span> Other</span></label>
+                            {% for choice_value, choice_label in form.service.field.choices %}
+                                <label class="service-select-card"><input type="radio" name="service" value="{{ choice_value }}"{% if forloop.first %} required{% endif %}{% if form.service.value|stringformat:"s" == choice_value|stringformat:"s" %} checked{% endif %}><span class="card-label"><span class="card-icon-svg"><svg aria-hidden="true"><use href="{% service_icon choice_value %}"></use></svg></span> {{ choice_label }}</span></label>
+                            {% endfor %}
                         </div>
                         <span class="error-msg" id="service-error">{{ form.service.errors.0|default:"Please select a service." }}</span>
                     </fieldset>
@@ -121,7 +115,7 @@
                     <fieldset class="form-group full-width">
                         <legend class="fieldset-label">Photos of the Issue <span class="optional-tag">(optional)</span></legend>
                         <p class="fieldset-help" id="diagnostic-help">
-                            Upload up to 3 photos of the damaged area or equipment. Clear shots of brand labels (e.g. boiler make/model) help us bring the right parts for the first visit.
+                            Upload up to 3 photos of the damaged area or equipment. Clear shots of brand labels (e.g. appliance make/model) help us bring the right parts for the first visit.
                         </p>
                         <div class="diagnostic-uploads">
                             <div class="diagnostic-upload-row{% if form.diagnostic_image_1.errors %} error{% endif %}">

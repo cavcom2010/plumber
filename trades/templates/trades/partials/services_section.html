@@ -3,12 +3,12 @@
     <div class="section-inner">
         <div class="section-header">
             <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
-            <h2 class="section-title">{% if business %}{{ business.services_title }}{% else %}Complete Plumbing Solutions{% endif %}</h2>
+            <h2 class="section-title">{% if business %}{{ business.services_title }}{% else %}Our Services{% endif %}</h2>
             <p class="section-subtitle">{% if business %}{{ business.services_subtitle }}{% else %}A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.{% endif %}</p>
         </div>
 
         <div class="section-image section-image-services">
-            <img src="{% if business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="Plumbing tools and pipework laid out for repair work" loading="lazy">
+            <img src="{% if business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="Trade tools and equipment laid out for repair work" loading="lazy">
         </div>
 
         <div class="services-grid">

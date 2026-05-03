@@ -160,7 +160,7 @@ def _send_booking_notification(request, booking):
 
     context = _site_context({"booking": booking, "request": request})
     business_name = (
-        context["business"].business_name if context.get("business") else "FlowPro"
+        context["business"].business_name if context.get("business") else "Your Local Tradesperson"
     )
     subject = (
         f"New booking from {business_name}: "
@@ -187,8 +187,8 @@ def _send_booking_confirmation(request, booking):
     if not booking.email:
         return
     business = BusinessProfile.objects.filter(is_active=True).first()
-    business_name = business.business_name if business else "FlowPro Plumbing"
-    business_phone = business.phone_display if business else "0161 555 0123"
+    business_name = business.business_name if business else "Your Local Tradesperson"
+    business_phone = business.phone_display if business else "Call Us"
 
     context = {
         "booking": booking,
