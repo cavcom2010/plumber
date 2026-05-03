@@ -115,6 +115,69 @@ class InvoiceCreateTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("client_postcode", form.errors)
 
+    def test_create_from_booking_prefills_form(self):
+        from trades.models import BookingEnquiry
+        BusinessProfile.objects.update(is_active=False)
+        BusinessProfile.objects.create(
+            business_name="FlowPro Plumbing",
+            is_active=True,
+        )
+        booking = BookingEnquiry.objects.create(
+            full_name="Alice Jones",
+            phone="+44 7123 456789",
+            email="alice@example.com",
+            preferred_date=timezone.localdate(),
+            address="20 Acacia Avenue",
+            postcode="M20 1AB",
+            service=BookingEnquiry.ServiceChoices.LEAKING_PIPE,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Kitchen tap is dripping heavily.",
+        )
+        response = self.client.get(
+            reverse("invoice_create") + f"?booking={booking.pk}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Creating invoice from booking")
+        self.assertContains(response, "Alice Jones")
+        self.assertContains(response, "Kitchen tap is dripping heavily.")
+        self.assertContains(response, "M20 1AB")
+
+    def test_create_from_booking_sets_fk_on_save(self):
+        from trades.models import BookingEnquiry
+        BusinessProfile.objects.update(is_active=False)
+        BusinessProfile.objects.create(
+            business_name="FlowPro Plumbing",
+            is_active=True,
+        )
+        booking = BookingEnquiry.objects.create(
+            full_name="Alice Jones",
+            phone="+44 7123 456789",
+            email="alice@example.com",
+            preferred_date=timezone.localdate(),
+            address="20 Acacia Avenue",
+            postcode="M20 1AB",
+            service=BookingEnquiry.ServiceChoices.LEAKING_PIPE,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Kitchen tap is dripping heavily.",
+        )
+        url = reverse("invoice_create") + f"?booking={booking.pk}"
+        response = self.client.post(
+            url,
+            {
+                "client_name": "Alice Jones",
+                "client_phone": "07123 456789",
+                "client_email": "alice@example.com",
+                "client_address": "20 Acacia Avenue",
+                "client_postcode": "M20 1AB",
+                "service_type": "leaking_pipe",
+                "job_description": "Kitchen tap is dripping heavily.",
+            },
+        )
+        self.assertRedirects(response, reverse("invoice_create"))
+        invoice = Invoice.objects.get()
+        self.assertEqual(invoice.booking_enquiry, booking)
+        self.assertEqual(invoice.client_name, "Alice Jones")
+
 
 class InvoiceManageAccessTests(TestCase):
     def setUp(self):

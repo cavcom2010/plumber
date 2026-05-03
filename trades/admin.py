@@ -34,8 +34,18 @@ class TestimonialInline(admin.TabularInline):
 class BookingImageInline(admin.TabularInline):
     model = BookingImage
     extra = 0
-    readonly_fields = ("created_at",)
-    fields = ("image", "sort_order")
+    readonly_fields = ("image_preview", "created_at")
+    fields = ("image_preview", "image", "sort_order")
+
+    def image_preview(self, obj):
+        if obj and obj.image:
+            return format_html(
+                '<img src="{}" style="max-height:80px;max-width:100px;border-radius:6px;border:1px solid #e5e7eb;" alt="Diagnostic photo">',
+                obj.image.url,
+            )
+        return "—"
+
+    image_preview.short_description = "Preview"
 
 
 @admin.register(Testimonial)
@@ -156,6 +166,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         "status",
         "testimonial_job_label",
         "testimonial_request_link",
+        "create_invoice_link",
         "created_at",
     )
     list_filter = ("status", "service", "timeslot", "is_emergency", "preferred_date")
@@ -220,5 +231,15 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         return format_html('<a href="{}" target="_blank" rel="noopener">{}</a>', path, path)
 
     testimonial_request_link.short_description = "testimonial link for invoice email"
+
+    def create_invoice_link(self, obj):
+        if not obj or not obj.pk:
+            return "Save first."
+        url = reverse("invoice_create") + f"?booking={obj.pk}"
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener">Create Invoice</a>', url
+        )
+
+    create_invoice_link.short_description = "create invoice"
 
 # Register your models here.

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Invoice, InvoiceImage, InvoiceProduct
 
@@ -6,7 +7,19 @@ from .models import Invoice, InvoiceImage, InvoiceProduct
 class InvoiceImageInline(admin.TabularInline):
     model = InvoiceImage
     extra = 0
-    fields = ("image", "image_type", "sort_order", "caption")
+    readonly_fields = ("image_preview",)
+    fields = ("image_preview", "image", "image_type", "sort_order", "caption")
+
+    def image_preview(self, obj):
+        if obj and obj.image:
+            return format_html(
+                '<img src="{}" style="max-height:80px;max-width:100px;border-radius:6px;border:1px solid #e5e7eb;" alt="{}">',
+                obj.image.url,
+                obj.get_image_type_display(),
+            )
+        return "—"
+
+    image_preview.short_description = "Preview"
 
 
 class InvoiceProductInline(admin.TabularInline):

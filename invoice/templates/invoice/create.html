@@ -6,10 +6,16 @@
 <section class="inv-section">
     <div class="inv-section-inner">
         <h2 class="inv-section-title">Create Invoice Draft</h2>
-        <p class="inv-section-sub">Fill in the client and job details to start a new invoice.</p>
+        {% if booking %}
+            <div class="inv-booking-banner">
+                Creating invoice from booking for <strong>{{ booking.full_name }}</strong> — {{ booking.get_service_display }}
+            </div>
+        {% else %}
+            <p class="inv-section-sub">Fill in the client and job details to start a new invoice.</p>
+        {% endif %}
 
         <div class="inv-card">
-            <form method="post" action="{% url 'invoice_create' %}" id="invoiceCreateForm" novalidate>
+            <form method="post" action="{% url 'invoice_create' %}{% if booking %}?booking={{ booking.pk }}{% endif %}" id="invoiceCreateForm" novalidate>
                 {% csrf_token %}
 
                 <fieldset class="inv-fieldset">

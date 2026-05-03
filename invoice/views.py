@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from weasyprint import HTML
 
-from trades.models import BusinessProfile
+from trades.models import BookingEnquiry, BusinessProfile
 from trades.views import testimonial_token_for_booking
 
 from .forms import InvoiceCreateForm, InvoiceManageForm
@@ -27,21 +27,54 @@ def _get_active_business():
 
 class CreateInvoiceView(View):
     def get(self, request):
-        form = InvoiceCreateForm()
-        return render(request, "invoice/create.html", {"form": form})
+        booking = None
+        initial = {}
+        booking_id = request.GET.get("booking")
+        if booking_id:
+            try:
+                booking = BookingEnquiry.objects.get(pk=int(booking_id))
+                initial = {
+                    "client_name": booking.full_name,
+                    "client_phone": booking.phone,
+                    "client_email": booking.email,
+                    "client_address": booking.address,
+                    "client_postcode": booking.postcode,
+                    "service_type": booking.service,
+                    "job_description": booking.description,
+                }
+            except (ValueError, BookingEnquiry.DoesNotExist):
+                pass
+        form = InvoiceCreateForm(initial=initial)
+        return render(request, "invoice/create.html", {
+            "form": form,
+            "booking": booking,
+        })
 
     def post(self, request):
+        booking = None
+        booking_id = request.GET.get("booking") or request.POST.get("booking")
+        if booking_id:
+            try:
+                booking = BookingEnquiry.objects.get(pk=int(booking_id))
+            except (ValueError, BookingEnquiry.DoesNotExist):
+                pass
+
         form = InvoiceCreateForm(request.POST)
         if form.is_valid():
             invoice = form.save(commit=False)
             invoice.business = _get_active_business()
+            if booking:
+                invoice.booking_enquiry = booking
             invoice.save()
             messages.success(
                 request,
                 "Invoice draft created. The team will review and send it to you.",
             )
             return redirect("invoice_create")
-        return render(request, "invoice/create.html", {"form": form})
+        return render(request, "invoice/create.html", {
+            "form": form,
+            "booking": booking,
+        })
 
 
 @method_decorator(staff_member_required, name="dispatch")

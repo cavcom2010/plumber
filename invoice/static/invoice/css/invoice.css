@@ -109,6 +109,16 @@ body {
     font-size: 0.9rem;
 }
 
+.inv-booking-banner {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.55rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    border: 1px solid #bfdbfe;
+}
+
 /* Card */
 .inv-card {
     background: var(--inv-surface);
