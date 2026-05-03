@@ -4,8 +4,10 @@ from django.contrib import admin
 from django.db.models import Q
 from django.utils import timezone
 
+_original_admin_index = admin.site.index
 
-def _patched_index_template(self, request, extra_context=None):
+
+def _patched_index(self, request, extra_context=None):
     extra_context = extra_context or {}
     today = timezone.localdate()
 
@@ -33,11 +35,10 @@ def _patched_index_template(self, request, extra_context=None):
         Q(status="completed") | Q(status="draft") | Q(status="in_progress")
     ).count()
 
-    template_response = admin.site.index(request, extra_context)
+    template_response = _original_admin_index(request, extra_context)
     template_response.template_name = "admin/dashboard.html"
     return template_response
 
 
-# Monkey-patch to avoid re-registering all models
 admin.site.index_template = "admin/dashboard.html"
-admin.site.index = _patched_index_template.__get__(admin.site, admin.site.__class__)
+admin.site.index = _patched_index.__get__(admin.site, admin.site.__class__)
