@@ -40,6 +40,17 @@ def _manage_post_data(invoice, **overrides):
 
 
 class InvoiceCreateTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user("staff", password="pass")
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username="staff", password="pass")
+
+    def test_create_page_requires_staff(self):
+        self.client.logout()
+        response = self.client.get(reverse("invoice_create"))
+        self.assertEqual(response.status_code, 302)
+
     def test_create_page_loads(self):
         response = self.client.get(reverse("invoice_create"))
         self.assertEqual(response.status_code, 200)
@@ -486,6 +497,11 @@ class InvoiceTotalCostTests(TestCase):
 
 class BookingLookupTests(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("staff", password="pass")
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username="staff", password="pass")
+
         from trades.models import BookingEnquiry
         BookingEnquiry.objects.create(
             full_name="Calvin Mazhindu",
@@ -510,6 +526,11 @@ class BookingLookupTests(TestCase):
             description="Kitchen tap dripping",
         )
         self.url = reverse("invoice_booking_lookup")
+
+    def test_lookup_requires_staff(self):
+        self.client.logout()
+        resp = self.client.get(self.url + "?q=mazhindu")
+        self.assertEqual(resp.json(), [])
 
     def test_returns_matches_by_name(self):
         resp = self.client.get(self.url + "?q=mazhindu")

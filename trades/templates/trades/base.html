@@ -29,7 +29,6 @@
                     <li><a href="{% url 'trades_about' %}">About</a></li>
                     <li><a href="{% url 'trades_booking' %}">Book</a></li>
                     <li><a href="{% url 'trades_reviews' %}">Reviews</a></li>
-                    <li><a href="{% url 'invoice_create' %}">Invoice</a></li>
                 </ul>
             </nav>
 
@@ -90,10 +89,6 @@
         <a href="{% url 'trades_reviews' %}" class="mobile-nav-item">
             <svg aria-hidden="true"><use href="#icon-check"></use></svg>
             <span>Reviews</span>
-        </a>
-        <a href="{% url 'invoice_create' %}" class="mobile-nav-item mobile-nav-invoice">
-            <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
-            <span>Invoice</span>
         </a>
         {% if business and business.whatsapp_url %}
             <a href="{{ business.whatsapp_url }}" class="mobile-nav-item mobile-nav-whatsapp" target="_blank" rel="noopener">

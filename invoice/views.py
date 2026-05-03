@@ -29,6 +29,8 @@ def _get_active_business():
 
 def booking_lookup(request):
     query = (request.GET.get("q") or "").strip()
+    if not request.user.is_staff:
+        return JsonResponse([], safe=False)
     if len(query) < 2:
         return JsonResponse([], safe=False)
 
@@ -69,6 +71,10 @@ def booking_lookup(request):
 
 
 class CreateInvoiceView(View):
+    @method_decorator(staff_member_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get(self, request):
         booking = None
         initial = {}
