@@ -681,3 +681,61 @@ body {
     background: var(--inv-primary-hover);
     box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
 }
+
+/* Lookup dropdown */
+.inv-lookup-dropdown {
+    display: none;
+    position: absolute;
+    z-index: 500;
+    background: var(--inv-surface);
+    border: 1px solid var(--inv-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.inv-lookup-dropdown.active {
+    display: block;
+}
+
+.inv-lookup-item {
+    padding: 0.6rem 0.85rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.12s;
+}
+
+.inv-lookup-item:last-child {
+    border-bottom: none;
+}
+
+.inv-lookup-item:hover {
+    background: #eff6ff;
+}
+
+.inv-lookup-name {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--inv-text);
+}
+
+.inv-lookup-sub {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--inv-text-muted);
+    margin-top: 0.1rem;
+}
+
+.inv-lookup-empty {
+    cursor: default;
+    color: var(--inv-text-muted);
+    font-style: italic;
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.inv-lookup-empty:hover {
+    background: var(--inv-surface);
+}

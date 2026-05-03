@@ -337,6 +337,7 @@ class BookingDiagnosticImageTests(TestCase):
         self.assertContains(response, "image-preview")
         self.assertContains(response, "reviewOverlay")
         self.assertContains(response, "Review Your Booking")
+        self.assertContains(response, "bookingLookupDropdown")
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",

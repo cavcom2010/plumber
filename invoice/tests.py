@@ -218,6 +218,40 @@ class InvoiceManageAccessTests(TestCase):
         self.assertRedirects(response, self.url)
         self.assertEqual(self.invoice.images.filter(image_type="before").count(), 1)
 
+    def test_manage_page_has_lookup_dropdown(self):
+        self.client.login(username="staff", password="pass")
+        response = self.client.get(self.url)
+        self.assertContains(response, "invManageLookupDropdown")
+        self.assertContains(response, "booking_enquiry_id")
+
+    def test_manage_form_can_link_booking(self):
+        from trades.models import BookingEnquiry
+        booking = BookingEnquiry.objects.create(
+            full_name="Jane Doe",
+            phone="07123 456789",
+            email="jane@example.com",
+            preferred_date=timezone.localdate(),
+            address="10 Downing St",
+            postcode="SW1A 2AA",
+            service=BookingEnquiry.ServiceChoices.GENERAL,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Fix all the things.",
+        )
+        self.assertIsNone(self.invoice.booking_enquiry)
+
+        self.client.login(username="staff", password="pass")
+        response = self.client.post(
+            self.url,
+            _manage_post_data(
+                self.invoice,
+                status="draft",
+                booking_enquiry_id=str(booking.pk),
+            ),
+        )
+        self.assertRedirects(response, self.url)
+        self.invoice.refresh_from_db()
+        self.assertEqual(self.invoice.booking_enquiry, booking)
+
     def test_before_image_limit_max_3(self):
         self.client.login(username="staff", password="pass")
         for i in range(3):
@@ -448,3 +482,101 @@ class InvoiceTotalCostTests(TestCase):
             service_type="general", job_description="Job",
         )
         self.assertEqual(float(invoice.total_cost), 0)
+
+
+class BookingLookupTests(TestCase):
+    def setUp(self):
+        from trades.models import BookingEnquiry
+        BookingEnquiry.objects.create(
+            full_name="Calvin Mazhindu",
+            phone="+44 7747055935",
+            email="calvin2411@hotmail.com",
+            preferred_date=timezone.localdate(),
+            address="32 Hayden Road",
+            postcode="NN10 0HX",
+            service=BookingEnquiry.ServiceChoices.TOILET_REPAIR,
+            timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+            description="Toilet seat broken",
+        )
+        BookingEnquiry.objects.create(
+            full_name="Alice Smith",
+            phone="+44 7123 456789",
+            email="alice@example.com",
+            preferred_date=timezone.localdate(),
+            address="20 Acacia Avenue",
+            postcode="M20 1AB",
+            service=BookingEnquiry.ServiceChoices.LEAKING_PIPE,
+            timeslot=BookingEnquiry.TimeSlotChoices.AFTERNOON,
+            description="Kitchen tap dripping",
+        )
+        self.url = reverse("invoice_booking_lookup")
+
+    def test_returns_matches_by_name(self):
+        resp = self.client.get(self.url + "?q=mazhindu")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["full_name"], "Calvin Mazhindu")
+
+    def test_returns_matches_by_phone(self):
+        resp = self.client.get(self.url + "?q=07747")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["phone"], "+44 7747055935")
+
+    def test_returns_matches_by_email(self):
+        resp = self.client.get(self.url + "?q=calvin2411")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["email"], "calvin2411@hotmail.com")
+
+    def test_case_insensitive(self):
+        resp = self.client.get(self.url + "?q=CALVIN")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.json()), 1)
+
+    def test_short_query_returns_empty(self):
+        resp = self.client.get(self.url + "?q=a")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), [])
+
+    def test_no_match_returns_empty(self):
+        resp = self.client.get(self.url + "?q=zzznotfound")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), [])
+
+    def test_no_query_returns_empty(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), [])
+
+    def test_max_10_results(self):
+        from trades.models import BookingEnquiry
+        for i in range(15):
+            BookingEnquiry.objects.create(
+                full_name=f"Test User {i}",
+                phone=f"07123 4567{i:02d}",
+                preferred_date=timezone.localdate(),
+                address="Test St",
+                postcode="M20 1AB",
+                service=BookingEnquiry.ServiceChoices.GENERAL,
+                timeslot=BookingEnquiry.TimeSlotChoices.MORNING,
+                description="Job",
+            )
+        resp = self.client.get(self.url + "?q=Test")
+        self.assertEqual(len(resp.json()), 10)
+
+    def test_response_has_all_fields(self):
+        resp = self.client.get(self.url + "?q=mazhindu")
+        data = resp.json()[0]
+        self.assertIn("id", data)
+        self.assertIn("full_name", data)
+        self.assertIn("phone", data)
+        self.assertIn("email", data)
+        self.assertIn("address", data)
+        self.assertIn("postcode", data)
+        self.assertIn("service", data)
+        self.assertIn("service_display", data)
+        self.assertIn("description", data)

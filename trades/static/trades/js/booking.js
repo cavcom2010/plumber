@@ -180,6 +180,138 @@
 
     initImagePreviews();
 
+    // -- Booking lookup --
+    var lookupDropdown = document.getElementById('bookingLookupDropdown');
+    if (lookupDropdown) {
+        var lookupTimer = null;
+        var lookupAbort = null;
+        var LOOKUP_DEBOUNCE = 300;
+
+        function fillBookingFields(booking) {
+            var fields = {
+                'name': booking.full_name,
+                'phone': booking.phone,
+                'email': booking.email || '',
+                'address': booking.address,
+                'postcode': booking.postcode,
+                'description': booking.description,
+            };
+            Object.keys(fields).forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.value = fields[id];
+            });
+
+            var radio = document.querySelector('input[name="service"][value="' + booking.service + '"]');
+            if (radio) radio.checked = true;
+        }
+
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        function hideLookupDropdown() {
+            lookupDropdown.classList.remove('active');
+            lookupDropdown.innerHTML = '';
+        }
+
+        function showLookupDropdown(html) {
+            lookupDropdown.innerHTML = html;
+            lookupDropdown.classList.add('active');
+        }
+
+        function positionDropdown(input) {
+            var rect = input.getBoundingClientRect();
+            lookupDropdown.style.top = (rect.bottom + window.scrollY + 2) + 'px';
+            lookupDropdown.style.left = (rect.left + window.scrollX) + 'px';
+            lookupDropdown.style.width = rect.width + 'px';
+        }
+
+        function fetchBookings(query, input) {
+            if (lookupAbort) lookupAbort.abort();
+            lookupAbort = new AbortController();
+
+            fetch('/invoice/api/bookings/?q=' + encodeURIComponent(query), {
+                signal: lookupAbort.signal,
+            })
+                .then(function (resp) {
+                    if (!resp.ok) throw new Error('Lookup failed');
+                    return resp.json();
+                })
+                .then(function (data) {
+                    if (!data.length) {
+                        showLookupDropdown(
+                            '<div class="lookup-item lookup-empty">No matching bookings</div>'
+                        );
+                        return;
+                    }
+                    var html = '';
+                    data.forEach(function (b) {
+                        html +=
+                            '<div class="lookup-item" data-booking=\'' +
+                            JSON.stringify(b).replace(/'/g, '&#39;') +
+                            '\'>' +
+                            '<span class="lookup-name">' + escapeHtml(b.full_name) + '</span>' +
+                            '<span class="lookup-sub">' + escapeHtml(b.phone) + ' &mdash; ' + escapeHtml(b.service_display) + '</span>' +
+                            '</div>';
+                    });
+                    showLookupDropdown(html);
+                    positionDropdown(input);
+                })
+                .catch(function () {});
+        }
+
+        lookupDropdown.addEventListener('click', function (e) {
+            var item = e.target.closest('.lookup-item');
+            if (!item || !item.dataset.booking) return;
+            var booking = JSON.parse(item.dataset.booking);
+            fillBookingFields(booking);
+            hideLookupDropdown();
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!lookupDropdown.contains(e.target)) {
+                hideLookupDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                hideLookupDropdown();
+            }
+        });
+
+        ['name', 'phone'].forEach(function (fieldId) {
+            var input = document.getElementById(fieldId);
+            if (!input) return;
+
+            input.addEventListener('input', function () {
+                var query = this.value.trim();
+                if (query.length < 2) {
+                    hideLookupDropdown();
+                    return;
+                }
+                clearTimeout(lookupTimer);
+                var self = this;
+                lookupTimer = setTimeout(function () {
+                    fetchBookings(query, self);
+                }, LOOKUP_DEBOUNCE);
+            });
+
+            input.addEventListener('focus', function () {
+                var query = this.value.trim();
+                if (query.length >= 2) {
+                    clearTimeout(lookupTimer);
+                    var self = this;
+                    lookupTimer = setTimeout(function () {
+                        fetchBookings(query, self);
+                    }, LOOKUP_DEBOUNCE);
+                }
+            });
+        });
+    }
+
     // -- Review modal --
     function getFieldValue(selector, fallback) {
         var el = document.querySelector(selector);

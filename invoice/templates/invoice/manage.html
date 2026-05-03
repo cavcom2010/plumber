@@ -14,6 +14,9 @@
             <form method="post" action="{% url 'invoice_manage' invoice.pk %}" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
 
+                <div class="inv-lookup-dropdown" id="invManageLookupDropdown"></div>
+                <input type="hidden" name="booking_enquiry_id" id="id_booking_enquiry_id" value="{% if invoice.booking_enquiry %}{{ invoice.booking_enquiry.pk }}{% endif %}">
+
                 <fieldset class="inv-fieldset">
                     <legend class="inv-legend">Client Details</legend>
                     <div class="inv-form-grid">

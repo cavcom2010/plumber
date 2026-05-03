@@ -1,9 +1,11 @@
 import logging
+import re
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -23,6 +25,47 @@ logger = logging.getLogger(__name__)
 
 def _get_active_business():
     return BusinessProfile.objects.filter(is_active=True).first()
+
+
+def booking_lookup(request):
+    query = (request.GET.get("q") or "").strip()
+    if len(query) < 2:
+        return JsonResponse([], safe=False)
+
+    query_lower = query.lower()
+    query_digits = re.sub(r"\D", "", query)
+    if query_digits.startswith("0"):
+        query_digits = query_digits[1:]
+
+    candidates = BookingEnquiry.objects.order_by("-created_at")[:50]
+    matches = []
+    for b in candidates:
+        if query_lower in b.full_name.lower():
+            matches.append(b)
+        elif b.email and query_lower in b.email.lower():
+            matches.append(b)
+        elif query_digits:
+            phone_digits = re.sub(r"\D", "", b.phone or "")
+            if query_digits in phone_digits:
+                matches.append(b)
+        if len(matches) >= 10:
+            break
+
+    data = [
+        {
+            "id": b.pk,
+            "full_name": b.full_name,
+            "phone": b.phone,
+            "email": b.email,
+            "address": b.address,
+            "postcode": b.postcode,
+            "service": b.service,
+            "service_display": b.get_service_display(),
+            "description": b.description,
+        }
+        for b in matches
+    ]
+    return JsonResponse(data, safe=False)
 
 
 class CreateInvoiceView(View):
@@ -107,6 +150,16 @@ class ManageInvoiceView(View):
 
             self._delete_marked_images(invoice, request.POST)
             self._save_products(invoice, request.POST)
+
+            booking_id = request.POST.get("booking_enquiry_id")
+            if booking_id:
+                try:
+                    invoice.booking_enquiry = BookingEnquiry.objects.get(
+                        pk=int(booking_id)
+                    )
+                    invoice.save(update_fields=["booking_enquiry"])
+                except (ValueError, BookingEnquiry.DoesNotExist):
+                    pass
 
             if (
                 invoice.status == "sent"

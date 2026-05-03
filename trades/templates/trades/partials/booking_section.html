@@ -28,6 +28,8 @@
 
             <form id="bookingForm" method="post" action="{% url 'trades_booking' %}" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
+
+                <div class="lookup-dropdown" id="bookingLookupDropdown"></div>
                 <div class="form-grid">
                     <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
                         <label for="name">Full Name <span class="required">*</span></label>
