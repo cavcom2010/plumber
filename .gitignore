@@ -1,9 +1,53 @@
-venv/
-*.pyc
-.env
-db.sqlite3
-staticfiles/
-media/
-.home_nginx/
-logs/
+# Python bytecode and caches
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Django/local runtime files
+db.sqlite3
+*.sqlite3
+*.sqlite3-journal
+media/
+staticfiles/
+logs/
+*.log
+
+# Deploy-generated local files
+.home_nginx/
+gunicorn.pid
+*.pid
+
+# Test, coverage, and tooling caches
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
