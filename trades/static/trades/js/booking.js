@@ -1,4 +1,48 @@
 (function () {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+
+    if (mobileMenuToggle && mobileMenuPanel) {
+        function closeMobileMenu() {
+            mobileMenuPanel.hidden = true;
+            mobileMenuToggle.classList.remove('is-open');
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            mobileMenuToggle.setAttribute('aria-label', 'Open menu');
+        }
+
+        function openMobileMenu() {
+            mobileMenuPanel.hidden = false;
+            mobileMenuToggle.classList.add('is-open');
+            mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            mobileMenuToggle.setAttribute('aria-label', 'Close menu');
+        }
+
+        mobileMenuToggle.addEventListener('click', function () {
+            if (mobileMenuPanel.hidden) {
+                openMobileMenu();
+            } else {
+                closeMobileMenu();
+            }
+        });
+
+        mobileMenuPanel.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !mobileMenuPanel.hidden) {
+                closeMobileMenu();
+                mobileMenuToggle.focus();
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                closeMobileMenu();
+            }
+        });
+    }
+
     const dateInput = document.getElementById('date');
     const emergencyCheck = document.getElementById('emergencyCheck');
     const emergencyNote = document.getElementById('emergencyNote');

@@ -13,11 +13,12 @@
 
         <div class="services-grid">
             {% for service in service_offerings %}
-                <article class="service-card">
+                <a href="{{ service.get_absolute_url }}" class="service-card service-card-link">
                     <div class="service-icon"><svg><use href="#{{ service.icon }}"></use></svg></div>
                     <h3>{{ service.title }}</h3>
                     <p>{{ service.description }}</p>
-                </article>
+                    <span class="service-card-action">Learn more</span>
+                </a>
             {% empty %}
                 <article class="service-card">
                     <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>

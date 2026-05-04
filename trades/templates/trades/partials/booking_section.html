@@ -31,6 +31,14 @@
                 {% csrf_token %}
 
                 <div class="lookup-dropdown" id="bookingLookupDropdown"></div>
+
+                {% if rate_limited %}
+                    <div class="rate-limit-banner" role="alert">
+                        <span class="rate-limit-icon" aria-hidden="true"><svg><use href="#icon-alert"></use></svg></span>
+                        <span>Too many requests. Please wait a moment before submitting again.</span>
+                    </div>
+                {% endif %}
+
                 <div class="form-grid">
                     <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
                         <label for="name">Full Name <span class="required">*</span></label>
@@ -45,8 +53,8 @@
                     </div>
 
                     <div class="form-group{% if form.email.errors %} error{% endif %}" id="group-email">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
                         <span class="error-msg" id="email-error">{{ form.email.errors.0|default:"Please enter a valid email address." }}</span>
                     </div>
 

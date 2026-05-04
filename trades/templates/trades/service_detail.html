@@ -1,0 +1,54 @@
+{% extends "trades/base.html" %}
+{% load static %}
+
+{% block title %}{{ service.title }} | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
+{% block meta_description %}{{ service.description }}{% endblock %}
+
+{% block content %}
+    <section class="section service-detail-section">
+        <div class="section-inner">
+            <div class="service-detail-layout">
+                <div class="service-detail-copy">
+                    <a href="{% url 'trades_services' %}" class="back-link">Services</a>
+                    <div class="service-icon"><svg><use href="#{{ service.icon }}"></use></svg></div>
+                    <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
+                    <h1 class="section-title">{{ service.detail_heading|default:service.title }}</h1>
+                    <p class="section-subtitle">{{ service.description }}</p>
+                    {% if service.detail_body %}
+                        <div class="service-detail-body">
+                            {{ service.detail_body|linebreaks }}
+                        </div>
+                    {% endif %}
+                    <div class="service-detail-actions">
+                        <a href="{% url 'trades_booking' %}" class="btn btn-primary">Book a Visit</a>
+                        <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="btn btn-secondary">Call {% if business %}{{ business.phone_display }}{% else %}Now{% endif %}</a>
+                    </div>
+                </div>
+                <div class="section-image service-detail-image">
+                    <img src="{% if service.detail_image %}{{ service.detail_image.url }}{% elif business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="{{ service.title }}" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if other_services %}
+        <section class="section service-related-section">
+            <div class="section-inner">
+                <div class="section-header">
+                    <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
+                    <h2 class="section-title">Related Services</h2>
+                </div>
+                <div class="services-grid">
+                    {% for related in other_services %}
+                        <a href="{{ related.get_absolute_url }}" class="service-card service-card-link">
+                            <div class="service-icon"><svg><use href="#{{ related.icon }}"></use></svg></div>
+                            <h3>{{ related.title }}</h3>
+                            <p>{{ related.description }}</p>
+                            <span class="service-card-action">Learn more</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

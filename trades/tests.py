@@ -10,7 +10,15 @@ from django.utils import timezone
 from PIL import Image as PILImage
 
 from .forms import BookingEnquiryForm
-from .models import BookingEnquiry, BookingImage, BusinessProfile, ServiceOffering, Testimonial, TrustIndicator
+from .models import (
+    BookingEnquiry,
+    BookingImage,
+    BusinessProfile,
+    LegalPage,
+    ServiceOffering,
+    Testimonial,
+    TrustIndicator,
+)
 from .views import testimonial_token_for_booking
 from flowpro.settings import get_service_choices
 
@@ -86,6 +94,94 @@ class TradesLandingTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Our Services")
 
+    def test_services_page_links_cards_to_detail_pages(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            is_active=True,
+        )
+        service = ServiceOffering.objects.create(
+            business=business,
+            title="Kitchen Fitting",
+            description="Planned kitchen fitting and finishing.",
+            detail_body="Admin-written kitchen fitting detail copy.",
+        )
+
+        response = self.client.get(reverse("trades_services"))
+
+        self.assertContains(response, service.get_absolute_url())
+        self.assertContains(response, "Learn more")
+
+    def test_service_detail_page_uses_admin_content(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            services_label="Specialist Work",
+            is_active=True,
+        )
+        service = ServiceOffering.objects.create(
+            business=business,
+            title="Garden Rooms",
+            description="Insulated outdoor rooms built for year-round use.",
+            detail_heading="Garden Rooms Built Around the Property",
+            detail_body="Admin-managed detail copy for this exact service.",
+        )
+
+        response = self.client.get(service.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Garden Rooms Built Around the Property")
+        self.assertContains(response, "Admin-managed detail copy for this exact service.")
+        self.assertContains(response, "Specialist Work")
+
+    def test_service_detail_only_uses_active_business_services(self):
+        BusinessProfile.objects.update(is_active=False)
+        inactive_business = BusinessProfile.objects.create(
+            business_name="Old Business",
+            is_active=False,
+        )
+        old_service = ServiceOffering.objects.create(
+            business=inactive_business,
+            title="Old Service",
+            slug="shared-service",
+            description="Old inactive service.",
+            detail_body="This should not be public.",
+        )
+        active_business = BusinessProfile.objects.create(
+            business_name="Current Business",
+            is_active=True,
+        )
+        ServiceOffering.objects.create(
+            business=active_business,
+            title="Current Service",
+            slug="shared-service",
+            description="Current active service.",
+            detail_body="This is the public service.",
+        )
+
+        response = self.client.get(old_service.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This is the public service.")
+        self.assertNotContains(response, "This should not be public.")
+
+    def test_inactive_service_detail_returns_404(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            is_active=True,
+        )
+        service = ServiceOffering.objects.create(
+            business=business,
+            title="Inactive Service",
+            description="Hidden service.",
+            is_active=False,
+        )
+
+        response = self.client.get(service.get_absolute_url())
+
+        self.assertEqual(response.status_code, 404)
+
     def test_about_page_loads(self):
         response = self.client.get(reverse("trades_about"))
 
@@ -103,6 +199,94 @@ class TradesLandingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "What Local Customers Say")
+
+    def test_legal_pages_render_in_footer_and_mobile_menu(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            is_active=True,
+        )
+        page = LegalPage.objects.create(
+            business=business,
+            title="Privacy Policy",
+            slug="privacy-policy",
+            summary="How customer details are handled.",
+            body="Admin managed privacy content.",
+        )
+
+        response = self.client.get(reverse("trades_home"))
+
+        self.assertContains(response, page.get_absolute_url(), count=2)
+        self.assertContains(response, "Privacy Policy")
+        self.assertContains(response, 'id="mobileMenuToggle"')
+        self.assertContains(response, 'id="mobileMenuPanel"')
+
+    def test_legal_page_uses_admin_content(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            is_active=True,
+        )
+        page = LegalPage.objects.create(
+            business=business,
+            title="Cookie Notice",
+            slug="cookie-notice",
+            summary="Cookie information.",
+            body="Admin managed cookie content.",
+        )
+
+        response = self.client.get(page.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cookie Notice")
+        self.assertContains(response, "Admin managed cookie content.")
+
+    def test_legal_page_only_uses_active_business_pages(self):
+        BusinessProfile.objects.update(is_active=False)
+        inactive_business = BusinessProfile.objects.create(
+            business_name="Old Business",
+            is_active=False,
+        )
+        old_page = LegalPage.objects.create(
+            business=inactive_business,
+            title="Privacy Policy",
+            slug="privacy-policy",
+            body="Old inactive business legal content.",
+        )
+        active_business = BusinessProfile.objects.create(
+            business_name="Current Business",
+            is_active=True,
+        )
+        LegalPage.objects.create(
+            business=active_business,
+            title="Privacy Policy",
+            slug="privacy-policy",
+            body="Current active business legal content.",
+        )
+
+        response = self.client.get(old_page.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Current active business legal content.")
+        self.assertNotContains(response, "Old inactive business legal content.")
+
+    def test_inactive_legal_page_returns_404(self):
+        BusinessProfile.objects.update(is_active=False)
+        business = BusinessProfile.objects.create(
+            business_name="Acme Trades",
+            is_active=True,
+        )
+        page = LegalPage.objects.create(
+            business=business,
+            title="Hidden Page",
+            slug="hidden-page",
+            body="Hidden content.",
+            is_active=False,
+        )
+
+        response = self.client.get(page.get_absolute_url())
+
+        self.assertEqual(response.status_code, 404)
 
     def test_pages_use_active_business_profile_content(self):
         BusinessProfile.objects.update(is_active=False)
@@ -250,10 +434,11 @@ class BookingEnquiryFormTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("phone", form.errors)
 
-    def test_optional_email_can_be_blank(self):
+    def test_email_is_required(self):
         form = BookingEnquiryForm(data=valid_booking_data(email=""))
 
-        self.assertTrue(form.is_valid(), form.errors)
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
 
 
 class TestimonialPutTests(TestCase):

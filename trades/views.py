@@ -4,12 +4,21 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.core import signing
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 
+from .decorators import rate_limit
 from .forms import BookingEnquiryForm, TestimonialSubmissionForm
-from .models import BookingEnquiry, BookingImage, BusinessProfile, Testimonial
+from .models import (
+    BookingEnquiry,
+    BookingImage,
+    BusinessProfile,
+    LegalPage,
+    ServiceOffering,
+    Testimonial,
+)
 
 logger = logging.getLogger(__name__)
 TESTIMONIAL_LINK_SALT = "trades.testimonial-link"
@@ -23,7 +32,12 @@ def testimonial_token_for_booking(booking):
 def _site_context(extra=None):
     business = (
         BusinessProfile.objects.filter(is_active=True)
-        .prefetch_related("trust_indicators", "service_offerings", "testimonials")
+        .prefetch_related(
+            "trust_indicators",
+            "service_offerings",
+            "testimonials",
+            "legal_pages",
+        )
         .first()
     )
     context = {
@@ -31,6 +45,8 @@ def _site_context(extra=None):
         "trust_indicators": [],
         "service_offerings": [],
         "testimonials": [],
+        "footer_pages": [],
+        "mobile_menu_pages": [],
     }
     if business:
         context.update(
@@ -38,6 +54,12 @@ def _site_context(extra=None):
                 "trust_indicators": business.trust_indicators.filter(is_active=True),
                 "service_offerings": business.service_offerings.filter(is_active=True),
                 "testimonials": business.testimonials.filter(is_active=True),
+                "footer_pages": business.legal_pages.filter(
+                    is_active=True, show_in_footer=True
+                ),
+                "mobile_menu_pages": business.legal_pages.filter(
+                    is_active=True, show_in_mobile_menu=True
+                ),
             }
         )
     if extra:
@@ -53,6 +75,33 @@ def trades_services(request):
     return render(request, "trades/services.html", _site_context())
 
 
+def trades_service_detail(request, slug):
+    business = BusinessProfile.objects.filter(is_active=True).first()
+    if not business:
+        raise Http404("Service not found.")
+    service = get_object_or_404(
+        ServiceOffering,
+        business=business,
+        slug=slug,
+        is_active=True,
+    )
+    other_services = (
+        business.service_offerings.filter(is_active=True)
+        .exclude(pk=service.pk)
+        .order_by("sort_order", "title")
+    )
+    return render(
+        request,
+        "trades/service_detail.html",
+        _site_context(
+            {
+                "service": service,
+                "other_services": other_services,
+            }
+        ),
+    )
+
+
 def trades_about(request):
     return render(request, "trades/about.html", _site_context())
 
@@ -61,8 +110,45 @@ def trades_reviews(request):
     return render(request, "trades/reviews.html", _site_context())
 
 
+def robots_txt(request):
+    scheme = "https" if request.is_secure() else "http"
+    host = request.get_host()
+    sitemap_url = f"{scheme}://{host}" + reverse("sitemap")
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {sitemap_url}\n"
+    )
+    return HttpResponse(content, content_type="text/plain")
+
+
+def trades_legal_page(request, slug):
+    business = BusinessProfile.objects.filter(is_active=True).first()
+    if not business:
+        raise Http404("Page not found.")
+    page = get_object_or_404(
+        LegalPage,
+        business=business,
+        slug=slug,
+        is_active=True,
+    )
+    return render(
+        request,
+        "trades/legal_page.html",
+        _site_context({"page": page}),
+    )
+
+
+@rate_limit("BOOKING_RATE_LIMIT")
 def trades_booking(request):
     if request.method == "POST":
+        if getattr(request, "_rate_limited", False):
+            form = BookingEnquiryForm()
+            return render(request, "trades/booking.html", _site_context({
+                "form": form,
+                "rate_limited": True,
+            }), status=429)
+
         form = BookingEnquiryForm(request.POST, request.FILES)
         if form.is_valid():
             booking = form.save()

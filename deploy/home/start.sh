@@ -315,6 +315,9 @@ if [[ "$RUN_MIGRATIONS" == "1" ]]; then
   fi
 fi
 
+echo "Ensuring cache table exists..."
+"$PYTHON_BIN" manage.py createcachetable >/dev/null 2>&1 || true
+
 if [[ "$COLLECTSTATIC" == "1" ]]; then
   echo "Collecting static files..."
   "$PYTHON_BIN" manage.py collectstatic --noinput >/dev/null

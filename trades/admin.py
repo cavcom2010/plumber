@@ -6,6 +6,7 @@ from .models import (
     BookingEnquiry,
     BookingImage,
     BusinessProfile,
+    LegalPage,
     ServiceOffering,
     Testimonial,
     TrustIndicator,
@@ -22,13 +23,38 @@ class TrustIndicatorInline(admin.TabularInline):
 class ServiceOfferingInline(admin.TabularInline):
     model = ServiceOffering
     extra = 1
-    fields = ("title", "description", "icon", "sort_order", "is_active")
+    prepopulated_fields = {"slug": ("title",)}
+    fields = (
+        "title",
+        "slug",
+        "description",
+        "detail_heading",
+        "detail_body",
+        "detail_image",
+        "icon",
+        "sort_order",
+        "is_active",
+    )
 
 
 class TestimonialInline(admin.TabularInline):
     model = Testimonial
     extra = 1
     fields = ("quote", "author_name", "author_label", "rating", "sort_order", "is_active")
+
+
+class LegalPageInline(admin.StackedInline):
+    model = LegalPage
+    extra = 0
+    prepopulated_fields = {"slug": ("title",)}
+    fields = (
+        "title",
+        "slug",
+        "summary",
+        "body",
+        ("show_in_footer", "show_in_mobile_menu", "is_active"),
+        "sort_order",
+    )
 
 
 class BookingImageInline(admin.TabularInline):
@@ -71,7 +97,12 @@ class BusinessProfileAdmin(admin.ModelAdmin):
     list_display = ("business_name", "phone_display", "email", "service_area", "is_active")
     list_filter = ("is_active",)
     search_fields = ("business_name", "phone_display", "email", "service_area")
-    inlines = (TrustIndicatorInline, ServiceOfferingInline, TestimonialInline)
+    inlines = (
+        TrustIndicatorInline,
+        ServiceOfferingInline,
+        LegalPageInline,
+        TestimonialInline,
+    )
     fieldsets = (
         (
             "Brand",
@@ -150,6 +181,23 @@ class BusinessProfileAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+@admin.register(LegalPage)
+class LegalPageAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "business",
+        "slug",
+        "show_in_footer",
+        "show_in_mobile_menu",
+        "is_active",
+        "sort_order",
+    )
+    list_filter = ("business", "show_in_footer", "show_in_mobile_menu", "is_active")
+    search_fields = ("title", "summary", "body", "business__business_name")
+    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(BookingEnquiry)

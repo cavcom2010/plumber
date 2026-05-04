@@ -2,6 +2,8 @@ import re
 from urllib.parse import quote
 
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class BusinessProfile(models.Model):
@@ -165,7 +167,25 @@ class ServiceOffering(models.Model):
         related_name="service_offerings",
     )
     title = models.CharField(max_length=80)
+    slug = models.SlugField(
+        max_length=100,
+        blank=True,
+        default="",
+        help_text="URL slug for the service detail page. Leave blank to generate from the title.",
+    )
     description = models.CharField(max_length=160)
+    detail_heading = models.CharField(
+        max_length=140,
+        blank=True,
+        default="",
+        help_text="Optional heading for the service detail page. Defaults to the service title.",
+    )
+    detail_body = models.TextField(
+        blank=True,
+        default="",
+        help_text="Admin-managed service explanation shown on the service detail page.",
+    )
+    detail_image = models.ImageField(upload_to="business/services/detail/", blank=True)
     icon = models.CharField(
         max_length=40,
         choices=IconChoices.choices,
@@ -178,9 +198,101 @@ class ServiceOffering(models.Model):
         ordering = ["sort_order", "title"]
         verbose_name = "service offering"
         verbose_name_plural = "service offerings"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["business", "slug"],
+                name="unique_service_slug_per_business",
+            )
+        ]
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._generate_unique_slug()
+        super().save(*args, **kwargs)
+
+    def _generate_unique_slug(self):
+        base_slug = slugify(self.title)[:90] or "service"
+        slug = base_slug
+        suffix = 2
+        queryset = type(self).objects.filter(business_id=self.business_id)
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+        while queryset.filter(slug=slug).exists():
+            suffix_text = f"-{suffix}"
+            slug = f"{base_slug[:100 - len(suffix_text)]}{suffix_text}"
+            suffix += 1
+        return slug
+
+    def get_absolute_url(self):
+        return reverse("trades_service_detail", kwargs={"slug": self.slug})
+
+
+class LegalPage(models.Model):
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name="legal_pages",
+    )
+    title = models.CharField(max_length=120)
+    slug = models.SlugField(
+        max_length=100,
+        blank=True,
+        default="",
+        help_text="URL slug for this page. Leave blank to generate from the title.",
+    )
+    summary = models.CharField(
+        max_length=180,
+        blank=True,
+        default="",
+        help_text="Short description used for metadata and page intro.",
+    )
+    body = models.TextField(
+        help_text="Admin-managed page content. Use plain paragraphs; line breaks are preserved.",
+    )
+    show_in_footer = models.BooleanField(default=True)
+    show_in_mobile_menu = models.BooleanField(default=True)
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "title"]
+        verbose_name = "legal/custom page"
+        verbose_name_plural = "legal/custom pages"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["business", "slug"],
+                name="unique_legal_page_slug_per_business",
+            )
+        ]
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._generate_unique_slug()
+        super().save(*args, **kwargs)
+
+    def _generate_unique_slug(self):
+        base_slug = slugify(self.title)[:90] or "page"
+        slug = base_slug
+        suffix = 2
+        queryset = type(self).objects.filter(business_id=self.business_id)
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+        while queryset.filter(slug=slug).exists():
+            suffix_text = f"-{suffix}"
+            slug = f"{base_slug[:100 - len(suffix_text)]}{suffix_text}"
+            suffix += 1
+        return slug
+
+    def get_absolute_url(self):
+        return reverse("trades_legal_page", kwargs={"slug": self.slug})
 
 
 class Testimonial(models.Model):

@@ -33,13 +33,27 @@
             </nav>
 
             <div class="header-cta">
-                <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="phone-link" aria-label="Call {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} on {% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}"><
+                <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="phone-link" aria-label="Call {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} on {% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}">
                     <span class="phone-dot" aria-hidden="true"></span>
                     <svg class="icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>
                     <span>{% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}</span>
                 </a>
                 <a href="{% url 'trades_booking' %}" class="btn btn-primary">Book Now</a>
+                <button class="mobile-menu-toggle" type="button" id="mobileMenuToggle" aria-controls="mobileMenuPanel" aria-expanded="false" aria-label="Open menu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
             </div>
+        </div>
+
+        <div class="mobile-menu-panel" id="mobileMenuPanel" hidden>
+            <nav aria-label="Mobile menu">
+                <a href="{% url 'trades_about' %}">About</a>
+                {% for page in mobile_menu_pages %}
+                    <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+                {% endfor %}
+            </nav>
         </div>
     </header>
 
@@ -57,6 +71,13 @@
             <p><a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="footer-phone">{% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}</a></p>
             <p>{% if business %}{{ business.email }}{% else %}hello@example.com{% endif %}</p>
             <p style="margin-top:8px;">{% if business %}{{ business.service_area }}{% else %}Serving your local area{% endif %}</p>
+            {% if footer_pages %}
+                <nav class="footer-links" aria-label="Footer links">
+                    {% for page in footer_pages %}
+                        <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+                    {% endfor %}
+                </nav>
+            {% endif %}
             <div class="footer-bottom">
                 &copy; 2026 {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}. All rights reserved. {% if business %}{{ business.footer_disclaimer }}{% else %}Replace claims, reviews, insurance details, and qualifications with verified client information.{% endif %}
             </div>

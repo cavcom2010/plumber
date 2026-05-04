@@ -93,9 +93,8 @@ class BookingEnquiryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["service"].choices = get_service_choices()
         for name, field in self.fields.items():
-            if name != "email" and not name.startswith("diagnostic_image_"):
+            if not name.startswith("diagnostic_image_"):
                 field.required = True
-        self.fields["email"].required = False
         self.fields["is_emergency"].required = False
 
     def clean_full_name(self):

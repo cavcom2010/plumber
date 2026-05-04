@@ -1,0 +1,20 @@
+{% extends "trades/base.html" %}
+
+{% block title %}{{ page.title }} | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
+{% block meta_description %}{% if page.summary %}{{ page.summary }}{% else %}{{ page.title }} for {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}.{% endif %}{% endblock %}
+
+{% block content %}
+    <section class="section legal-page-section">
+        <div class="section-inner legal-page-inner">
+            <a href="{% url 'trades_home' %}" class="back-link">Home</a>
+            <span class="section-label">{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}</span>
+            <h1 class="section-title">{{ page.title }}</h1>
+            {% if page.summary %}
+                <p class="section-subtitle">{{ page.summary }}</p>
+            {% endif %}
+            <div class="legal-page-body">
+                {{ page.body|linebreaks }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

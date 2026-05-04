@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from logging.handlers import RotatingFileHandler
 
 import dj_database_url
 from decouple import Csv, config
@@ -212,6 +213,12 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="website@example.com")
 SERVER_EMAIL = config("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 ADMIN_NOTIFICATION_EMAIL = config("ADMIN_NOTIFICATION_EMAIL", default="")
 
+# Error email recipients. Set ADMIN_NAME and ADMIN_EMAIL in .env.
+# Django emails these addresses on 500 errors when DEBUG=False.
+ADMIN_NAME = config("ADMIN_NAME", default="")
+ADMIN_EMAIL = config("ADMIN_EMAIL", default="")
+ADMINS = [(ADMIN_NAME, ADMIN_EMAIL)] if ADMIN_NAME and ADMIN_EMAIL else []
+
 if EMAIL_PROVIDER == "custom_smtp":
     EMAIL_BACKEND = config("EMAIL_BACKEND", default=EMAIL_DEFAULTS["backend"])
     EMAIL_HOST = config("EMAIL_HOST", default=EMAIL_DEFAULTS["host"])
@@ -272,6 +279,83 @@ def get_service_choices():
 # booking and invoice forms. Leave blank or set to another value for
 # international mode (no phone/postcode regex enforced).
 COUNTRY = config("COUNTRY", default="UK")
+
+# Cache
+# https://docs.djangoproject.com/en/5.2/topics/cache/
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
+
+# Rate limiting
+# Format: "count/period" where period is s (seconds), m (minutes), h (hours), d (days).
+# Example: BOOKING_RATE_LIMIT=5/m means 5 POSTs per minute per IP.
+# Leave blank or unset to disable rate limiting.
+BOOKING_RATE_LIMIT = config("BOOKING_RATE_LIMIT", default="", cast=str)
+
+# Logging
+# https://docs.djangoproject.com/en/5.2/topics/logging/
+LOG_LEVEL = config("LOG_LEVEL", default="INFO")
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)s %(name)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "simple": {
+            "format": "%(levelname)s %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "filters": ["require_debug_false"],
+        },
+        "file": {
+            "level": LOG_LEVEL,
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": str(LOGS_DIR / "django.log"),
+            "maxBytes": 5 * 1024 * 1024,  # 5 MB
+            "backupCount": 3,
+            "formatter": "verbose",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "filters": ["require_debug_false"],
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file", "mail_admins"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "trades": {
+            "handlers": ["console", "file"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
