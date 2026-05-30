@@ -1,26 +1,26 @@
 {% load static %}
 <section class="section" id="services">
     <div class="section-inner">
-        <div class="section-header">
+        <div class="section-header" data-animate="fade-up">
             <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
             <h2 class="section-title">{% if business %}{{ business.services_title }}{% else %}Our Services{% endif %}</h2>
             <p class="section-subtitle">{% if business %}{{ business.services_subtitle }}{% else %}A flexible service template for local trades: quick repairs, planned installs, maintenance visits, and emergency call-outs.{% endif %}</p>
         </div>
 
-        <div class="section-image section-image-services">
+        <div class="section-image section-image-services" data-animate="fade-up">
             <img src="{% if business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="Trade tools and equipment laid out for repair work" loading="lazy">
         </div>
 
         <div class="services-grid">
             {% for service in service_offerings %}
-                <a href="{{ service.get_absolute_url }}" class="service-card service-card-link">
+                <a href="{{ service.get_absolute_url }}" class="service-card service-card-link" data-animate="fade-up" data-animate-delay="{% if forloop.counter0 < 3 %}{% widthratio forloop.counter0 1 100 %}{% else %}300{% endif %}">
                     <div class="service-icon"><svg><use href="#{{ service.icon }}"></use></svg></div>
                     <h3>{{ service.title }}</h3>
                     <p>{{ service.description }}</p>
                     <span class="service-card-action">Learn more</span>
                 </a>
             {% empty %}
-                <article class="service-card">
+                <article class="service-card" data-animate="fade-up">
                     <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
                     <h3>Leak Repairs</h3>
                     <p>Fast fault-finding and repair work.</p>

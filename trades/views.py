@@ -90,6 +90,11 @@ def trades_service_detail(request, slug):
         .exclude(pk=service.pk)
         .order_by("sort_order", "title")
     )
+    breadcrumbs = [
+        {"label": "Home", "url": reverse("trades_home")},
+        {"label": "Services", "url": reverse("trades_services")},
+        {"label": service.title, "url": None},
+    ]
     return render(
         request,
         "trades/service_detail.html",
@@ -97,6 +102,7 @@ def trades_service_detail(request, slug):
             {
                 "service": service,
                 "other_services": other_services,
+                "breadcrumbs": breadcrumbs,
             }
         ),
     )
@@ -132,10 +138,14 @@ def trades_legal_page(request, slug):
         slug=slug,
         is_active=True,
     )
+    breadcrumbs = [
+        {"label": "Home", "url": reverse("trades_home")},
+        {"label": page.title, "url": None},
+    ]
     return render(
         request,
         "trades/legal_page.html",
-        _site_context({"page": page}),
+        _site_context({"page": page, "breadcrumbs": breadcrumbs}),
     )
 
 

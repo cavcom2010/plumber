@@ -1,6 +1,6 @@
 <section class="section" id="reviews">
     <div class="section-inner">
-        <div class="section-header">
+        <div class="section-header" data-animate="fade-up">
             <span class="section-label">{% if business %}{{ business.reviews_label }}{% else %}Testimonials{% endif %}</span>
             <h2 class="section-title">{% if business %}{{ business.reviews_title }}{% else %}What Local Customers Say{% endif %}</h2>
             <p class="section-subtitle">{% if business %}{{ business.reviews_subtitle }}{% else %}Use this area for real verified customer reviews once the business has approved them.{% endif %}</p>
@@ -8,20 +8,32 @@
 
         <div class="testimonials-grid">
             {% for testimonial in testimonials %}
-                <article class="testimonial-card">
-                    <div class="testimonial-stars" aria-label="{{ testimonial.rating }} star review">★★★★★</div>
+                <article class="testimonial-card" data-animate="fade-up" data-animate-delay="{% if forloop.counter0 < 3 %}{% widthratio forloop.counter0 1 100 %}{% else %}300{% endif %}">
+                    <div class="testimonial-header">
+                        <div class="avatar-initials testimonial-avatar" data-name="{{ testimonial.author_name }}">{{ testimonial.author_name|slice:":1" }}</div>
+                        <div class="testimonial-meta">
+                            <span class="testimonial-author-name">{{ testimonial.author_name }}</span>
+                            <span class="testimonial-author-label">{{ testimonial.author_label }}</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars" data-rating="{{ testimonial.rating|default:'5' }}" aria-label="{{ testimonial.rating }} out of 5 stars">★★★★★</div>
                     {% if testimonial.job_label %}
                         <div class="testimonial-job">{{ testimonial.job_label }}</div>
                     {% endif %}
-                    <p>“{{ testimonial.quote }}”</p>
-                    <div class="testimonial-author">{{ testimonial.author_name }}<span> — {{ testimonial.author_label }}</span></div>
+                    <p>{{ testimonial.quote }}</p>
                 </article>
             {% empty %}
-                <article class="testimonial-card">
-                    <div class="testimonial-stars" aria-label="Five star review">★★★★★</div>
+                <article class="testimonial-card" data-animate="fade-up">
+                    <div class="testimonial-header">
+                        <div class="avatar-initials testimonial-avatar" data-name="Sarah J.">S</div>
+                        <div class="testimonial-meta">
+                            <span class="testimonial-author-name">Sarah J.</span>
+                            <span class="testimonial-author-label">Local Customer</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars" data-rating="5" aria-label="5 out of 5 stars">★★★★★</div>
                     <div class="testimonial-job">Leak repair</div>
-                    <p>“Arrived quickly, explained the problem clearly, and left the place spotless. Very professional from start to finish.”</p>
-                    <div class="testimonial-author">Sarah J.<span> — Local Customer</span></div>
+                    <p>Arrived quickly, explained the problem clearly, and left the place spotless. Very professional from start to finish.</p>
                 </article>
             {% endfor %}
         </div>

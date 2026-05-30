@@ -4,11 +4,57 @@
 {% block title %}{{ service.title }} | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
 {% block meta_description %}{{ service.description }}{% endblock %}
 
+{% block og_title %}{{ service.title }} — {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
+{% block og_description %}{{ service.description }}{% endblock %}
+{% block og_type %}website{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'trades_home' %}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'trades_services' %}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ service.title }}"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "{{ service.title }}",
+    "description": "{{ service.description }}",
+    "provider": {
+        "@type": "LocalBusiness",
+        "name": "{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}"
+    },
+    "areaServed": "{% if business %}{{ business.service_area }}{% else %}United Kingdom{% endif %}"
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <section class="section service-detail-section">
         <div class="section-inner">
+            {% include "trades/partials/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
             <div class="service-detail-layout">
-                <div class="service-detail-copy">
+                <div class="service-detail-copy" data-animate="fade-left">
                     <a href="{% url 'trades_services' %}" class="back-link">Services</a>
                     <div class="service-icon"><svg><use href="#{{ service.icon }}"></use></svg></div>
                     <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
@@ -21,10 +67,10 @@
                     {% endif %}
                     <div class="service-detail-actions">
                         <a href="{% url 'trades_booking' %}" class="btn btn-primary">Book a Visit</a>
-                        <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="btn btn-secondary">Call {% if business %}{{ business.phone_display }}{% else %}Now{% endif %}</a>
+                        <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}" class="btn btn-outline">Call {% if business %}{{ business.phone_display }}{% else %}Now{% endif %}</a>
                     </div>
                 </div>
-                <div class="section-image service-detail-image">
+                <div class="section-image service-detail-image" data-animate="fade-right">
                     <img src="{% if service.detail_image %}{{ service.detail_image.url }}{% elif business and business.services_image %}{{ business.services_image.url }}{% else %}{% static 'trades/images/services-pipes.jpg' %}{% endif %}" alt="{{ service.title }}" loading="lazy">
                 </div>
             </div>
@@ -34,13 +80,13 @@
     {% if other_services %}
         <section class="section service-related-section">
             <div class="section-inner">
-                <div class="section-header">
+                <div class="section-header" data-animate="fade-up">
                     <span class="section-label">{% if business %}{{ business.services_label }}{% else %}Our Services{% endif %}</span>
                     <h2 class="section-title">Related Services</h2>
                 </div>
                 <div class="services-grid">
                     {% for related in other_services %}
-                        <a href="{{ related.get_absolute_url }}" class="service-card service-card-link">
+                        <a href="{{ related.get_absolute_url }}" class="service-card service-card-link" data-animate="fade-up" data-animate-delay="{% if forloop.counter0 < 3 %}{% widthratio forloop.counter0 1 100 %}{% else %}300{% endif %}">
                             <div class="service-icon"><svg><use href="#{{ related.icon }}"></use></svg></div>
                             <h3>{{ related.title }}</h3>
                             <p>{{ related.description }}</p>

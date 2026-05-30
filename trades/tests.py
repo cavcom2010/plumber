@@ -216,7 +216,7 @@ class TradesLandingTests(TestCase):
 
         response = self.client.get(reverse("trades_home"))
 
-        self.assertContains(response, page.get_absolute_url(), count=2)
+        self.assertContains(response, page.get_absolute_url(), count=3)
         self.assertContains(response, "Privacy Policy")
         self.assertContains(response, 'id="mobileMenuToggle"')
         self.assertContains(response, 'id="mobileMenuPanel"')

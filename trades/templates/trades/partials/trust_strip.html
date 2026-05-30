@@ -1,13 +1,13 @@
 <section class="trust-strip" aria-label="Trust indicators">
-    <div class="trust-strip-inner">
+    <div class="trust-strip-inner" data-animate="fade-in">
         {% for item in trust_indicators %}
-            <div class="trust-item"><span class="trust-icon">✓</span> {{ item.label }}</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> {{ item.label }}</div>
         {% empty %}
-            <div class="trust-item"><span class="trust-icon">✓</span> Local & Reliable</div>
-            <div class="trust-item"><span class="trust-icon">✓</span> Emergency Call-outs</div>
-            <div class="trust-item"><span class="trust-icon">✓</span> Clear Upfront Advice</div>
-            <div class="trust-item"><span class="trust-icon">✓</span> Tidy Workmanship</div>
-            <div class="trust-item"><span class="trust-icon">✓</span> Fully Insured*</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> Local & Reliable</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> Emergency Call-outs</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> Clear Upfront Advice</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> Tidy Workmanship</div>
+            <div class="trust-item"><span class="trust-icon"><svg><use href="#icon-check"></use></svg></span> Fully Insured*</div>
         {% endfor %}
     </div>
 </section>

@@ -1,37 +1,57 @@
 {% extends "trades/base.html" %}
 
+{% block og_title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} — {% if business %}{{ business.tagline }}{% else %}Quality local trade services{% endif %}{% endblock %}
+{% block og_type %}website{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "{% if business %}LocalBusiness{% else %}Organization{% endif %}",
+    "name": "{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}",
+    "description": "{% if business %}{{ business.meta_description }}{% else %}Quality local trade services{% endif %}",
+    "url": "{{ request.build_absolute_uri }}",
+    "telephone": "{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}",
+    "email": "{% if business %}{{ business.email }}{% else %}hello@example.com{% endif %}",
+    "areaServed": "{% if business %}{{ business.service_area }}{% else %}United Kingdom{% endif %}",
+    {% if business and business.hero_image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ business.hero_image.url }}",{% endif %}
+    "priceRange": "£"
+}
+</script>
+{% endblock %}
+
 {% block content %}
     {% include "trades/partials/hero.html" %}
     {% include "trades/partials/trust_strip.html" %}
 
     <section class="section home-overview" aria-label="Site overview">
         <div class="section-inner">
-            <div class="section-header">
+            <div class="section-header" data-animate="fade-up">
                 <span class="section-label">Start Here</span>
                 <h2 class="section-title">What Do You Need Today?</h2>
                 <p class="section-subtitle">Choose the next step: view services, learn about the business, book a visit, or read customer feedback.</p>
             </div>
 
             <div class="home-overview-grid">
-                <a href="{% url 'trades_services' %}" class="home-overview-card">
+                <a href="{% url 'trades_services' %}" class="home-overview-card" data-animate="fade-up" data-animate-delay="100">
                     <div class="service-icon"><svg><use href="#icon-wrench"></use></svg></div>
                     <h3>Services</h3>
                     <p>See repairs, installs, maintenance visits, and emergency support.</p>
                 </a>
 
-                <a href="{% url 'trades_booking' %}" class="home-overview-card home-overview-card-primary">
+                <a href="{% url 'trades_booking' %}" class="home-overview-card home-overview-card-primary" data-animate="fade-up" data-animate-delay="200">
                     <div class="service-icon"><svg><use href="#icon-calendar"></use></svg></div>
                     <h3>Book a Visit</h3>
                     <p>Send a booking enquiry and get a call-back to confirm availability.</p>
                 </a>
 
-                <a href="{% url 'trades_about' %}" class="home-overview-card">
+                <a href="{% url 'trades_about' %}" class="home-overview-card" data-animate="fade-up" data-animate-delay="300">
                     <div class="service-icon"><svg><use href="#icon-user"></use></svg></div>
                     <h3>About</h3>
                     <p>Meet the business owner and understand the local service promise.</p>
                 </a>
 
-                <a href="{% url 'trades_reviews' %}" class="home-overview-card">
+                <a href="{% url 'trades_reviews' %}" class="home-overview-card" data-animate="fade-up" data-animate-delay="400">
                     <div class="service-icon"><svg><use href="#icon-check"></use></svg></div>
                     <h3>Reviews</h3>
                     <p>Read what local customers say after completed visits.</p>

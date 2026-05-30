@@ -3,10 +3,35 @@
 {% block title %}{{ page.title }} | {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
 {% block meta_description %}{% if page.summary %}{{ page.summary }}{% else %}{{ page.title }} for {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}.{% endif %}{% endblock %}
 
+{% block og_title %}{{ page.title }} — {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}
+{% block og_description %}{% if page.summary %}{{ page.summary }}{% else %}{{ page.title }}{% endif %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'trades_home' %}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ page.title }}"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <section class="section legal-page-section">
         <div class="section-inner legal-page-inner">
-            <a href="{% url 'trades_home' %}" class="back-link">Home</a>
+            {% include "trades/partials/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
             <span class="section-label">{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}</span>
             <h1 class="section-title">{{ page.title }}</h1>
             {% if page.summary %}

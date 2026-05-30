@@ -4,17 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1f3c">
     <meta name="description" content="{% block meta_description %}{% if business %}{{ business.meta_description }}{% else %}Quality local trade services with fast response, online booking, emergency call-outs, repairs, installations, and maintenance.{% endif %}{% endblock %}">
     <title>{% block title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} | Quality Local Trade Services{% endblock %}</title>
 
+    <link rel="icon" type="image/svg+xml" href="{% static 'trades/images/favicon.svg' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'trades/images/favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'trades/images/favicon.svg' %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}">
+    <meta property="og:title" content="{% block og_title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %} — {% if business %}{{ business.tagline }}{% else %}Quality local trade services{% endif %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% if business %}{{ business.meta_description|truncatewords:40 }}{% else %}Reliable local tradespeople for urgent repairs, installations, and maintenance.{% endif %}{% endblock %}">
+    {% block og_image %}
+    {% if business and business.hero_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ business.hero_image.url }}">{% endif %}
+    {% endblock %}
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:locale" content="en_GB">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{% if business %}{{ business.tagline }}{% else %}Quality local trade services{% endif %}{% endblock %}">
+
     <link rel="stylesheet" href="{% versioned_static 'trades/css/landing.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
 <body{% if messages %} data-booking-success="true"{% endif %}>
     {% include "trades/partials/icons.html" %}
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    {% block structured_data %}{% endblock %}
 
     <header class="header">
         <div class="header-inner">
@@ -57,9 +85,11 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         {% block content %}{% endblock %}
     </main>
+
+    {% include "trades/partials/cookie_consent.html" %}
 
     <footer class="footer">
         <div class="footer-inner">
@@ -84,6 +114,16 @@
         </div>
     </footer>
 
+    <footer class="footer-compact">
+        <div class="footer-compact-row">
+            <a href="tel:{% if business %}{{ business.phone_href }}{% else %}+1234567890{% endif %}">{% if business %}{{ business.phone_display }}{% else %}Call Us{% endif %}</a>
+            <span>{% if business %}{{ business.email }}{% else %}hello@example.com{% endif %}</span>
+        </div>
+        <div class="footer-compact-bottom">
+            &copy; 2026 {% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}
+        </div>
+    </footer>
+
     <div class="success-overlay" id="successOverlay" role="dialog" aria-modal="true" aria-labelledby="success-title" aria-describedby="success-description">
         <div class="success-modal">
             <div class="check-circle" aria-hidden="true"><svg><use href="#icon-check"></use></svg></div>
@@ -93,6 +133,17 @@
             <button class="btn-close-modal" type="button" id="closeSuccessBtn">Got It, Thanks</button>
         </div>
     </div>
+
+    {% if business and business.whatsapp_url %}
+        <a href="{{ business.whatsapp_url }}" class="fab-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <span class="fab-label">Quick Chat</span>
+            <svg aria-hidden="true"><use href="#icon-whatsapp"></use></svg>
+        </a>
+    {% endif %}
+
+    <button class="back-to-top{% if business and business.whatsapp_url %} has-whatsapp{% endif %}" id="backToTop" aria-label="Back to top" type="button">
+        <svg aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+    </button>
 
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
         <a href="{% url 'trades_home' %}" class="mobile-nav-item">

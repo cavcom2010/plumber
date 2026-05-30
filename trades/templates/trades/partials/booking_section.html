@@ -1,7 +1,7 @@
 {% load static service_icon %}
 <section class="booking-section" id="booking">
     <div class="section-inner">
-        <div class="section-header">
+        <div class="section-header" data-animate="fade-up">
             <span class="section-label">{% if business %}{{ business.booking_label }}{% else %}Book a Visit{% endif %}</span>
             <h2 class="section-title">{% if business %}{{ business.booking_title }}{% else %}Schedule Your Service{% endif %}</h2>
             <p class="section-subtitle">{% if business %}{{ business.booking_subtitle }}{% else %}Send a booking enquiry and the team will confirm availability. For urgent issues, call directly for the fastest response.{% endif %}</p>
@@ -13,11 +13,11 @@
             {% endif %}
         </div>
 
-        <div class="booking-image">
+        <div class="booking-image" data-animate="fade-up" data-animate-delay="100">
             <img src="{% if business and business.booking_image %}{{ business.booking_image.url }}{% else %}{% static 'trades/images/booking-bathroom.jpg' %}{% endif %}" alt="Clean modern trade service area" loading="lazy">
         </div>
 
-        <div class="booking-card">
+        <div class="booking-card" data-animate="fade-up" data-animate-delay="200">
             <div class="booking-card-top">
                 <div class="icon-circle"><svg><use href="#icon-clipboard"></use></svg></div>
                 <div>
@@ -89,20 +89,20 @@
                     <fieldset class="form-group full-width{% if form.timeslot.errors %} error{% endif %}" id="group-time">
                         <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
                         <div class="time-slot-grid">
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7–9am</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9–11am</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11–1pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1–3pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3–5pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5–7pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7&ndash;9am</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9&ndash;11am</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11&ndash;1pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1&ndash;3pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3&ndash;5pm</span></label>
+                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5&ndash;7pm</span></label>
                         </div>
                         <span class="error-msg" id="time-error">{{ form.timeslot.errors.0|default:"Please select a preferred time slot." }}</span>
                     </fieldset>
 
                     <div class="form-group full-width{% if form.description.errors %} error{% endif %}" id="group-description">
                         <label for="description">Describe the Issue <span class="required">*</span></label>
-                        <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening — the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
-                        <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue." }}</span>
+                        <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening &mdash; the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
+                        <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue (minimum 10 characters)." }}</span>
                     </div>
 
                     <div class="form-group full-width">
@@ -115,8 +115,8 @@
                             </span>
                         </label>
                         <div class="emergency-note" id="emergencyNote" role="status">
-                            <span aria-hidden="true">⚡</span>
-                                    <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
+                            <span aria-hidden="true">&#9889;</span>
+                            <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
                         </div>
                     </div>
 
@@ -128,7 +128,7 @@
                         <div class="diagnostic-uploads">
                             <div class="diagnostic-upload-row{% if form.diagnostic_image_1.errors %} error{% endif %}">
                                 <label for="id_diagnostic_image_1" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
                                     <span class="file-upload-text">Photo 1</span>
                                 </label>
                                 {{ form.diagnostic_image_1 }}
@@ -137,7 +137,7 @@
                             </div>
                             <div class="diagnostic-upload-row{% if form.diagnostic_image_2.errors %} error{% endif %}">
                                 <label for="id_diagnostic_image_2" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
                                     <span class="file-upload-text">Photo 2</span>
                                 </label>
                                 {{ form.diagnostic_image_2 }}
@@ -146,7 +146,7 @@
                             </div>
                             <div class="diagnostic-upload-row{% if form.diagnostic_image_3.errors %} error{% endif %}">
                                 <label for="id_diagnostic_image_3" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">📷</span>
+                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
                                     <span class="file-upload-text">Photo 3</span>
                                 </label>
                                 {{ form.diagnostic_image_3 }}
@@ -158,7 +158,10 @@
                 </div>
 
                 <div class="form-submit-area">
-                    <button type="submit" class="btn-submit" id="submitBtn">Review &amp; Confirm</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        Review &amp; Confirm
+                    </button>
+                    <p class="form-submit-note">We will check availability and confirm by phone within 2 hours.</p>
                 </div>
             </form>
         </div>

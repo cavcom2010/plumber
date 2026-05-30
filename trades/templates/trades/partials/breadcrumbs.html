@@ -1,0 +1,14 @@
+{% if breadcrumbs %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    {% for item in breadcrumbs %}
+        {% if not forloop.first %}
+            <svg aria-hidden="true" class="breadcrumb-sep"><use href="#icon-chevron-right"></use></svg>
+        {% endif %}
+        {% if item.url %}
+            <a href="{{ item.url }}">{{ item.label }}</a>
+        {% else %}
+            <span class="breadcrumb-current" aria-current="page">{{ item.label }}</span>
+        {% endif %}
+    {% endfor %}
+</nav>
+{% endif %}

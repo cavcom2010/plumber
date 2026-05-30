@@ -1,0 +1,11 @@
+<section class="cookie-banner" id="cookieBanner" role="alert" aria-labelledby="cookie-banner-title">
+    <div class="cookie-banner-text">
+        <span id="cookie-banner-title">This site uses essential cookies for basic functionality and booking form submissions. No tracking or advertising cookies are set.</span>
+        {% for page in footer_pages %}
+            {% if 'privacy' in page.title|lower %}<a href="{{ page.get_absolute_url }}">Learn more</a>{% endif %}
+        {% endfor %}
+    </div>
+    <div class="cookie-banner-actions">
+        <button class="cookie-btn cookie-btn-accept" data-cookie-accept type="button">Accept</button>
+    </div>
+</section>
