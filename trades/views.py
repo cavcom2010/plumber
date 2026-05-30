@@ -183,12 +183,19 @@ def trades_booking(request):
     return render(request, "trades/booking.html", _site_context({"form": form}))
 
 
+@rate_limit("BOOKING_RATE_LIMIT")
 def testimonial_put(request, token):
     booking = _booking_from_testimonial_token(token)
     business = BusinessProfile.objects.filter(is_active=True).first()
     existing = getattr(booking, "submitted_testimonial", None)
 
     if request.method == "POST":
+        if getattr(request, "_rate_limited", False):
+            form = TestimonialSubmissionForm()
+            return render(request, "trades/testimonial_put.html", _site_context({
+                "form": form,
+                "rate_limited": True,
+            }), status=429)
         if existing:
             messages.success(request, "Your testimonial has already been received. Thank you.")
             return redirect("testimonial_put", token=token)
