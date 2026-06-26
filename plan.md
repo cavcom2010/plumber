@@ -7,3 +7,6 @@
 - [ ] Possibly add a test.
 
 Current implementation sends WhatsApp immediately with static message. Next steps after user acceptance of plan.
+
+## Regarding `deploy/home/start.sh`
+The file `deploy/home/start.sh` has not been provided in the chat. Please add it so we can explain what it does.
