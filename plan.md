@@ -10,3 +10,4 @@ Current implementation sends WhatsApp immediately with static message. Next step
 
 ## Regarding `deploy/home/start.sh`
 The file `deploy/home/start.sh` has not been provided in the chat. Please add it so we can explain what it does.
+The script is not available for analysis. After you add the file to the chat, I can review its contents and describe its purpose.
