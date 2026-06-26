@@ -357,6 +357,11 @@ LOGGING = {
     },
 }
 
+# Twilio WhatsApp integration
+TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID", default="")
+TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN", default="")
+TWILIO_WHATSAPP_NUMBER = config("TWILIO_WHATSAPP_NUMBER", default="")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

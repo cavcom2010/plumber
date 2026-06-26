@@ -19,6 +19,7 @@ from .models import (
     ServiceOffering,
     Testimonial,
 )
+from twilio.rest import Client as TwilioClient
 
 logger = logging.getLogger(__name__)
 TESTIMONIAL_LINK_SALT = "trades.testimonial-link"
@@ -172,6 +173,7 @@ def trades_booking(request):
                     )
             _send_booking_notification(request, booking)
             _send_booking_confirmation(request, booking)
+            _send_whatsapp_notification(request, booking)
             messages.success(
                 request,
                 "Booking enquiry received. We will call back to confirm availability.",
@@ -315,5 +317,33 @@ def _send_booking_confirmation(request, booking):
         message.send(fail_silently=False)
     except Exception:
         logger.exception("Failed to send booking confirmation for enquiry %s.", booking.pk)
+
+
+def _send_whatsapp_notification(request, booking):
+    business = BusinessProfile.objects.filter(is_active=True).first()
+    if not business:
+        return
+    to_number = business.whatsapp_number
+    if not to_number:
+        return
+    account_sid = settings.TWILIO_ACCOUNT_SID
+    auth_token = settings.TWILIO_AUTH_TOKEN
+    from_number = settings.TWILIO_WHATSAPP_NUMBER
+
+    if not (account_sid and auth_token and from_number):
+        logger.warning("WhatsApp notification skipped: Twilio credentials not configured.")
+        return
+
+    try:
+        client = TwilioClient(account_sid, auth_token)
+        service = booking.get_service_display()
+        client.messages.create(
+            body=f"New booking enquiry from {booking.full_name}\nService: {service}\nPhone: {booking.phone}\nEmail: {booking.email}\nPostcode: {booking.postcode}",
+            from_=f'whatsapp:{from_number}',
+            to=f'whatsapp:{to_number}',
+        )
+        logger.info("WhatsApp notification sent for booking %s.", booking.pk)
+    except Exception:
+        logger.exception("Failed to send WhatsApp notification for enquiry %s.", booking.pk)
 
 # Create your views here.
