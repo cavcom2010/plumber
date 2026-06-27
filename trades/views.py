@@ -19,8 +19,6 @@ from .models import (
     ServiceOffering,
     Testimonial,
 )
-from twilio.rest import Client as TwilioClient
-
 logger = logging.getLogger(__name__)
 TESTIMONIAL_LINK_SALT = "trades.testimonial-link"
 TESTIMONIAL_LINK_MAX_AGE = 60 * 60 * 24 * 180
@@ -335,6 +333,7 @@ def _send_whatsapp_notification(request, booking):
         return
 
     try:
+        from twilio.rest import Client as TwilioClient
         client = TwilioClient(account_sid, auth_token)
         service = booking.get_service_display()
         client.messages.create(

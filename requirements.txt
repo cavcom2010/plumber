@@ -4,4 +4,5 @@ gunicorn==25.3.0
 Pillow==12.2.0
 psycopg2-binary==2.9.12
 python-decouple==3.8
+twilio==9.6.0
 weasyprint==68.1
