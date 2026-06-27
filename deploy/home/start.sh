@@ -290,38 +290,7 @@ export CSRF_TRUSTED_ORIGINS="$(normalize_csv_unique "${CSRF_BASE},${LOCAL_ORIGIN
 export SITE_PROTO="http"
 export SITE_DOMAIN="${LAN_IP}:${NGINX_PORT}"
 
-run_manage_command() {
-  local label="$1"
-  shift
-
-  echo "${label}..."
-  "$PYTHON_BIN" manage.py "$@"
-}
-
-echo "Running Django preflight before starting services..."
-if [[ "$RUN_MANAGE_CHECK" == "1" ]]; then
-  run_manage_command "Running python manage.py check" check
-fi
-
-if [[ "$CHECK_MODEL_MIGRATIONS" == "1" ]]; then
-  run_manage_command "Checking for missing migration files" makemigrations --check --dry-run
-fi
-
-if [[ "$RUN_MIGRATIONS" == "1" ]]; then
-  if "$PYTHON_BIN" manage.py migrate --check --noinput >/dev/null 2>&1; then
-    echo "Database migrations are already applied."
-  else
-    run_manage_command "Applying database migrations" migrate --noinput
-  fi
-fi
-
-echo "Ensuring cache table exists..."
-"$PYTHON_BIN" manage.py createcachetable >/dev/null 2>&1 || true
-
-if [[ "$COLLECTSTATIC" == "1" ]]; then
-  echo "Collecting static files..."
-  "$PYTHON_BIN" manage.py collectstatic --noinput >/dev/null
-fi
+source "$ROOT/deploy/lib/preflight.sh"
 
 if [[ "$HOME_FOREGROUND_MODE" == "1" ]]; then
   echo "Starting Gunicorn on 127.0.0.1:${GUNICORN_PORT} in foreground mode..."

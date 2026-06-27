@@ -25,6 +25,7 @@ logs/
 
 # Deploy-generated local files
 .home_nginx/
+deploy/start.sh
 gunicorn.pid
 *.pid
 

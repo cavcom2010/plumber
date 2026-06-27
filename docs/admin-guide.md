@@ -210,11 +210,19 @@ Start local development server:
 python manage.py runserver
 ```
 
-Start the home deployment script:
+Deploy to production:
+
+```bash
+bash deploy/start.sh
+```
+
+This installs Python dependencies, runs Django preflight checks (check, makemigrations, migrate, createcachetable, collectstatic), and gracefully restarts the systemd Gunicorn service.
+
+For local/LAN testing, use the home deployment script instead:
 
 ```bash
 bash deploy/home/start.sh
 ```
 
-The deployment script prefers port `8021` and moves upward to the next free port if needed.
+The home deployment script runs a self-contained Nginx + Gunicorn stack on port `8021` (or the next free port if busy).
 

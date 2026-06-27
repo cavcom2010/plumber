@@ -29,8 +29,11 @@ python manage.py collectstatic --noinput
 # Run dev server (serves media in DEBUG mode)
 python manage.py runserver
 
-# Production-like deploy (Gunicorn + Nginx, port 8021, prefers foreground)
+# Local/LAN deploy (self-contained Nginx + Gunicorn on ports 8021/9021, HTTP-only)
 bash deploy/home/start.sh --foreground
+
+# Production deploy (pip install + preflight checks + systemd restart)
+bash deploy/start.sh
 ```
 
 ## Architecture notes
@@ -55,5 +58,5 @@ bash deploy/home/start.sh --foreground
 - **Tests rely on default `BusinessProfile` content** (e.g. `assertContains(response, "Quality Workmanship")`). If the initial migration's default values change, these tests will break.
 - **`makemigrations --check --dry-run`** is the canonical way to verify no missing migrations (used by the deploy script, not `makemigrations --check` alone).
 - **`EmailBackend` is configured indirectly** through `EMAIL_PROVIDER` (console/sender_net/google_workspace/google_workspace_relay/custom_smtp) in settings, not by setting `EMAIL_BACKEND` directly unless using `custom_smtp`.
-- **Deploy script** (`deploy/home/start.sh`) auto-detects free ports starting from 8021/9021, runs preflight checks (check, makemigrations, migrate, createcachetable, collectstatic), and generates a fresh nginx.conf before starting.
+- **Home deploy script** (`deploy/home/start.sh`) auto-detects free ports starting from 8021/9021, runs preflight checks, and generates a fresh nginx.conf before starting. For production, use `deploy/start.sh` which instead restarts the systemd Gunicorn service.
 - **`staticfiles/` and `media/`** are served by Nginx in production (not Django), but served by Django's `static()` helper only in `DEBUG=True` mode.
