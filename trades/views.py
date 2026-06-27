@@ -324,20 +324,86 @@ def _send_whatsapp_notification(request, booking):
     to_number = business.whatsapp_number
     if not to_number:
         return
+
+    service = booking.get_service_display()
+    emergency = " !!! EMERGENCY !!!" if booking.is_emergency else ""
+    body = (
+        f"New booking enquiry{emergency}\n"
+        f"Name: {booking.full_name}\n"
+        f"Service: {service}\n"
+        f"Phone: {booking.phone}\n"
+        f"Email: {booking.email or 'not provided'}\n"
+        f"Address: {booking.address}\n"
+        f"Postcode: {booking.postcode}\n"
+        f"Date: {booking.preferred_date}\n"
+        f"Time: {booking.get_timeslot_display()}\n"
+        f"Problem: {booking.description}"
+    )
+
+    phone_number_id = settings.WHATSAPP_PHONE_NUMBER_ID
+    cloud_api_token = settings.WHATSAPP_CLOUD_API_TOKEN
+
+    if phone_number_id and cloud_api_token:
+        try:
+            import json
+            from urllib.request import Request, urlopen
+            from urllib.error import URLError
+
+            payload = json.dumps({
+                "messaging_product": "whatsapp",
+                "to": to_number,
+                "type": "text",
+                "text": {"body": body},
+            }).encode("utf-8")
+
+            req = Request(
+                f"https://graph.facebook.com/v22.0/{phone_number_id}/messages",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {cloud_api_token}",
+                    "Content-Type": "application/json",
+                },
+                method="POST",
+            )
+            response = urlopen(req, timeout=10)
+            response_body = response.read().decode("utf-8")
+            response_data = json.loads(response_body)
+
+            if "error" in response_data:
+                error_info = response_data["error"]
+                logger.error(
+                    "WhatsApp Cloud API error for booking %s: %s (code %s)",
+                    booking.pk,
+                    error_info.get("message", "unknown"),
+                    error_info.get("code", "unknown"),
+                )
+            else:
+                message_id = None
+                if response_data.get("messages"):
+                    message_id = response_data["messages"][0].get("id")
+                logger.info(
+                    "WhatsApp Cloud API notification sent for booking %s (wa_id=%s)",
+                    booking.pk,
+                    message_id or "unknown",
+                )
+            return
+        except Exception:
+            logger.exception("Failed to send WhatsApp Cloud API notification for enquiry %s.", booking.pk)
+            return
+
     account_sid = settings.TWILIO_ACCOUNT_SID
     auth_token = settings.TWILIO_AUTH_TOKEN
     from_number = settings.TWILIO_WHATSAPP_NUMBER
 
     if not (account_sid and auth_token and from_number):
-        logger.warning("WhatsApp notification skipped: Twilio credentials not configured.")
+        logger.warning("WhatsApp notification skipped: neither Cloud API nor Twilio credentials configured.")
         return
 
     try:
         from twilio.rest import Client as TwilioClient
         client = TwilioClient(account_sid, auth_token)
-        service = booking.get_service_display()
         client.messages.create(
-            body=f"New booking enquiry from {booking.full_name}\nService: {service}\nPhone: {booking.phone}\nEmail: {booking.email}\nPostcode: {booking.postcode}",
+            body=body,
             from_=f'whatsapp:{from_number}',
             to=f'whatsapp:{to_number}',
         )

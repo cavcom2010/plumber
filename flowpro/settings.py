@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import re
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
@@ -253,11 +254,23 @@ def _load_service_choices():
     if not raw:
         return _SERVICE_CHOICES_DEFAULT
     items = [s.strip() for s in raw.split(",") if s.strip()]
+
+    # Build label → value map from defaults (whitespace-insensitive)
+    default_map = {}
+    for value, label in _SERVICE_CHOICES_DEFAULT:
+        key = re.sub(r"\s+", "", label.lower())
+        default_map[key] = value
+
     choices = []
     seen = set()
     for item in items:
-        base_value = slugify(item).replace("-", "_")[:32] or "service"
-        value = base_value
+        item_key = re.sub(r"\s+", "", item.lower())
+        if item_key in default_map:
+            value = default_map[item_key]
+        else:
+            value = slugify(item).replace("-", "_")[:32] or "service"
+
+        base_value = value
         suffix = 2
         while value in seen:
             suffix_text = f"_{suffix}"
@@ -357,7 +370,12 @@ LOGGING = {
     },
 }
 
-# Twilio WhatsApp integration
+# WhatsApp Cloud API (Meta) — free tier, 1 000 conversations/month
+# Sign up at https://developers.facebook.com → Create App → Add WhatsApp
+WHATSAPP_CLOUD_API_TOKEN = config("WHATSAPP_CLOUD_API_TOKEN", default="")
+WHATSAPP_PHONE_NUMBER_ID = config("WHATSAPP_PHONE_NUMBER_ID", default="")
+
+# Twilio WhatsApp integration (fallback)
 TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID", default="")
 TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN", default="")
 TWILIO_WHATSAPP_NUMBER = config("TWILIO_WHATSAPP_NUMBER", default="")
