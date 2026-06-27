@@ -9,6 +9,7 @@ from .models import (
     LegalPage,
     ServiceOffering,
     Testimonial,
+    TimeSlotAvailability,
     TrustIndicator,
 )
 from .views import testimonial_token_for_booking
@@ -127,6 +128,17 @@ class BusinessProfileAdmin(admin.ModelAdmin):
                     "whatsapp_prefilled_message",
                     "email",
                     "service_area",
+                    "service_postcodes",
+                )
+            },
+        ),
+        (
+            "Booking Settings",
+            {
+                "fields": (
+                    "opening_time",
+                    "closing_time",
+                    "default_slot_capacity",
                 )
             },
         ),
@@ -206,6 +218,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         "full_name",
         "phone",
         "email",
+        "business",
         "preferred_date",
         "timeslot",
         "service",
@@ -217,7 +230,7 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         "create_invoice_link",
         "created_at",
     )
-    list_filter = ("status", "service", "timeslot", "is_emergency", "preferred_date")
+    list_filter = ("business", "status", "service", "timeslot", "is_emergency", "preferred_date")
     search_fields = ("full_name", "phone", "email", "postcode", "address")
     readonly_fields = ("testimonial_request_link", "created_at", "updated_at")
     date_hierarchy = "created_at"
@@ -289,5 +302,14 @@ class BookingEnquiryAdmin(admin.ModelAdmin):
         )
 
     create_invoice_link.short_description = "create invoice"
+
+
+@admin.register(TimeSlotAvailability)
+class TimeSlotAvailabilityAdmin(admin.ModelAdmin):
+    list_display = ("business", "date", "timeslot", "capacity", "booked_count", "is_blocked")
+    list_filter = ("business", "is_blocked", "timeslot")
+    search_fields = ("business__business_name",)
+    date_hierarchy = "date"
+    ordering = ("-date", "timeslot")
 
 # Register your models here.

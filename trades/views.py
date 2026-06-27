@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.core import signing
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -19,6 +19,7 @@ from .models import (
     LegalPage,
     ServiceOffering,
     Testimonial,
+    TimeSlotAvailability,
 )
 logger = logging.getLogger(__name__)
 TESTIMONIAL_LINK_SALT = "trades.testimonial-link"
@@ -167,7 +168,9 @@ def trades_booking(request):
 
         form = BookingEnquiryForm(request.POST, request.FILES)
         if form.is_valid():
-            booking = form.save()
+            booking = form.save(commit=False)
+            booking.business = BusinessProfile.objects.filter(is_active=True).first()
+            booking.save()
             for i in range(1, 4):
                 img = form.cleaned_data.get(f"diagnostic_image_{i}")
                 if img:
@@ -418,4 +421,33 @@ def _send_whatsapp_notification(request, booking):
     except Exception:
         logger.exception("Failed to send WhatsApp notification for enquiry %s.", booking.pk)
 
-# Create your views here.
+def api_available_slots(request):
+    date_str = request.GET.get("date")
+    if not date_str:
+        return JsonResponse({"error": "date parameter required"}, status=400)
+
+    try:
+        from datetime import date as date_type
+        target_date = date_type.fromisoformat(date_str)
+    except (ValueError, TypeError):
+        return JsonResponse({"error": "invalid date format"}, status=400)
+
+    business = BusinessProfile.objects.filter(is_active=True).first()
+    if not business:
+        return JsonResponse({"slots": []})
+
+    all_slots = [choice[0] for choice in BookingEnquiry.TimeSlotChoices.choices]
+    blocked_slots = set()
+    existing = TimeSlotAvailability.objects.filter(
+        business=business,
+        date=target_date,
+    )
+    for slot in existing:
+        if not slot.is_available:
+            blocked_slots.add(slot.timeslot)
+
+    available = [
+        slot for slot in all_slots
+        if slot not in blocked_slots
+    ]
+    return JsonResponse({"slots": available, "date": date_str})

@@ -21,4 +21,5 @@ urlpatterns = [
     path("reviews/", views.trades_reviews, name="trades_reviews"),
     path("legal/<slug:slug>/", views.trades_legal_page, name="trades_legal_page"),
     path("put/testimonial/<path:token>/", views.testimonial_put, name="testimonial_put"),
+    path("api/slots/", views.api_available_slots, name="api_available_slots"),
 ]

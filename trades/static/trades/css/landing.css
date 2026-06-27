@@ -3576,3 +3576,224 @@
                 border: 1px solid #ddd;
             }
         }
+
+/* ============================================================
+   BOOKING WIZARD – Progress Bar, Steps, Sticky Nav, ASAP Chip, Summary
+   ============================================================ */
+
+/* --- Progress Bar --- */
+.wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.25rem;
+}
+.wizard-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  position: relative;
+}
+.wizard-step-indicator:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: calc(50% + 16px);
+  width: calc(100% - 32px);
+  height: 2px;
+  background: var(--border, #e2e8f0);
+  transition: background 0.3s;
+}
+.wizard-step-indicator.completed:not(:last-child)::after,
+.wizard-step-indicator.active:not(:last-child)::after {
+  background: var(--primary, #1a1f3c);
+}
+.wizard-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--border, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  transition: background 0.3s, transform 0.3s;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.wizard-step-indicator.completed .wizard-step-dot {
+  background: var(--primary, #1a1f3c);
+}
+.wizard-step-indicator.active .wizard-step-dot {
+  background: var(--accent, #c7962e);
+  transform: scale(1.15);
+}
+.wizard-step-label {
+  font-size: 0.72rem;
+  color: var(--text-muted, #6b7280);
+  text-align: center;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.wizard-step-indicator.completed .wizard-step-label,
+.wizard-step-indicator.active .wizard-step-label {
+  color: var(--primary, #1a1f3c);
+  font-weight: 600;
+}
+
+/* --- Step Panels --- */
+.wizard-step {
+  display: none;
+}
+.wizard-step.active {
+  display: block;
+}
+
+/* --- Sticky Navigation --- */
+.wizard-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+.wizard-nav-btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, opacity 0.2s;
+}
+.wizard-nav-btn-back {
+  background: var(--surface, #f1f5f9);
+  color: var(--text, #1e293b);
+}
+.wizard-nav-btn-back:hover {
+  background: var(--border, #e2e8f0);
+}
+.wizard-nav-btn-next {
+  background: var(--primary, #1a1f3c);
+  color: #fff;
+  margin-left: auto;
+}
+.wizard-nav-btn-next:hover {
+  background: var(--primary-hover, #2d3566);
+}
+.wizard-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- ASAP Chip --- */
+.asap-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  background: var(--accent, #c7962e);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, transform 0.15s;
+}
+.asap-chip:hover {
+  background: #b38626;
+  transform: scale(1.03);
+}
+.asap-chip svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* --- Summary Card (inline review) --- */
+.booking-summary {
+  background: var(--surface, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-top: 0.75rem;
+}
+.booking-summary h4 {
+  font-size: 0.95rem;
+  margin: 0 0 0.75rem 0;
+}
+.booking-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.88rem;
+}
+.booking-summary-row + .booking-summary-row {
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+.booking-summary-label {
+  color: var(--text-muted, #6b7280);
+}
+.booking-summary-value {
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+}
+.booking-summary-section {
+  margin-bottom: 0.75rem;
+}
+.booking-summary-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #6b7280);
+  margin-bottom: 0.35rem;
+}
+.booking-summary .summary-error {
+  color: var(--danger, #dc2626);
+  font-size: 0.8rem;
+}
+
+/* --- Slot pills disabled state --- */
+.time-slot-pill.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.time-slot-pill.disabled .pill-label {
+  text-decoration: line-through;
+}
+
+/* --- Step transition --- */
+.wizard-step {
+  animation: stepFadeIn 0.25s ease;
+}
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Mobile Sticky Next Bar --- */
+@media (max-width: 767px) {
+  .wizard-mobile-sticky {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 0.65rem 1rem;
+    border-top: 1px solid var(--border, #e2e8f0);
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+    z-index: 50;
+    margin: 0 -1rem -1rem;
+  }
+  .wizard-mobile-sticky .wizard-nav {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}

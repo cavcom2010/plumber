@@ -3,6 +3,15 @@
     // FEATURES THAT RUN ON EVERY PAGE
     // ============================================================
 
+    // --- CSP-safe CSS load (replaces inline onload) ---
+    var preloadedCSS = document.querySelector('link[rel="preload"][as="style"]');
+    if (preloadedCSS) {
+        preloadedCSS.addEventListener('load', function () {
+            preloadedCSS.onload = null;
+            preloadedCSS.rel = 'stylesheet';
+        });
+    }
+
     // --- Mobile Menu ---
     var mobileMenuToggle = document.getElementById('mobileMenuToggle');
     var mobileMenuPanel = document.getElementById('mobileMenuPanel');
@@ -226,7 +235,7 @@
     }
 
     // ============================================================
-    // SPINNER HELPER (used by both booking form and testimonial form)
+    // SPINNER HELPER
     // ============================================================
     function showSpinner(button, text) {
         var originalText = button.getAttribute('data-original-text') || button.textContent;
@@ -235,8 +244,15 @@
         button.innerHTML = '<span class="spinner"><svg viewBox="0 0 24 24"><use href="#icon-spinner"></use></svg></span> ' + (text || originalText);
     }
 
+    function restoreButton(button) {
+        var originalText = button.getAttribute('data-original-text');
+        if (!originalText) return;
+        button.removeAttribute('aria-busy');
+        button.textContent = originalText;
+    }
+
     // ============================================================
-    // TESTIMONIAL FORM (runs on testimonial pages)
+    // TESTIMONIAL FORM
     // ============================================================
     var testimonialForm = document.querySelector('.testimonial-card-form form[method="post"]');
     if (testimonialForm) {
@@ -250,22 +266,30 @@
     }
 
     // ============================================================
-    // BOOKING FORM (only runs if #bookingForm exists on page)
+    // BOOKING FORM WIZARD
     // ============================================================
     var form = document.getElementById('bookingForm');
     if (!form) return;
 
+    var LS_KEY = 'booking_form_draft';
+
+    // --- DOM refs ---
     var dateInput = document.getElementById('date');
     var emergencyCheck = document.getElementById('emergencyCheck');
     var emergencyNote = document.getElementById('emergencyNote');
     var emergencyToggle = document.getElementById('emergencyToggle');
-    var submitBtn = document.getElementById('submitBtn');
-    var reviewOverlay = document.getElementById('reviewOverlay');
-    var reviewContent = document.getElementById('reviewContent');
-    var reviewEditBtn = document.getElementById('reviewEditBtn');
-    var reviewConfirmBtn = document.getElementById('reviewConfirmBtn');
+    var asapChip = document.getElementById('asapChip');
+    var timeSlotGrid = document.getElementById('timeSlotGrid');
+    var wizardProgress = document.getElementById('wizardProgress');
+    var wizardNav = document.getElementById('wizardNav');
+    var wizardBackBtn = document.getElementById('wizardBackBtn');
+    var wizardNextBtn = document.getElementById('wizardNextBtn');
+    var bookingSummaryContent = document.getElementById('bookingSummaryContent');
+    var currentStep = 1;
+    var totalSteps = 4;
+    var submitting = false;
 
-    // Date min
+    // --- Date min ---
     var today = new Date();
     var yyyy = today.getFullYear();
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -273,7 +297,7 @@
     var todayString = yyyy + '-' + mm + '-' + dd;
     if (dateInput) dateInput.setAttribute('min', todayString);
 
-    // Emergency toggle
+    // --- Emergency toggle ---
     function syncEmergencyState() {
         var checked = Boolean(emergencyCheck && emergencyCheck.checked);
         if (emergencyNote) emergencyNote.classList.toggle('visible', checked);
@@ -285,7 +309,7 @@
         emergencyCheck.addEventListener('change', syncEmergencyState);
     }
 
-    // File upload name display helper
+    // --- File upload helpers ---
     function ensureFileDisplay(input) {
         var row = input.closest('.diagnostic-upload-row');
         if (!row) return;
@@ -298,91 +322,6 @@
         return display;
     }
 
-    // Validation
-    function clearErrors() {
-        document.querySelectorAll('.form-group.error').forEach(function (group) { group.classList.remove('error'); });
-        document.querySelectorAll('input.error, textarea.error').forEach(function (field) {
-            field.classList.remove('error');
-            field.removeAttribute('aria-invalid');
-        });
-    }
-
-    function showError(fieldId, groupId) {
-        var group = document.getElementById(groupId);
-        var field = document.getElementById(fieldId);
-        if (group) group.classList.add('error');
-        if (field) {
-            field.classList.add('error');
-            field.setAttribute('aria-invalid', 'true');
-        }
-    }
-
-    function showGroupError(groupId) {
-        var group = document.getElementById(groupId);
-        if (group) group.classList.add('error');
-    }
-
-    function normalisePhone(phone) {
-        return phone.replace(/[\s().-]/g, '').replace(/^0044/, '+44');
-    }
-
-    function validateForm() {
-        clearErrors();
-        var isValid = true;
-
-        var name = document.getElementById('name').value.trim();
-        if (name.length < 2 || name.split(/\s+/).length < 2) { showError('name', 'group-name'); isValid = false; }
-
-        var phone = normalisePhone(document.getElementById('phone').value.trim());
-        if (!/^(?:(?:\+44)|0)\d{9,10}$/.test(phone)) { showError('phone', 'group-phone'); isValid = false; }
-
-        var email = document.getElementById('email').value.trim();
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email', 'group-email'); isValid = false; }
-
-        var dateVal = dateInput.value;
-        if (!dateVal) { showError('date', 'group-date'); isValid = false; }
-        else {
-            var selectedDate = new Date(dateVal + 'T00:00:00');
-            var todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-            if (selectedDate < todayStart) { showError('date', 'group-date'); isValid = false; }
-        }
-
-        var address = document.getElementById('address').value.trim();
-        if (address.length < 5) { showError('address', 'group-address'); isValid = false; }
-
-        var postcode = document.getElementById('postcode').value.trim().toUpperCase();
-        if (!/^(GIR\s?0AA|[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i.test(postcode)) { showError('postcode', 'group-postcode'); isValid = false; }
-
-        if (!document.querySelector('input[name="service"]:checked')) { showGroupError('group-service'); isValid = false; }
-        if (!document.querySelector('input[name="timeslot"]:checked')) { showGroupError('group-time'); isValid = false; }
-
-        var description = document.getElementById('description').value.trim();
-        if (description.length < 10) { showError('description', 'group-description'); isValid = false; }
-
-        if (!isValid) {
-            var firstError = document.querySelector('.form-group.error');
-            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return isValid;
-    }
-
-    // Clear error on input/change
-    document.querySelectorAll('#bookingForm input, #bookingForm textarea').forEach(function (field) {
-        field.addEventListener('input', function () {
-            this.classList.remove('error');
-            this.removeAttribute('aria-invalid');
-            var group = this.closest('.form-group');
-            if (group) group.classList.remove('error');
-        });
-        field.addEventListener('change', function () {
-            this.classList.remove('error');
-            this.removeAttribute('aria-invalid');
-            var group = this.closest('.form-group');
-            if (group) group.classList.remove('error');
-        });
-    });
-
-    // Image previews
     function initImagePreviews() {
         document.querySelectorAll('.diagnostic-upload-row input[type="file"]').forEach(function (input) {
             var preview = input.parentElement.querySelector('.image-preview');
@@ -414,7 +353,6 @@
                 }
             });
 
-            // Drag over visual feedback
             var row = input.closest('.diagnostic-upload-row');
             if (row) {
                 row.addEventListener('dragover', function (e) { e.preventDefault(); row.classList.add('drag-over'); });
@@ -433,7 +371,140 @@
 
     initImagePreviews();
 
-    // Postcode service area check
+    // --- Validation helpers ---
+    function clearErrors() {
+        document.querySelectorAll('#bookingForm .form-group.error').forEach(function (group) { group.classList.remove('error'); });
+        document.querySelectorAll('#bookingForm input.error, #bookingForm textarea.error').forEach(function (field) {
+            field.classList.remove('error');
+            field.removeAttribute('aria-invalid');
+        });
+    }
+
+    function showError(fieldId, groupId) {
+        var group = document.getElementById(groupId);
+        var field = document.getElementById(fieldId);
+        if (group) group.classList.add('error');
+        if (field) {
+            field.classList.add('error');
+            field.setAttribute('aria-invalid', 'true');
+        }
+    }
+
+    function showGroupError(groupId) {
+        var group = document.getElementById(groupId);
+        if (group) group.classList.add('error');
+    }
+
+    function normalisePhone(phone) {
+        return phone.replace(/[\s().-]/g, '').replace(/^0044/, '+44');
+    }
+
+    // --- Per-step validation ---
+    function validateStep(step) {
+        clearErrors();
+        var isValid = true;
+
+        if (step === 1) {
+            if (!document.querySelector('input[name="service"]:checked')) { showGroupError('group-service'); isValid = false; }
+            var description = document.getElementById('description').value.trim();
+            if (description.length < 10) { showError('description', 'group-description'); isValid = false; }
+        }
+
+        if (step === 2) {
+            var dateVal = dateInput ? dateInput.value : '';
+            if (!dateVal) { showError('date', 'group-date'); isValid = false; }
+            else {
+                var selectedDate = new Date(dateVal + 'T00:00:00');
+                var todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+                if (selectedDate < todayStart) { showError('date', 'group-date'); isValid = false; }
+            }
+            if (!document.querySelector('input[name="timeslot"]:checked')) { showGroupError('group-time'); isValid = false; }
+        }
+
+        if (step === 3) {
+            var name = document.getElementById('name').value.trim();
+            if (name.length < 2 || name.split(/\s+/).length < 2) { showError('name', 'group-name'); isValid = false; }
+
+            var phone = normalisePhone(document.getElementById('phone').value.trim());
+            if (!/^(?:(?:\+44)|0)\d{9,10}$/.test(phone)) { showError('phone', 'group-phone'); isValid = false; }
+
+            var email = document.getElementById('email').value.trim();
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email', 'group-email'); isValid = false; }
+
+            var address = document.getElementById('address').value.trim();
+            if (address.length < 5) { showError('address', 'group-address'); isValid = false; }
+
+            var postcode = document.getElementById('postcode').value.trim().toUpperCase();
+            if (!/^(GIR\s?0AA|[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i.test(postcode)) { showError('postcode', 'group-postcode'); isValid = false; }
+        }
+
+        if (!isValid) {
+            var firstError = document.querySelector('#bookingForm .form-group.error');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return isValid;
+    }
+
+    // --- Blur validation ---
+    function attachBlurValidation() {
+        var step1Fields = [
+            { el: document.getElementById('description'), groupId: 'group-description', check: function (v) { return v.trim().length >= 10; } },
+        ];
+        var step3Fields = [
+            { el: document.getElementById('name'), groupId: 'group-name', check: function (v) { var t = v.trim(); return t.length >= 2 && t.split(/\s+/).length >= 2; } },
+            { el: document.getElementById('phone'), groupId: 'group-phone', check: function (v) { return /^(?:(?:\+44)|0)\d{9,10}$/.test(normalisePhone(v.trim())); } },
+            { el: document.getElementById('email'), groupId: 'group-email', check: function (v) { var t = v.trim(); return !t || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t); } },
+            { el: document.getElementById('address'), groupId: 'group-address', check: function (v) { return v.trim().length >= 5; } },
+            { el: document.getElementById('postcode'), groupId: 'group-postcode', check: function (v) { return /^(GIR\s?0AA|[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i.test(v.trim()); } },
+        ];
+
+        [].concat(step1Fields, step3Fields).forEach(function (item) {
+            if (!item.el) return;
+            item.el.addEventListener('blur', function () {
+                var val = this.value;
+                if (val.length === 0) return; // don't validate empty on blur
+                var group = document.getElementById(item.groupId);
+                if (group) {
+                    if (item.check(val)) {
+                        group.classList.remove('error');
+                        this.classList.remove('error');
+                        this.removeAttribute('aria-invalid');
+                    } else {
+                        group.classList.add('error');
+                        this.classList.add('error');
+                        this.setAttribute('aria-invalid', 'true');
+                    }
+                }
+            });
+        });
+
+        var dateEl = document.getElementById('date');
+        if (dateEl) {
+            dateEl.addEventListener('change', function () {
+                if (this.value) fetchAvailableSlots(this.value);
+            });
+        }
+    }
+
+    attachBlurValidation();
+
+    // --- Clear error on input/change ---
+    document.querySelectorAll('#bookingForm input, #bookingForm textarea').forEach(function (field) {
+        field.addEventListener('input', function () {
+            this.classList.remove('error');
+            this.removeAttribute('aria-invalid');
+            var group = this.closest('.form-group');
+            if (group) group.classList.remove('error');
+        });
+        field.addEventListener('change', function () {
+            this.classList.remove('error');
+            this.removeAttribute('aria-invalid');
+            var group = this.closest('.form-group');
+            if (group) group.classList.remove('error');
+        });
+    });
+
+    // --- Postcode service area check ---
     var servicePostcodes = form.dataset.servicePostcodes;
     if (servicePostcodes) {
         var postcodeInput = document.getElementById('postcode');
@@ -460,7 +531,7 @@
         }
     }
 
-    // Booking lookup
+    // --- Booking lookup (existing bookings for repeat customers) ---
     var lookupDropdown = document.getElementById('bookingLookupDropdown');
     if (lookupDropdown) {
         var lookupTimer = null;
@@ -543,9 +614,121 @@
         });
     }
 
-    // Review modal
-    function getFieldValue(selector, fallback) {
-        var el = document.querySelector(selector);
+    // --- Slot API ---
+    var slotAbort = null;
+    function fetchAvailableSlots(dateStr) {
+        if (slotAbort) slotAbort.abort();
+        slotAbort = new AbortController();
+
+        var allPills = timeSlotGrid ? timeSlotGrid.querySelectorAll('.time-slot-pill') : [];
+        allPills.forEach(function (p) { p.classList.remove('disabled'); p.querySelector('input').disabled = false; });
+
+        if (!dateStr) return;
+
+        fetch('/api/slots/?date=' + encodeURIComponent(dateStr), { signal: slotAbort.signal })
+            .then(function (resp) { if (!resp.ok) throw new Error('Slots fetch failed'); return resp.json(); })
+            .then(function (data) {
+                var availableSet = new Set(data.slots || []);
+                allPills.forEach(function (pill) {
+                    var input = pill.querySelector('input');
+                    var slotValue = input ? input.value : '';
+                    if (!availableSet.has(slotValue)) {
+                        pill.classList.add('disabled');
+                        if (input) { input.checked = false; input.disabled = true; }
+                    }
+                });
+            })
+            .catch(function () {});
+    }
+
+    // --- ASAP logic ---
+    function getOpeningHour() { try { return parseInt(document.body.dataset.openingTime || '8', 10); } catch (e) { return 8; } }
+    function getClosingHour() { try { return parseInt(document.body.dataset.closingTime || '18', 10); } catch (e) { return 18; } }
+
+    function getASAPDate() {
+        var now = new Date();
+        var closingHour = getClosingHour();
+        if (now.getHours() >= closingHour) {
+            var tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return tomorrow.toISOString().slice(0, 10);
+        }
+        return todayString;
+    }
+
+    if (asapChip && dateInput) {
+        asapChip.addEventListener('click', function () {
+            var asapDate = getASAPDate();
+            dateInput.value = asapDate;
+            fetchAvailableSlots(asapDate);
+        });
+    }
+
+    // --- Wizard navigation ---
+    function showStep(step) {
+        currentStep = step;
+        document.querySelectorAll('#bookingForm .wizard-step').forEach(function (el) {
+            el.classList.toggle('active', parseInt(el.dataset.step) === step);
+        });
+        updateProgress();
+        updateNavButtons();
+        saveDraft();
+    }
+
+    function updateProgress() {
+        if (!wizardProgress) return;
+        var indicators = wizardProgress.querySelectorAll('.wizard-step-indicator');
+        indicators.forEach(function (ind) {
+            var s = parseInt(ind.dataset.step);
+            ind.classList.remove('active', 'completed');
+            if (s < currentStep) ind.classList.add('completed');
+            if (s === currentStep) ind.classList.add('active');
+        });
+    }
+
+    function updateNavButtons() {
+        if (!wizardBackBtn || !wizardNextBtn) return;
+        wizardBackBtn.style.display = currentStep > 1 ? '' : 'none';
+
+        if (currentStep < totalSteps) {
+            wizardNextBtn.textContent = 'Next';
+            wizardNextBtn.className = 'wizard-nav-btn wizard-nav-btn-next';
+        } else {
+            wizardNextBtn.textContent = 'Send Booking Enquiry';
+            wizardNextBtn.className = 'wizard-nav-btn wizard-nav-btn-next';
+        }
+        restoreButton(wizardNextBtn);
+    }
+
+    function goNext() {
+        if (!validateStep(currentStep)) return;
+
+        if (currentStep < totalSteps) {
+            if (currentStep === 3) buildSummary();
+            showStep(currentStep + 1);
+            var bookingCard = document.querySelector('.booking-card');
+            if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function goBack() {
+        if (currentStep > 1) {
+            showStep(currentStep - 1);
+            var bookingCard = document.querySelector('.booking-card');
+            if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    if (wizardNextBtn) {
+        wizardNextBtn.addEventListener('click', goNext);
+    }
+    if (wizardBackBtn) {
+        wizardBackBtn.addEventListener('click', goBack);
+    }
+
+    // --- Inline Summary (Step 4) ---
+    function getFieldVal(id, fallback) {
+        var el = document.getElementById(id);
         return (!el || !el.value) ? (fallback || '\u2014') : el.value.trim();
     }
 
@@ -560,105 +743,157 @@
         return checked.value;
     }
 
-    function fieldHasError(groupId) {
-        var group = document.getElementById(groupId);
-        return group && group.classList.contains('error');
+    function summaryRow(label, value) {
+        return '<div class="booking-summary-row"><span class="booking-summary-label">' + label + '</span><span class="booking-summary-value">' + value + '</span></div>';
     }
 
-    function reviewField(labelText, value, hasError) {
-        var cls = 'review-field' + (hasError ? ' review-error' : '');
-        return '<div class="' + cls + '"><span class="review-label">' + labelText + '</span><span class="review-value">' + value + '</span></div>';
-    }
+    function buildSummary() {
+        if (!bookingSummaryContent) return;
 
-    function buildReviewContent() {
-        var html = '';
-        html += '<div class="review-section"><div class="review-section-title">Client Details</div>';
-        html += reviewField('Name', getFieldValue('#name'), fieldHasError('group-name'));
-        html += reviewField('Phone', getFieldValue('#phone'), fieldHasError('group-phone'));
-        var emailVal = getFieldValue('#email', '');
-        html += reviewField('Email', emailVal || '(not provided)', false);
-        html += reviewField('Address', getFieldValue('#address'), fieldHasError('group-address'));
-        html += reviewField('Postcode', getFieldValue('#postcode'), fieldHasError('group-postcode'));
+        var html = '<h4>Review your booking</h4>';
+
+        html += '<div class="booking-summary-section"><div class="booking-summary-section-title">Contact</div>';
+        html += summaryRow('Name', getFieldVal('name'));
+        html += summaryRow('Phone', getFieldVal('phone'));
+        html += summaryRow('Email', getFieldVal('email', '(not provided)'));
+        html += summaryRow('Address', getFieldVal('address'));
+        html += summaryRow('Postcode', getFieldVal('postcode'));
         html += '</div>';
 
-        html += '<div class="review-section"><div class="review-section-title">Job Details</div>';
-        html += reviewField('Service', getCheckedLabel('service'), fieldHasError('group-service'));
-        html += reviewField('Date', getFieldValue('#date'), fieldHasError('group-date'));
-        html += reviewField('Time', getCheckedLabel('timeslot'), fieldHasError('group-time'));
-        html += reviewField('Emergency', (emergencyCheck && emergencyCheck.checked) ? 'Yes' : 'No', false);
-        html += reviewField('Description', getFieldValue('#description'), fieldHasError('group-description'));
+        html += '<div class="booking-summary-section"><div class="booking-summary-section-title">Job</div>';
+        html += summaryRow('Service', getCheckedLabel('service'));
+        html += summaryRow('Date', getFieldVal('date'));
+        html += summaryRow('Time', getCheckedLabel('timeslot'));
+        html += summaryRow('Emergency', (emergencyCheck && emergencyCheck.checked) ? 'Yes' : 'No');
+        html += summaryRow('Issue', getFieldVal('description'));
         html += '</div>';
 
-        html += '<div class="review-section"><div class="review-section-title">Diagnostic Photos</div><div class="review-images">';
-        var hasImages = false;
-        for (var i = 1; i <= 3; i++) {
-            var previewEl = document.querySelector('.diagnostic-upload-row:nth-child(' + i + ') .image-preview img');
-            if (previewEl) { html += '<img src="' + previewEl.src + '" alt="Diagnostic photo ' + i + '">'; hasImages = true; }
-        }
-        if (!hasImages) html += '<span class="review-empty">No photos uploaded</span>';
-        html += '</div></div>';
-
-        return html;
+        bookingSummaryContent.innerHTML = html;
     }
 
-    function openReview() {
-        if (!reviewOverlay || !reviewContent) return;
-        reviewContent.innerHTML = buildReviewContent();
-        reviewOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // --- Form submit ---
+    function submitBooking() {
+        if (submitting) return;
+        submitting = true;
+        showSpinner(wizardNextBtn, 'Submitting...');
+        wizardNextBtn.disabled = true;
+        clearDraft();
+        form.submit();
     }
 
-    function closeReview() {
-        if (!reviewOverlay) return;
-        reviewOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    var reviewConfirmed = false;
-
-    if (reviewEditBtn) {
-        reviewEditBtn.addEventListener('click', function () {
-            reviewConfirmed = false;
-            closeReview();
-            var firstField = document.getElementById('name');
-            if (firstField) firstField.focus();
-        });
-    }
-
-    if (reviewConfirmBtn) {
-        reviewConfirmBtn.addEventListener('click', function () {
-            reviewConfirmed = true;
-            closeReview();
-            if (submitBtn) showSpinner(submitBtn, 'Submitting...');
-            form.requestSubmit();
-        });
-    }
-
-    if (reviewOverlay) {
-        reviewOverlay.addEventListener('click', function (event) {
-            if (event.target === reviewOverlay) closeReview();
-        });
-    }
-
-    // Form submit intercept
     form.addEventListener('submit', function (event) {
-        if (!validateForm()) { event.preventDefault(); return; }
-        if (reviewOverlay && !reviewOverlay.classList.contains('active') && !reviewConfirmed) {
+        if (currentStep < totalSteps) {
             event.preventDefault();
-            openReview();
-            return;
+            if (!validateStep(currentStep)) return;
+            if (currentStep === 3) buildSummary();
+            showStep(currentStep + 1);
         }
-        if (submitBtn) showSpinner(submitBtn, 'Submitting...');
     });
 
-    // Escape key handler
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            if (reviewOverlay && reviewOverlay.classList.contains('active')) {
-                closeReview();
-            } else if (successOverlay && successOverlay.classList.contains('active')) {
-                closeSuccess();
+    if (wizardNextBtn) {
+        wizardNextBtn.addEventListener('click', function () {
+            if (currentStep >= totalSteps) {
+                if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
+                    showStep(1);
+                    return;
+                }
+                submitBooking();
             }
+        });
+    }
+
+    // --- localStorage draft ---
+    function getDraft() {
+        try {
+            var raw = localStorage.getItem(LS_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) { return {}; }
+    }
+
+    function saveDraft() {
+        try {
+            var data = {
+                full_name: getFieldVal('name', ''),
+                phone: getFieldVal('phone', ''),
+                email: getFieldVal('email', ''),
+                address: getFieldVal('address', ''),
+                postcode: getFieldVal('postcode', ''),
+                description: getFieldVal('description', ''),
+                preferred_date: getFieldVal('date', ''),
+                timeslot: document.querySelector('input[name="timeslot"]:checked') ? document.querySelector('input[name="timeslot"]:checked').value : '',
+                service: document.querySelector('input[name="service"]:checked') ? document.querySelector('input[name="service"]:checked').value : '',
+                is_emergency: emergencyCheck ? emergencyCheck.checked : false,
+            };
+            localStorage.setItem(LS_KEY, JSON.stringify(data));
+        } catch (e) {}
+    }
+
+    function clearDraft() {
+        try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    }
+
+    function restoreDraft() {
+        var draft = getDraft();
+        var hasValue = false;
+        var mappings = {
+            full_name: 'name', phone: 'phone', email: 'email', address: 'address',
+            postcode: 'postcode', description: 'description',
+        };
+        Object.keys(mappings).forEach(function (key) {
+            var el = document.getElementById(mappings[key]);
+            if (el && draft[key]) { el.value = draft[key]; hasValue = true; }
+        });
+        if (draft.preferred_date && dateInput) { dateInput.value = draft.preferred_date; hasValue = true; }
+        if (draft.service) {
+            var serviceRadio = document.querySelector('input[name="service"][value="' + draft.service + '"]');
+            if (serviceRadio) serviceRadio.checked = true;
+        }
+        if (draft.timeslot) {
+            var slotRadio = document.querySelector('input[name="timeslot"][value="' + draft.timeslot + '"]');
+            if (slotRadio) slotRadio.checked = true;
+        }
+        if (draft.is_emergency && emergencyCheck) emergencyCheck.checked = true;
+        syncEmergencyState();
+        return hasValue;
+    }
+
+    restoreDraft();
+
+    // Auto-save on input
+    var saveTimer = null;
+    document.querySelectorAll('#bookingForm input, #bookingForm textarea').forEach(function (el) {
+        el.addEventListener('input', function () {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveDraft, 500);
+        });
+        el.addEventListener('change', function () {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveDraft, 500);
+        });
+    });
+
+    // --- Keyboard shortcut: Enter on last step submits ---
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && currentStep >= totalSteps && document.activeElement && document.activeElement.closest('#bookingForm')) {
+            event.preventDefault();
+            if (!validateStep(1) || !validateStep(2) || !validateStep(3)) { showStep(1); return; }
+            submitBooking();
         }
     });
+
+    // --- Initialize ---
+    showStep(1);
+    if (dateInput && dateInput.value) fetchAvailableSlots(dateInput.value);
+
+    // --- Sticky nav on mobile ---
+    if (wizardNav && window.innerWidth < 768) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'wizard-mobile-sticky';
+        wizardNav.parentNode.insertBefore(wrapper, wizardNav);
+        wrapper.appendChild(wizardNav);
+    }
+
+    // --- Opening/closing hours from data attributes ---
+    if (document.body.dataset.openingTime) getOpeningHour();
+    if (document.body.dataset.closingTime) getClosingHour();
 })();

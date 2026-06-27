@@ -434,11 +434,10 @@ class BookingEnquiryFormTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("phone", form.errors)
 
-    def test_email_is_required(self):
+    def test_email_is_optional(self):
         form = BookingEnquiryForm(data=valid_booking_data(email=""))
 
-        self.assertFalse(form.is_valid())
-        self.assertIn("email", form.errors)
+        self.assertTrue(form.is_valid())
 
 
 class TestimonialPutTests(TestCase):
@@ -559,8 +558,8 @@ class BookingDiagnosticImageTests(TestCase):
         self.assertContains(response, "diagnostic_image_1")
         self.assertContains(response, "Photos of the Issue")
         self.assertContains(response, "image-preview")
-        self.assertContains(response, "reviewOverlay")
-        self.assertContains(response, "Review Your Booking")
+        self.assertContains(response, "wizardProgress")
+        self.assertContains(response, "bookingSummaryContent")
         self.assertContains(response, "bookingLookupDropdown")
 
     @override_settings(

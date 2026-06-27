@@ -38,7 +38,7 @@
     <noscript><link rel="stylesheet" href="{% versioned_static 'trades/css/landing.css' %}"></noscript>
     {% block extra_head %}{% endblock %}
 </head>
-<body{% if messages %} data-booking-success="true"{% endif %}>
+<body{% if messages %} data-booking-success="true"{% endif %}{% if business %} data-opening-time="{{ business.opening_time|time:'H' }}" data-closing-time="{{ business.closing_time|time:'H' }}"{% endif %}>
     {% include "trades/partials/icons.html" %}
 
     <a href="#main-content" class="skip-link">Skip to main content</a>

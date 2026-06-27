@@ -96,6 +96,7 @@ class BookingEnquiryForm(forms.ModelForm):
             if not name.startswith("diagnostic_image_"):
                 field.required = True
         self.fields["is_emergency"].required = False
+        self.fields["email"].required = False
 
     def clean_full_name(self):
         value = self.cleaned_data["full_name"].strip()

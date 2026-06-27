@@ -13,10 +13,6 @@
             {% endif %}
         </div>
 
-        <div class="booking-image" data-animate="fade-up" data-animate-delay="100">
-            <img src="{% if business and business.booking_image %}{{ business.booking_image.url }}{% else %}{% static 'trades/images/booking-bathroom.jpg' %}{% endif %}" alt="Clean modern trade service area" loading="lazy">
-        </div>
-
         <div class="booking-card" data-animate="fade-up" data-animate-delay="200">
             <div class="booking-card-top">
                 <div class="icon-circle"><svg><use href="#icon-clipboard"></use></svg></div>
@@ -39,143 +35,171 @@
                     </div>
                 {% endif %}
 
+                <div class="wizard-progress" id="wizardProgress">
+                    <div class="wizard-step-indicator active" data-step="1">
+                        <div class="wizard-step-dot">1</div>
+                        <span class="wizard-step-label">Problem</span>
+                    </div>
+                    <div class="wizard-step-indicator" data-step="2">
+                        <div class="wizard-step-dot">2</div>
+                        <span class="wizard-step-label">When</span>
+                    </div>
+                    <div class="wizard-step-indicator" data-step="3">
+                        <div class="wizard-step-dot">3</div>
+                        <span class="wizard-step-label">Contact</span>
+                    </div>
+                    <div class="wizard-step-indicator" data-step="4">
+                        <div class="wizard-step-dot">4</div>
+                        <span class="wizard-step-label">Review</span>
+                    </div>
+                </div>
+
                 <div class="form-grid">
-                    <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
-                        <label for="name">Full Name <span class="required">*</span></label>
-                        <input type="text" id="name" name="full_name" placeholder="John Smith" required autocomplete="name" aria-describedby="name-error" value="{{ form.full_name.value|default_if_none:'' }}"{% if form.full_name.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="name-error">{{ form.full_name.errors.0|default:"Please enter your full name." }}</span>
-                    </div>
-
-                    <div class="form-group{% if form.phone.errors %} error{% endif %}" id="group-phone">
-                        <label for="phone">Phone Number <span class="required">*</span></label>
-                        <input type="tel" id="phone" name="phone" placeholder="07123 456789" required autocomplete="tel" aria-describedby="phone-error" value="{{ form.phone.value|default_if_none:'' }}"{% if form.phone.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="phone-error">{{ form.phone.errors.0|default:"Please enter a valid UK phone number." }}</span>
-                    </div>
-
-                    <div class="form-group{% if form.email.errors %} error{% endif %}" id="group-email">
-                        <label for="email">Email Address <span class="required">*</span></label>
-                        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="email-error">{{ form.email.errors.0|default:"Please enter a valid email address." }}</span>
-                    </div>
-
-                    <div class="form-group{% if form.preferred_date.errors %} error{% endif %}" id="group-date">
-                        <label for="date">Preferred Date <span class="required">*</span></label>
-                        <input type="date" id="date" name="preferred_date" required aria-describedby="date-error" value="{{ form.preferred_date.value|default_if_none:'' }}"{% if form.preferred_date.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="date-error">{{ form.preferred_date.errors.0|default:"Please select a date that is not in the past." }}</span>
-                    </div>
-
-                    <div class="form-group full-width{% if form.address.errors %} error{% endif %}" id="group-address">
-                        <label for="address">Full Address <span class="required">*</span></label>
-                        <input type="text" id="address" name="address" placeholder="House number and street name" required autocomplete="street-address" aria-describedby="address-error" value="{{ form.address.value|default_if_none:'' }}"{% if form.address.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="address-error">{{ form.address.errors.0|default:"Please enter your address." }}</span>
-                    </div>
-
-                    <div class="form-group{% if form.postcode.errors %} error{% endif %}" id="group-postcode">
-                        <label for="postcode">Postcode <span class="required">*</span></label>
-                        <input type="text" id="postcode" name="postcode" placeholder="e.g. M20 1AB" required autocomplete="postal-code" aria-describedby="postcode-error" value="{{ form.postcode.value|default_if_none:'' }}"{% if form.postcode.errors %} class="error" aria-invalid="true"{% endif %}>
-                        <span class="error-msg" id="postcode-error">{{ form.postcode.errors.0|default:"Please enter a valid UK postcode." }}</span>
-                    </div>
-
-                    <fieldset class="form-group full-width{% if form.service.errors %} error{% endif %}" id="group-service">
-                        <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
-                        <div class="service-select-grid">
-                            {% for choice_value, choice_label in form.service.field.choices %}
-                                <label class="service-select-card"><input type="radio" name="service" value="{{ choice_value }}"{% if forloop.first %} required{% endif %}{% if form.service.value|stringformat:"s" == choice_value|stringformat:"s" %} checked{% endif %}><span class="card-label"><span class="card-icon-svg"><svg aria-hidden="true"><use href="{% service_icon choice_value %}"></use></svg></span> {{ choice_label }}</span></label>
-                            {% endfor %}
-                        </div>
-                        <span class="error-msg" id="service-error">{{ form.service.errors.0|default:"Please select a service." }}</span>
-                    </fieldset>
-
-                    <fieldset class="form-group full-width{% if form.timeslot.errors %} error{% endif %}" id="group-time">
-                        <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
-                        <div class="time-slot-grid">
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7&ndash;9am</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9&ndash;11am</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11&ndash;1pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1&ndash;3pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3&ndash;5pm</span></label>
-                            <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5&ndash;7pm</span></label>
-                        </div>
-                        <span class="error-msg" id="time-error">{{ form.timeslot.errors.0|default:"Please select a preferred time slot." }}</span>
-                    </fieldset>
-
-                    <div class="form-group full-width{% if form.description.errors %} error{% endif %}" id="group-description">
-                        <label for="description">Describe the Issue <span class="required">*</span></label>
-                        <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening &mdash; the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
-                        <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue (minimum 10 characters)." }}</span>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label class="emergency-toggle" id="emergencyToggle">
-                            <input type="checkbox" name="is_emergency" id="emergencyCheck" value="1"{% if form.is_emergency.value %} checked{% endif %}>
-                            <span class="toggle-indicator" aria-hidden="true"></span>
-                            <span>
-                                <span class="toggle-text">This is an emergency</span>
-                                <span class="toggle-subtext">Use this for burst pipes, active leaks, or no water.</span>
-                            </span>
-                        </label>
-                        <div class="emergency-note" id="emergencyNote" role="status">
-                            <span aria-hidden="true">&#9889;</span>
-                            <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
-                        </div>
-                    </div>
-
-                    <fieldset class="form-group full-width">
-                        <legend class="fieldset-label">Photos of the Issue <span class="optional-tag">(optional)</span></legend>
-                        <p class="fieldset-help" id="diagnostic-help">
-                            Upload up to 3 photos of the damaged area or equipment. Clear shots of brand labels (e.g. appliance make/model) help us bring the right parts for the first visit.
-                        </p>
-                        <div class="diagnostic-uploads">
-                            <div class="diagnostic-upload-row{% if form.diagnostic_image_1.errors %} error{% endif %}">
-                                <label for="id_diagnostic_image_1" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
-                                    <span class="file-upload-text">Photo 1</span>
-                                </label>
-                                {{ form.diagnostic_image_1 }}
-                                <div class="image-preview"></div>
-                                <span class="error-msg">{{ form.diagnostic_image_1.errors.0 }}</span>
+                    <!-- STEP 1: Service & Problem -->
+                    <div class="wizard-step active" data-step="1">
+                        <fieldset class="form-group full-width{% if form.service.errors %} error{% endif %}" id="group-service">
+                            <legend class="fieldset-label">Service Required <span class="required">*</span></legend>
+                            <div class="service-select-grid">
+                                {% for choice_value, choice_label in form.service.field.choices %}
+                                    <label class="service-select-card">
+                                        <input type="radio" name="service" value="{{ choice_value }}"{% if forloop.first %} required{% endif %}{% if form.service.value|stringformat:"s" == choice_value|stringformat:"s" %} checked{% endif %}>
+                                        <span class="card-label"><span class="card-icon-svg"><svg aria-hidden="true"><use href="{% service_icon choice_value %}"></use></svg></span> {{ choice_label }}</span>
+                                    </label>
+                                {% endfor %}
                             </div>
-                            <div class="diagnostic-upload-row{% if form.diagnostic_image_2.errors %} error{% endif %}">
-                                <label for="id_diagnostic_image_2" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
-                                    <span class="file-upload-text">Photo 2</span>
-                                </label>
-                                {{ form.diagnostic_image_2 }}
-                                <div class="image-preview"></div>
-                                <span class="error-msg">{{ form.diagnostic_image_2.errors.0 }}</span>
-                            </div>
-                            <div class="diagnostic-upload-row{% if form.diagnostic_image_3.errors %} error{% endif %}">
-                                <label for="id_diagnostic_image_3" class="file-upload-label">
-                                    <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
-                                    <span class="file-upload-text">Photo 3</span>
-                                </label>
-                                {{ form.diagnostic_image_3 }}
-                                <div class="image-preview"></div>
-                                <span class="error-msg">{{ form.diagnostic_image_3.errors.0 }}</span>
+                            <span class="error-msg" id="service-error">{{ form.service.errors.0|default:"Please select a service." }}</span>
+                        </fieldset>
+
+                        <div class="form-group full-width{% if form.description.errors %} error{% endif %}" id="group-description">
+                            <label for="description">Describe the Issue <span class="required">*</span></label>
+                            <textarea id="description" name="description" rows="3" placeholder="Tell us what is happening — the more detail, the better we can prepare." required aria-describedby="description-error"{% if form.description.errors %} class="error" aria-invalid="true"{% endif %}>{{ form.description.value|default_if_none:'' }}</textarea>
+                            <span class="error-msg" id="description-error">{{ form.description.errors.0|default:"Please describe the issue (minimum 10 characters)." }}</span>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="emergency-toggle" id="emergencyToggle">
+                                <input type="checkbox" name="is_emergency" id="emergencyCheck" value="1"{% if form.is_emergency.value %} checked{% endif %}>
+                                <span class="toggle-indicator" aria-hidden="true"></span>
+                                <span>
+                                    <span class="toggle-text">This is an emergency</span>
+                                    <span class="toggle-subtext">Use this for burst pipes, active leaks, or no water.</span>
+                                </span>
+                            </label>
+                            <div class="emergency-note" id="emergencyNote" role="status">
+                                <span aria-hidden="true">&#9889;</span>
+                                <span>Emergency enquiries are prioritised where available. For immediate danger, call {% if business %}{{ business.phone_display }}{% else %}the number above{% endif %} directly.</span>
                             </div>
                         </div>
-                    </fieldset>
+
+                        <fieldset class="form-group full-width">
+                            <legend class="fieldset-label">Photos of the Issue <span class="optional-tag">(optional)</span></legend>
+                            <p class="fieldset-help" id="diagnostic-help">Upload up to 3 photos of the damaged area or equipment.</p>
+                            <div class="diagnostic-uploads">
+                                <div class="diagnostic-upload-row{% if form.diagnostic_image_1.errors %} error{% endif %}">
+                                    <label for="id_diagnostic_image_1" class="file-upload-label">
+                                        <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
+                                        <span class="file-upload-text">Photo 1</span>
+                                    </label>
+                                    {{ form.diagnostic_image_1 }}
+                                    <div class="image-preview"></div>
+                                    <span class="error-msg">{{ form.diagnostic_image_1.errors.0 }}</span>
+                                </div>
+                                <div class="diagnostic-upload-row{% if form.diagnostic_image_2.errors %} error{% endif %}">
+                                    <label for="id_diagnostic_image_2" class="file-upload-label">
+                                        <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
+                                        <span class="file-upload-text">Photo 2</span>
+                                    </label>
+                                    {{ form.diagnostic_image_2 }}
+                                    <div class="image-preview"></div>
+                                    <span class="error-msg">{{ form.diagnostic_image_2.errors.0 }}</span>
+                                </div>
+                                <div class="diagnostic-upload-row{% if form.diagnostic_image_3.errors %} error{% endif %}">
+                                    <label for="id_diagnostic_image_3" class="file-upload-label">
+                                        <span class="file-upload-icon" aria-hidden="true">&#128247;</span>
+                                        <span class="file-upload-text">Photo 3</span>
+                                    </label>
+                                    {{ form.diagnostic_image_3 }}
+                                    <div class="image-preview"></div>
+                                    <span class="error-msg">{{ form.diagnostic_image_3.errors.0 }}</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- STEP 2: When -->
+                    <div class="wizard-step" data-step="2">
+                        <div class="form-group full-width{% if form.preferred_date.errors %} error{% endif %}" id="group-date">
+                            <label for="date">Preferred Date <span class="required">*</span></label>
+                            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+                                <input type="date" id="date" name="preferred_date" required aria-describedby="date-error" value="{{ form.preferred_date.value|default_if_none:'' }}"{% if form.preferred_date.errors %} class="error" aria-invalid="true"{% endif %}>
+                                <button type="button" class="asap-chip" id="asapChip" title="Book the earliest available slot">
+                                    <svg aria-hidden="true"><use href="#icon-arrow-up"></use></svg> ASAP
+                                </button>
+                            </div>
+                            <span class="error-msg" id="date-error">{{ form.preferred_date.errors.0|default:"Please select a date that is not in the past." }}</span>
+                        </div>
+
+                        <fieldset class="form-group full-width{% if form.timeslot.errors %} error{% endif %}" id="group-time">
+                            <legend class="fieldset-label">Preferred Time Slot <span class="required">*</span></legend>
+                            <div class="time-slot-grid" id="timeSlotGrid">
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="7am-9am" required{% if form.timeslot.value == "7am-9am" %} checked{% endif %}><span class="pill-label">7&ndash;9am</span></label>
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="9am-11am"{% if form.timeslot.value == "9am-11am" %} checked{% endif %}><span class="pill-label">9&ndash;11am</span></label>
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="11am-1pm"{% if form.timeslot.value == "11am-1pm" %} checked{% endif %}><span class="pill-label">11&ndash;1pm</span></label>
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="1pm-3pm"{% if form.timeslot.value == "1pm-3pm" %} checked{% endif %}><span class="pill-label">1&ndash;3pm</span></label>
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="3pm-5pm"{% if form.timeslot.value == "3pm-5pm" %} checked{% endif %}><span class="pill-label">3&ndash;5pm</span></label>
+                                <label class="time-slot-pill"><input type="radio" name="timeslot" value="5pm-7pm"{% if form.timeslot.value == "5pm-7pm" %} checked{% endif %}><span class="pill-label">5&ndash;7pm</span></label>
+                            </div>
+                            <span class="error-msg" id="time-error">{{ form.timeslot.errors.0|default:"Please select a preferred time slot." }}</span>
+                        </fieldset>
+                    </div>
+
+                    <!-- STEP 3: Contact & Location -->
+                    <div class="wizard-step" data-step="3">
+                        <div class="form-group{% if form.full_name.errors %} error{% endif %}" id="group-name">
+                            <label for="name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="full_name" placeholder="John Smith" required autocomplete="name" aria-describedby="name-error" value="{{ form.full_name.value|default_if_none:'' }}"{% if form.full_name.errors %} class="error" aria-invalid="true"{% endif %}>
+                            <span class="error-msg" id="name-error">{{ form.full_name.errors.0|default:"Please enter your full name." }}</span>
+                        </div>
+
+                        <div class="form-group{% if form.phone.errors %} error{% endif %}" id="group-phone">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="07123 456789" required autocomplete="tel" aria-describedby="phone-error" value="{{ form.phone.value|default_if_none:'' }}"{% if form.phone.errors %} class="error" aria-invalid="true"{% endif %}>
+                            <span class="error-msg" id="phone-error">{{ form.phone.errors.0|default:"Please enter a valid UK phone number." }}</span>
+                        </div>
+
+                        <div class="form-group{% if form.email.errors %} error{% endif %}" id="group-email">
+                            <label for="email">Email Address <span class="optional-tag">(optional)</span></label>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="email-error" value="{{ form.email.value|default_if_none:'' }}"{% if form.email.errors %} class="error" aria-invalid="true"{% endif %}>
+                            <span class="error-msg" id="email-error">{{ form.email.errors.0|default:"Please enter a valid email address." }}</span>
+                        </div>
+
+                        <div class="form-group full-width{% if form.address.errors %} error{% endif %}" id="group-address">
+                            <label for="address">Full Address <span class="required">*</span></label>
+                            <input type="text" id="address" name="address" placeholder="House number and street name" required autocomplete="street-address" aria-describedby="address-error" value="{{ form.address.value|default_if_none:'' }}"{% if form.address.errors %} class="error" aria-invalid="true"{% endif %}>
+                            <span class="error-msg" id="address-error">{{ form.address.errors.0|default:"Please enter your address." }}</span>
+                        </div>
+
+                        <div class="form-group{% if form.postcode.errors %} error{% endif %}" id="group-postcode">
+                            <label for="postcode">Postcode <span class="required">*</span></label>
+                            <input type="text" id="postcode" name="postcode" placeholder="e.g. M20 1AB" required autocomplete="postal-code" aria-describedby="postcode-error" value="{{ form.postcode.value|default_if_none:'' }}"{% if form.postcode.errors %} class="error" aria-invalid="true"{% endif %}>
+                            <span class="error-msg" id="postcode-error">{{ form.postcode.errors.0|default:"Please enter a valid UK postcode." }}</span>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Review -->
+                    <div class="wizard-step" data-step="4" id="wizardStep4">
+                        <div class="booking-summary" id="bookingSummaryContent"></div>
+                    </div>
                 </div>
 
                 <div class="form-submit-area">
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        Review &amp; Confirm
-                    </button>
+                    <div class="wizard-nav" id="wizardNav">
+                        <button type="button" class="wizard-nav-btn wizard-nav-btn-back" id="wizardBackBtn" style="display:none;">Back</button>
+                        <button type="button" class="wizard-nav-btn wizard-nav-btn-next" id="wizardNextBtn">Next</button>
+                    </div>
                     <p class="form-submit-note">We will check availability and confirm by phone within 2 hours.</p>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <div class="review-overlay" id="reviewOverlay" role="dialog" aria-modal="true" aria-labelledby="review-overlay-title">
-        <div class="review-modal">
-            <h2 class="review-title" id="review-overlay-title">Review Your Booking</h2>
-            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Check everything looks right before confirming.</p>
-            <div id="reviewContent"></div>
-            <div class="review-actions">
-                <button type="button" class="review-btn review-btn-edit" id="reviewEditBtn">Edit Details</button>
-                <button type="button" class="review-btn review-btn-confirm" id="reviewConfirmBtn">Confirm &amp; Send</button>
-            </div>
         </div>
     </div>
 </section>

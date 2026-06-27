@@ -109,6 +109,18 @@ class BusinessProfile(models.Model):
         blank=True,
         help_text="Comma-separated postcode prefixes this business serves, e.g. M,SK,WA.",
     )
+    opening_time = models.TimeField(
+        default="08:00",
+        help_text="Earliest time slots considered available for ASAP booking.",
+    )
+    closing_time = models.TimeField(
+        default="18:00",
+        help_text="If current time is past this, ASAP defaults to the next working day.",
+    )
+    default_slot_capacity = models.PositiveSmallIntegerField(
+        default=1,
+        help_text="Maximum bookings per time slot before the slot is marked unavailable.",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -354,6 +366,13 @@ class BookingEnquiry(models.Model):
         COMPLETED = "completed", "Completed"
         CANCELLED = "cancelled", "Cancelled"
 
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="booking_enquiries",
+    )
     full_name = models.CharField(max_length=120, verbose_name="full name")
     phone = models.CharField(max_length=32)
     email = models.EmailField(blank=True)
@@ -420,3 +439,40 @@ class BookingImage(models.Model):
 
     def __str__(self):
         return f"Image {self.sort_order} for {self.booking}"
+
+
+class TimeSlotAvailability(models.Model):
+    business = models.ForeignKey(
+        BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name="slot_availabilities",
+    )
+    date = models.DateField()
+    timeslot = models.CharField(
+        max_length=16,
+        choices=BookingEnquiry.TimeSlotChoices.choices,
+    )
+    capacity = models.PositiveSmallIntegerField(default=1)
+    booked_count = models.PositiveSmallIntegerField(default=0)
+    is_blocked = models.BooleanField(
+        default=False,
+        help_text="Manually block this slot regardless of booking count.",
+    )
+
+    class Meta:
+        ordering = ["date", "timeslot"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["business", "date", "timeslot"],
+                name="unique_timeslot_per_business",
+            )
+        ]
+        verbose_name = "time slot availability"
+        verbose_name_plural = "time slot availabilities"
+
+    def __str__(self):
+        return f"{self.date} {self.timeslot} — {self.booked_count}/{self.capacity}"
+
+    @property
+    def is_available(self):
+        return not self.is_blocked and self.booked_count < self.capacity
