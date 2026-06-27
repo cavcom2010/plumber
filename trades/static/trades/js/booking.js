@@ -872,15 +872,6 @@
         });
     });
 
-    // --- Keyboard shortcut: Enter on last step submits ---
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter' && currentStep >= totalSteps && document.activeElement && document.activeElement.closest('#bookingForm')) {
-            event.preventDefault();
-            if (!validateStep(1) || !validateStep(2) || !validateStep(3)) { showStep(1); return; }
-            submitBooking();
-        }
-    });
-
     // --- Initialize ---
     showStep(1);
     if (dateInput && dateInput.value) fetchAvailableSlots(dateInput.value);
