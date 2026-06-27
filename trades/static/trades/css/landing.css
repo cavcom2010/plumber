@@ -1297,6 +1297,24 @@
             gap: 0.75rem;
         }
 
+        @media (max-width: 900px) {
+            .diagnostic-uploads {
+                grid-template-columns: 1fr 1fr;
+            }
+            .diagnostic-upload-row:nth-child(3) {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .diagnostic-uploads {
+                grid-template-columns: 1fr;
+            }
+            .diagnostic-upload-row:nth-child(3) {
+                grid-column: auto;
+            }
+        }
+
         .diagnostic-upload-row {
             display: flex;
             flex-direction: column;
