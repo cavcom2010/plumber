@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
 
 from .decorators import rate_limit
 from .forms import BookingEnquiryForm, TestimonialSubmissionForm
@@ -66,14 +67,17 @@ def _site_context(extra=None):
     return context
 
 
+@cache_page(60 * 15)
 def trades_home(request):
     return render(request, "trades/home.html", _site_context())
 
 
+@cache_page(60 * 15)
 def trades_services(request):
     return render(request, "trades/services.html", _site_context())
 
 
+@cache_page(60 * 15)
 def trades_service_detail(request, slug):
     business = BusinessProfile.objects.filter(is_active=True).first()
     if not business:
@@ -107,10 +111,12 @@ def trades_service_detail(request, slug):
     )
 
 
+@cache_page(60 * 15)
 def trades_about(request):
     return render(request, "trades/about.html", _site_context())
 
 
+@cache_page(60 * 15)
 def trades_reviews(request):
     return render(request, "trades/reviews.html", _site_context())
 
@@ -127,6 +133,7 @@ def robots_txt(request):
     return HttpResponse(content, content_type="text/plain")
 
 
+@cache_page(60 * 15)
 def trades_legal_page(request, slug):
     business = BusinessProfile.objects.filter(is_active=True).first()
     if not business:

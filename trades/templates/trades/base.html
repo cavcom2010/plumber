@@ -34,7 +34,8 @@
     <meta name="twitter:title" content="{% block twitter_title %}{% if business %}{{ business.business_name }}{% else %}Your Local Tradesperson{% endif %}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{% if business %}{{ business.tagline }}{% else %}Quality local trade services{% endif %}{% endblock %}">
 
-    <link rel="stylesheet" href="{% versioned_static 'trades/css/landing.css' %}">
+    <link rel="preload" href="{% versioned_static 'trades/css/landing.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% versioned_static 'trades/css/landing.css' %}"></noscript>
     {% block extra_head %}{% endblock %}
 </head>
 <body{% if messages %} data-booking-success="true"{% endif %}>

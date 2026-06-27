@@ -88,12 +88,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'flowpro.urls'
@@ -301,6 +303,8 @@ CACHES = {
         "LOCATION": "django_cache",
     }
 }
+
+CACHE_MIDDLEWARE_SECONDS = 900  # 15-minute page cache for read-only views
 
 # Rate limiting
 # Format: "count/period" where period is s (seconds), m (minutes), h (hours), d (days).

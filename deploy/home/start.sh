@@ -351,6 +351,22 @@ http {
   sendfile    on;
   keepalive_timeout  65;
 
+  gzip on;
+  gzip_vary on;
+  gzip_proxied any;
+  gzip_comp_level 5;
+  gzip_min_length 256;
+  gzip_types
+    text/css
+    text/javascript
+    application/javascript
+    application/x-javascript
+    text/plain
+    text/xml
+    application/json
+    application/xml
+    image/svg+xml;
+
   client_body_temp_path tmp/client_body;
   proxy_temp_path tmp/proxy;
   fastcgi_temp_path tmp/fastcgi;
