@@ -2859,6 +2859,7 @@
            COOKIE CONSENT BANNER
         ============================================ */
         .cookie-banner {
+            display: none;
             position: fixed;
             bottom: 0;
             left: 0;
@@ -2867,7 +2868,6 @@
             background: var(--navy);
             color: rgba(255, 255, 255, 0.88);
             padding: 14px 16px;
-            display: flex;
             align-items: center;
             justify-content: center;
             gap: 14px;
@@ -2876,12 +2876,16 @@
             box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
             font-size: 0.82rem;
             line-height: 1.45;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cookie-banner.visible {
-            transform: translateY(0);
+            display: flex;
+            animation: cookie-slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes cookie-slide-in {
+            from { transform: translateY(100%); }
+            to   { transform: translateY(0); }
         }
 
         .cookie-banner.hidden {

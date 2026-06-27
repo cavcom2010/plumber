@@ -100,9 +100,7 @@
         }
 
         if (!hasConsent) {
-            requestAnimationFrame(function () {
-                cookieBanner.classList.add('visible');
-            });
+            cookieBanner.classList.add('visible');
         }
 
         var acceptBtn = cookieBanner.querySelector('[data-cookie-accept]');
