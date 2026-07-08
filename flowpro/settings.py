@@ -170,7 +170,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-EMAIL_PROVIDER = config("EMAIL_PROVIDER", default="console").lower()
+EMAIL_PROVIDER = config(
+    "EMAIL_PROVIDER",
+    default="console" if DEBUG else "google_workspace",
+).lower()
 EMAIL_PROVIDER_DEFAULTS = {
     "console": {
         "backend": "django.core.mail.backends.console.EmailBackend",

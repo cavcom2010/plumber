@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.decorators.cache import cache_page
+from django_messaging import WhatsAppClient
 
 from .decorators import rate_limit
 from .forms import BookingEnquiryForm, TestimonialSubmissionForm
@@ -350,76 +351,17 @@ def _send_whatsapp_notification(request, booking):
         f"Problem: {booking.description}"
     )
 
-    phone_number_id = settings.WHATSAPP_PHONE_NUMBER_ID
-    cloud_api_token = settings.WHATSAPP_CLOUD_API_TOKEN
-
-    if phone_number_id and cloud_api_token:
-        try:
-            import json
-            from urllib.request import Request, urlopen
-            from urllib.error import URLError
-
-            payload = json.dumps({
-                "messaging_product": "whatsapp",
-                "to": to_number,
-                "type": "text",
-                "text": {"body": body},
-            }).encode("utf-8")
-
-            req = Request(
-                f"https://graph.facebook.com/v22.0/{phone_number_id}/messages",
-                data=payload,
-                headers={
-                    "Authorization": f"Bearer {cloud_api_token}",
-                    "Content-Type": "application/json",
-                },
-                method="POST",
-            )
-            response = urlopen(req, timeout=10)
-            response_body = response.read().decode("utf-8")
-            response_data = json.loads(response_body)
-
-            if "error" in response_data:
-                error_info = response_data["error"]
-                logger.error(
-                    "WhatsApp Cloud API error for booking %s: %s (code %s)",
-                    booking.pk,
-                    error_info.get("message", "unknown"),
-                    error_info.get("code", "unknown"),
-                )
-            else:
-                message_id = None
-                if response_data.get("messages"):
-                    message_id = response_data["messages"][0].get("id")
-                logger.info(
-                    "WhatsApp Cloud API notification sent for booking %s (wa_id=%s)",
-                    booking.pk,
-                    message_id or "unknown",
-                )
-            return
-        except Exception:
-            logger.exception("Failed to send WhatsApp Cloud API notification for enquiry %s.", booking.pk)
-            return
-
-    account_sid = settings.TWILIO_ACCOUNT_SID
-    auth_token = settings.TWILIO_AUTH_TOKEN
-    from_number = settings.TWILIO_WHATSAPP_NUMBER
-
-    if not (account_sid and auth_token and from_number):
-        logger.warning("WhatsApp notification skipped: neither Cloud API nor Twilio credentials configured.")
+    client = WhatsAppClient()
+    if not client.is_configured:
+        logger.warning("WhatsApp notification skipped: WhatsAppClient not configured.")
         return
 
     try:
-        from twilio.rest import Client as TwilioClient
-        client = TwilioClient(account_sid, auth_token)
-        client.messages.create(
-            body=body,
-            from_=f'whatsapp:{from_number}',
-            to=f'whatsapp:{to_number}',
-        )
-        logger.info("WhatsApp notification sent for booking %s.", booking.pk)
+        client.send_text(to=to_number, body=body)
     except Exception:
-        logger.exception("Failed to send WhatsApp notification for enquiry %s.", booking.pk)
+        logger.exception(
+            "Failed to send WhatsApp notification for enquiry %s.", booking.pk
+        )
 
 def api_available_slots(request):
     date_str = request.GET.get("date")

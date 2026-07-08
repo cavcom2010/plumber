@@ -6,3 +6,4 @@ psycopg2-binary==2.9.12
 python-decouple==3.8
 twilio==9.6.0
 weasyprint==68.1
+-e packages/django_messaging  # shared WhatsApp client
